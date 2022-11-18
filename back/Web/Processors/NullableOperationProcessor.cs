@@ -2,42 +2,36 @@
 using NSwag.Generation.Processors.Contexts;
 using System.Reflection;
 
-namespace Example.Api.Web.Processors
+namespace SousMarinJaune.Api.Web.Processors;
+
+public class NullableOperationProcessor : IOperationProcessor
 {
-    public class NullableOperationProcessor : IOperationProcessor
-    {
-		
-		
-		private static NullabilityInfoContext context = new ();
+	private static readonly NullabilityInfoContext context = new();
 
+	/// <summary>
+	///     Permet d'indiquer dans le schéma OpenApi que les champs non-Nullables notamment certaines string sont required
+	///     (sans avoir besoin de l'annotation)
+	/// </summary>
+	/// <param name="context"></param>
+	/// <returns></returns>
+	public bool Process(OperationProcessorContext context)
+	{
+		context.OperationDescription.Operation.OperationId = context.MethodInfo.Name;
 
-		public static bool IsNullable(ParameterInfo p)
+		foreach (var (param, prop) in context.Parameters)
 		{
-			var nullabilityInfo = context.Create(p);
-			return nullabilityInfo.WriteState is NullabilityState.Nullable;
-
+			var nullable = IsNullable(param);
+			prop.IsRequired = !nullable;
+			prop.Schema.IsNullableRaw = nullable;
 		}
-		
-        /// <summary>
-        /// Permet d'indiquer dans le schéma OpenApi que les champs non-Nullables notamment certaines string sont required (sans avoir besoin de l'annotation)
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public bool Process(OperationProcessorContext context)
-        {
 
-            context.OperationDescription.Operation.OperationId = context.MethodInfo.Name;
+		return true;
+	}
 
-            foreach (var (param, prop) in context.Parameters)
-            {
-                var nullable = IsNullable(param);
-                prop.IsRequired = !nullable;
-                prop.Schema.IsNullableRaw = nullable;
-            }
 
-            return true;
-
-        }
-    }
-
+	public static bool IsNullable(ParameterInfo p)
+	{
+		var nullabilityInfo = context.Create(p);
+		return nullabilityInfo.WriteState is NullabilityState.Nullable;
+	}
 }

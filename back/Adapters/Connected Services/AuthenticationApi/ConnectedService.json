@@ -59,7 +59,7 @@
       "WrapResponseMethods": [],
       "GenerateResponseClasses": true,
       "ResponseClass": "SwaggerResponse",
-      "Namespace": "Example.Api.Adapters.AuthenticationApi",
+      "Namespace": "SousMarinJaune.Api.Adapters.AuthenticationApi",
       "RequiredPropertiesMustBeDefined": true,
       "DateType": "System.DateTimeOffset",
       "JsonConverters": null,

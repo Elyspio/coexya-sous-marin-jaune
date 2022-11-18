@@ -4,7 +4,7 @@ import Brightness5Icon from "@mui/icons-material/Brightness5";
 import Brightness3Icon from "@mui/icons-material/Brightness3";
 import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
-import { Todos } from "./test/Todos";
+import { Burgers } from "./test/Burgers";
 import { useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, withDrawer } from "./utils/drawer/Drawer.hoc";
@@ -48,9 +48,9 @@ function Application() {
 	}
 
 	const drawer = withDrawer({
-		component: <Todos />,
+		component: <Burgers />,
 		actions,
-		title: "Todos",
+		title: "Sous-marin Jaune V2",
 	});
 
 	return (

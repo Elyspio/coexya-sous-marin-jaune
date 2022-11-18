@@ -34,7 +34,12 @@ type TodoProps = {
 export function Todo({ mode }: TodoProps) {
 	const todos = useAppSelector((state) => [...state.todo.todos[mode]].sort((a, b) => a.label.localeCompare(b.label)));
 	const dispatch = useAppDispatch();
-	const actions = useMemo(() => bindActionCreators({ addTodo, deleteTodo, checkTodo, getTodos }, dispatch), [dispatch]);
+	const actions = useMemo(() => bindActionCreators({
+		addTodo,
+		deleteTodo,
+		checkTodo,
+		getTodos,
+	}, dispatch), [dispatch]);
 
 	const [label, setLabel] = React.useState("");
 
@@ -88,7 +93,8 @@ export function Todo({ mode }: TodoProps) {
 				<DialogTitle>Add a todo</DialogTitle>
 				<DialogContent>
 					<DialogContentText>Enter a label for the new todo</DialogContentText>
-					<TextField autoFocus margin="dense" id="todo-label" label="Label" fullWidth variant="standard" value={label} onChange={(e) => setLabel(e.target.value)} />
+					<TextField autoFocus margin="dense" id="todo-label" label="Label" fullWidth variant="standard"
+							   value={label} onChange={(e) => setLabel(e.target.value)} />
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={setClose}>Cancel</Button>

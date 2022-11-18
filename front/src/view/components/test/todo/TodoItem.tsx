@@ -17,7 +17,12 @@ export function TodoItem({ data, mode }: TodoItemProps) {
 	const { open: menuOpen, closeMenu, onContextMenu, position } = useMenu();
 
 	const dispatch = useAppDispatch();
-	const actions = useMemo(() => bindActionCreators({ addTodo, deleteTodo, checkTodo, getTodos }, dispatch), [dispatch]);
+	const actions = useMemo(() => bindActionCreators({
+		addTodo,
+		deleteTodo,
+		checkTodo,
+		getTodos,
+	}, dispatch), [dispatch]);
 
 	const onSwitchClick = useCallback(async () => {
 		await actions.checkTodo({ mode, id: data.id });
@@ -36,7 +41,8 @@ export function TodoItem({ data, mode }: TodoItemProps) {
 				</MenuItem>
 			</Menu>
 
-			<TableRow onContextMenu={onContextMenu} key={data.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+			<TableRow onContextMenu={onContextMenu} key={data.id}
+					  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
 				<TableCell scope="row">
 					<Typography>{data.label}</Typography>
 				</TableCell>

@@ -43,9 +43,10 @@ public class ServerBuilder
 			{
 				options.AddPolicy("Cors", b =>
 					{
-						b.AllowAnyOrigin();
+						b.WithOrigins("http://localhost:3000");
 						b.AllowAnyHeader();
 						b.AllowAnyMethod();
+						b.AllowCredentials();
 					}
 				);
 

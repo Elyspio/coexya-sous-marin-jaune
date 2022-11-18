@@ -11,7 +11,7 @@ export default defineConfig({
 			events: "rollup-plugin-node-polyfills/polyfills/events",
 		},
 	},
-	base: process.env.NODE_ENV === "production" ? "/react-api-template/" : undefined,
+	base: process.env.NODE_ENV === "production" ? "/coexya/burgers/" : undefined,
 	server: {
 		port: 3000,
 		host: true,
@@ -63,10 +63,6 @@ export default defineConfig({
 			libraryName: "@mui/icons-material",
 			libraryDirectory: "esm",
 		}),
-		// usePluginImport({
-		// 	libraryName: "@mui/material",
-		// 	libraryDirectory: 'esm',
-		// }),
 	],
 
 });

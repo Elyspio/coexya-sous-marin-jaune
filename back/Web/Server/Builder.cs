@@ -1,10 +1,4 @@
-﻿using SousMarinJaune.Api.Adapters.Injections;
-using SousMarinJaune.Api.Core.Injections;
-using SousMarinJaune.Api.Db.Injections;
-using SousMarinJaune.Api.Web.Filters;
-using SousMarinJaune.Api.Web.Processors;
-using SousMarinJaune.Api.Web.Utils;
-using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Newtonsoft.Json.Converters;
 using NJsonSchema.Generation;
@@ -13,6 +7,12 @@ using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
+using SousMarinJaune.Api.Adapters.Injections;
+using SousMarinJaune.Api.Core.Injections;
+using SousMarinJaune.Api.Db.Injections;
+using SousMarinJaune.Api.Web.Filters;
+using SousMarinJaune.Api.Web.Processors;
+using SousMarinJaune.Api.Web.Utils;
 using System.Net;
 using System.Text.Json.Serialization;
 

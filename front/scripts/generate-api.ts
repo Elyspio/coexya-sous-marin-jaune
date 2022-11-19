@@ -1,6 +1,5 @@
 import path from "path";
-import { EOL } from "os";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync } from "fs";
 import { execSync } from "child_process";
 
 type NSwagConf = {
@@ -19,7 +18,7 @@ function generateFromNswag({ outputFile, file, input }: NSwagConf) {
 	} = JSON.parse(readFileSync(file).toString());
 
 	console.log(`Executing "${command}"`);
-	execSync(command, {stdio: "inherit"});
+	execSync(command, { stdio: "inherit" });
 }
 
 if (require.main === module) {
@@ -34,7 +33,7 @@ if (require.main === module) {
 			"core",
 			"apis",
 			"backend",
-			"generated.ts"
+			"generated.ts",
 		),
 	});
 }

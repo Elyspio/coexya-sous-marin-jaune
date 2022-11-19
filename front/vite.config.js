@@ -48,7 +48,6 @@ export default defineConfig({
 				jsc: {
 					externalHelpers: true,
 					target: "es2015",
-					transform: { optimizer: { simplify: true } },
 					parser: {
 						syntax: "typescript",
 						jsx: true,

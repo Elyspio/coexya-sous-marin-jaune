@@ -48,7 +48,9 @@
       "extendedClasses": [],
       "generateDefaultValues": true,
       "excludedTypeNames": [],
-      "excludedParameterNames": ["authentication-token"],
+      "excludedParameterNames": [
+        "authentication-token"
+      ],
       "handleReferences": false,
       "generateConstructorInterface": false,
       "convertConstructorInterfaceData": false,

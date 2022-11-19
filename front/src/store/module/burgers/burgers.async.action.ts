@@ -7,3 +7,4 @@ export const getBurgers = createAsyncThunk("burgers/getBurgers", (_, { extra }) 
 	const service = getService(BurgerService, extra);
 	return service.getAll();
 });
+

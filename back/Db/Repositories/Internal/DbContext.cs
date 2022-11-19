@@ -1,9 +1,9 @@
-﻿using SousMarinJaune.Api.Db.Configs;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
+using SousMarinJaune.Api.Db.Configs;
 
 namespace SousMarinJaune.Api.Db.Repositories.Internal;
 

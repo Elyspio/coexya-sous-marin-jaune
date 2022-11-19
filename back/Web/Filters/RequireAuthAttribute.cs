@@ -1,11 +1,11 @@
-﻿using SousMarinJaune.Api.Web.Utils;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NJsonSchema;
 using NSwag;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+using SousMarinJaune.Api.Web.Utils;
 
 namespace SousMarinJaune.Api.Web.Filters;
 

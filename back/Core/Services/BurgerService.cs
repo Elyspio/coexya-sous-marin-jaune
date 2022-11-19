@@ -1,6 +1,6 @@
-﻿using SousMarinJaune.Api.Adapters.Custom;
-using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+﻿using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports;
+using SousMarinJaune.Api.Adapters.Custom;
 
 namespace SousMarinJaune.Api.Core.Services;
 

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Burger } from "../../../core/apis/backend/generated";
-import { getBurgers } from "./burgers.actions";
+import { getBurgers } from "./burgers.async.action";
 
 export type TodoState = {
 	all: Burger[]

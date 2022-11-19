@@ -25,7 +25,7 @@ public class BurgerAdapter
 
 		return mainNodes.Select(main =>
 		{
-			var children = main.ChildNodes.Where(node => node.Name == "h3").ToList();
+			var children = main.ChildNodes.Where(node => node.Name == "h3" || node.Name == "p").ToList();
 
 			// Get burger label
 			var name = children[0].InnerText!;

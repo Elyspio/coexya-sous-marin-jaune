@@ -9,7 +9,6 @@ const darkTheme = createTheme({
 			main: colors.grey["500"],
 		},
 		primary: {
-			...colors.blue,
 			main: colors.blue["400"],
 		},
 		background: {

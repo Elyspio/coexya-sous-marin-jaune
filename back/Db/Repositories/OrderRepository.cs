@@ -1,8 +1,8 @@
-﻿using SousMarinJaune.Api.Db.Repositories.Internal;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Models;
+using SousMarinJaune.Api.Db.Repositories.Internal;
 
 namespace SousMarinJaune.Api.Db.Repositories;
 

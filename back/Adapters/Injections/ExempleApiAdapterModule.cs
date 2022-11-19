@@ -1,9 +1,9 @@
-﻿using SousMarinJaune.Api.Adapters.AuthenticationApi;
-using SousMarinJaune.Api.Adapters.Configs;
-using SousMarinJaune.Api.Adapters.Custom;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
+using SousMarinJaune.Api.Adapters.AuthenticationApi;
+using SousMarinJaune.Api.Adapters.Configs;
+using SousMarinJaune.Api.Adapters.Custom;
 
 namespace SousMarinJaune.Api.Adapters.Injections;
 

@@ -1,5 +1,5 @@
-﻿using SousMarinJaune.Api.Adapters.AuthenticationApi;
-using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+﻿using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+using SousMarinJaune.Api.Adapters.AuthenticationApi;
 
 namespace SousMarinJaune.Api.Core.Services;
 

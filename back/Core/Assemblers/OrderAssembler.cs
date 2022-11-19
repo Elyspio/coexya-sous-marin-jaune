@@ -12,10 +12,9 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 		return new Order
 		{
 			Id = obj.Id.AsGuid(),
-			Burger = obj.Burger,
 			User = obj.User,
-			Excluded = obj.Excluded,
-			Vegetarian = obj.Vegetarian
+			Burgers = obj.Burgers,
+			Date = obj.Date
 		};
 	}
 
@@ -24,10 +23,9 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 		return new OrderEntity
 		{
 			Id = obj.Id.AsObjectId(),
-			Burger = obj.Burger,
 			User = obj.User,
-			Excluded = obj.Excluded,
-			Vegetarian = obj.Vegetarian
+			Burgers = obj.Burgers,
+			Date = obj.Date
 		};
 	}
 }

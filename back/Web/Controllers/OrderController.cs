@@ -18,7 +18,7 @@ public class OrderController : ControllerBase
 	}
 
 	[HttpGet]
-	[SwaggerResponse(HttpStatusCode.OK, typeof(List<Burger>))]
+	[SwaggerResponse(HttpStatusCode.OK, typeof(List<Order>))]
 	public async Task<IActionResult> GetAll()
 	{
 		return Ok(await _burgerService.GetAll());

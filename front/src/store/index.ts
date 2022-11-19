@@ -4,12 +4,14 @@ import { themeReducer } from "./module/theme/theme.reducer";
 import { authenticationReducer } from "./module/authentication/authentication.reducer";
 import { container } from "../core/di";
 import { burgersReducer } from "./module/burgers/burgers.reducer";
+import { ordersReducer } from "./module/orders/orders.reducer";
 
 const store = configureStore({
 	reducer: {
 		theme: themeReducer,
 		authentication: authenticationReducer,
 		burgers: burgersReducer,
+		orders: ordersReducer,
 	},
 	devTools: process.env.NODE_ENV !== "production",
 	middleware: (getDefaultMiddleware) => [...getDefaultMiddleware({ thunk: { extraArgument: { container } } })],

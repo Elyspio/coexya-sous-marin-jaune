@@ -86,7 +86,7 @@ export class OrderClient {
 
 	}
 
-	getAll2(cancelToken?: CancelToken | undefined): Promise<Burger[]> {
+	getAll2(cancelToken?: CancelToken | undefined): Promise<Order[]> {
 		let url_ = this.baseUrl + "/api/orders";
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -110,7 +110,7 @@ export class OrderClient {
 		});
 	}
 
-	protected processGetAll2(response: AxiosResponse): Promise<Burger[]> {
+	protected processGetAll2(response: AxiosResponse): Promise<Order[]> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && typeof response.headers === "object") {
@@ -125,19 +125,55 @@ export class OrderClient {
 			let result200: any = null;
 			let resultData200 = _responseText;
 			result200 = JSON.parse(resultData200);
-			return Promise.resolve<Burger[]>(result200);
+			return Promise.resolve<Order[]>(result200);
 
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
 		}
-		return Promise.resolve<Burger[]>(null as any);
+		return Promise.resolve<Order[]>(null as any);
 	}
 }
 
 export interface Burger {
 	ingredients: string[];
 	name: string;
+}
+
+export interface OrderBase {
+	burgers: BurgerRecord[];
+	user: string;
+	date: string;
+}
+
+export interface Order extends OrderBase {
+	id?: string;
+}
+
+export interface BurgerRecord {
+	fries?: Fries | undefined;
+	drink?: Drink | undefined;
+	name: string;
+	excluded: string[];
+	vegetarian: boolean;
+	xl: boolean;
+	comment: string;
+}
+
+export interface Fries {
+	sauces: Sauce[];
+}
+
+export enum Sauce {
+	Ketchup = "Ketchup",
+	Mayo = "Mayo",
+}
+
+export enum Drink {
+	Coca = "Coca",
+	CocaZero = "CocaZero",
+	IceTea = "IceTea",
+	Limonade = "Limonade",
 }
 
 export class ApiException extends Error {

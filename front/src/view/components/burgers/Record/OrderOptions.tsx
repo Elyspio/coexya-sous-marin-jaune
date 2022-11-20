@@ -37,11 +37,14 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 	}, [data]);
 
 	return <>
-		<FormControlLabel control={<Checkbox checked={data.vegetarian} onClick={updateCheckbox("vegetarian")} />}
-						  label={"Végétarien"} />
-		<FormControlLabel control={<Checkbox checked={data.xl} onClick={updateCheckbox("xl")} />}
-						  label={"XL"} />
-		<TextField label={"Commentaire"} defaultValue={data.comment} onChange={onCommentChange}></TextField>
+		<FormControlLabel
+			control={<Checkbox sx={{ pl: 0 }} checked={data.vegetarian} onClick={updateCheckbox("vegetarian")} />}
+			label={"Végétarien"} />
+		<FormControlLabel
+			control={<Checkbox sx={{ pl: 0 }} checked={data.xl} onClick={updateCheckbox("xl")} />}
+			label={"XL"} />
+		<TextField label={"Commentaire"} variant={"standard"} defaultValue={data.comment}
+				   onChange={onCommentChange} />
 	</>;
 
 }

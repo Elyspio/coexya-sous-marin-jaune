@@ -3,17 +3,20 @@ import * as React from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { BurgerItem } from "./Burger";
 import { getBurgers } from "../../../store/module/burgers/burgers.async.action";
-import { EditBurgerRecord } from "./Edit/EditBurgerRecord";
+import { EditBurgerRecord } from "./Record/EditBurgerRecord";
 
 
 export const Burgers = () => {
 
-	const burgers = useAppSelector(state => state.burgers.all);
+	const { burgers, altering } = useAppSelector(state => ({
+		altering: state.orders.altering,
+		burgers: state.burgers.all,
+	}));
 
 	const dispatch = useAppDispatch();
 
 	React.useEffect(() => {
-		dispatch(getBurgers() as any);
+		dispatch(getBurgers());
 	}, [dispatch]);
 
 	return (
@@ -21,7 +24,7 @@ export const Burgers = () => {
 			<Box display={"flex"} justifyContent={"center"} flexWrap={"wrap"}>
 				{burgers.map(burger => <BurgerItem key={burger.name} data={burger} />)}
 			</Box>
-			<EditBurgerRecord />
+			{altering?.record && <EditBurgerRecord />}
 		</Box>
 	);
 };

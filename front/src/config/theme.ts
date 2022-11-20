@@ -9,12 +9,13 @@ const darkTheme = createTheme({
 			main: colors.grey["500"],
 		},
 		primary: {
-			main: colors.blue["400"],
+			main: colors.blue["800"],
 		},
 		background: {
 			paper: "#1d1d1d",
 			default: "#181818",
 		},
+		divider: "#FFFFFF1E",
 	},
 	components: {
 		MuiPaper: {
@@ -38,12 +39,13 @@ const lightTheme = createTheme({
 		},
 		primary: {
 			...colors.blue,
-			main: colors.blue["400"],
+			main: colors.blue["100"],
 		},
 		background: {
 			paper: "#ffffff",
 			default: "#e6e6e6",
 		},
+		divider: "#FFFFFF1E",
 	},
 	components: {
 		MuiPaper: {

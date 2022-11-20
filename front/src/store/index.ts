@@ -14,7 +14,7 @@ const store = configureStore({
 		orders: ordersReducer,
 	},
 	devTools: process.env.NODE_ENV !== "production",
-	middleware: (getDefaultMiddleware) => [...getDefaultMiddleware({ thunk: { extraArgument: { container } } })],
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: { extraArgument: { container } } }),
 });
 
 export type StoreState = ReturnType<typeof store.getState>;

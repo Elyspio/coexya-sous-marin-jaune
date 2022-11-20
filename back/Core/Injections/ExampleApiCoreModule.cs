@@ -16,5 +16,11 @@ public class ExampleApiCoreModule : IDotnetModule
 			.AsImplementedInterfaces()
 			.WithSingletonLifetime()
 		);
+
+		services.Scan(scan => scan
+			.FromAssemblyOf<ExampleApiCoreModule>()
+			.AddClasses(classes => classes.InNamespaces(baseNamespace + ".Assemblers"))
+			.AsSelf()
+			.WithSingletonLifetime());
 	}
 }

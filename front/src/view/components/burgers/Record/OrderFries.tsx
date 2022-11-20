@@ -33,23 +33,32 @@ export function OrderFries({ data }: { data: BurgerRecord }) {
 		}));
 	}, [data, dispatch]);
 
+
 	return <Stack direction={"row"} alignItems={"center"}>
 
-		<FormControlLabel control={<Checkbox checked={!!data.fries} onChange={toggleFries} />}
-						  label={"Frites"} />
+		<FormControlLabel
+			control={<Checkbox sx={{ pl: 0 }} checked={!!data.fries} onChange={toggleFries} />}
+			label={"Frites"}
+			sx={{ ml: 0 }}
+		/>
 		<Fade in={!!data.fries}>
-			<FormControl fullWidth sx={{ minWidth: 150 }}>
-				<InputLabel id="select-sauces-label" sx={{mr: 1}}>Sauces</InputLabel>
+			<FormControl fullWidth>
+				<InputLabel id="select-sauces-label" sx={{ mr: 1, ml: 0 }}>Sauces</InputLabel>
 				<Select
 					labelId="select-sauces-label"
 					id="select-sauces"
 					value={data.fries?.sauces ?? []}
 					label="Sauces"
 					multiple
+					variant={"standard"}
 					onChange={setFries}
 				>
-					{Object.values(Sauce).map(sauce => <MenuItem key={sauce}
-																 value={sauce}>{sauce}</MenuItem>)}
+					{Object.values(Sauce).map(sauce => <MenuItem
+						key={sauce}
+						value={sauce}
+					>
+						{sauce}
+					</MenuItem>)}
 				</Select>
 			</FormControl>
 		</Fade>

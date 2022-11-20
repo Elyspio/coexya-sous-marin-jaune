@@ -11,18 +11,18 @@ import {
 	FormControlLabel,
 	Stack,
 	Typography,
-	useTheme,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { openOrderModal, updateBurgerRecord } from "../../../../store/module/orders/orders.action";
+import { closeOrderModal, updateBurgerRecord } from "../../../../store/module/orders/orders.action";
 import { OrderFries } from "./OrderFries";
 import { OrderDrink } from "./OrderDrink";
 import { OrderOptions } from "./OrderOptions";
+import { OrderDessert } from "./OrderDessert";
 
 export function EditBurgerRecord() {
 
 	const { data, display, burger } = useAppSelector(s => {
-		let data = s.orders.wip[s.orders.altering ?? -1];
+		let data = s.orders.all[s.orders.altering!.order].burgers[s.orders.altering!.record!];
 		return ({
 			data,
 			burger: s.burgers.all.find(b => b.name === data?.name),
@@ -33,7 +33,7 @@ export function EditBurgerRecord() {
 	const dispatch = useAppDispatch();
 
 
-	const close = React.useCallback(() => dispatch(openOrderModal()), [dispatch]);
+	const close = React.useCallback(() => dispatch(closeOrderModal()), [dispatch]);
 
 
 	const updateExcluded = React.useCallback((ingredient: string) => () => {
@@ -44,16 +44,18 @@ export function EditBurgerRecord() {
 		}));
 	}, [dispatch, data]);
 
-	const { palette } = useTheme();
-
 	return (
 		<Dialog open={display} onClose={close}>
 			{data && burger && <>
 
-				<DialogTitle>{data.name}</DialogTitle>
-				<DialogContent>
+				<DialogTitle>
+					<Box justifyContent={"center"} display={"flex"}>
+						<Typography fontSize={"large"} variant={"overline"}>{data.name}</Typography>
+					</Box>
+				</DialogTitle>
+				<DialogContent dividers>
 					<Stack direction={"row"} spacing={4} my={1}>
-						<Stack width={"45%"}>
+						<Stack>
 							<Typography variant={"overline"}>Ingrédients</Typography>
 							<Stack spacing={1}>
 								{burger.ingredients.map(i => <Box key={i}>
@@ -67,18 +69,19 @@ export function EditBurgerRecord() {
 								</Box>)}
 							</Stack>
 						</Stack>
-						<Divider color={palette.primary.main} sx={{ width: "1px" }}></Divider>
-						<Stack spacing={2} width={"55%"}>
-							<OrderDrink data={data} />
+						<Divider flexItem orientation="vertical"></Divider>
+						<Stack spacing={2} minWidth={300}>
 							<OrderFries data={data} />
+							<OrderDrink data={data} />
+							<OrderDessert data={data} />
 							<OrderOptions data={data} />
 						</Stack>
 
 					</Stack>
 				</DialogContent>
 				<DialogActions>
-					<Button color={"error"} onClick={close}>Annuler</Button>
-					<Button color={"primary"} onClick={close}>Ajouter</Button>
+					<Button color={"inherit"} onClick={close}>Annuler</Button>
+					<Button color={"primary"} variant={"contained"} onClick={close}>Ajouter</Button>
 				</DialogActions>
 
 

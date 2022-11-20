@@ -83,7 +83,6 @@ public class ServerBuilder
 		{
 			document.DocumentName = "SousMarinJaune.Api";
 			document.Title = "SousMarinJaune.Api";
-			document.DefaultResponseReferenceTypeNullHandling = ReferenceTypeNullHandling.NotNull;
 			document.SchemaProcessors.Add(new NullableSchemaProcessor());
 			document.OperationProcessors.Add(new NullableOperationProcessor());
 			document.OperationProcessors.Add(new RequireAuthAttribute.Swagger());

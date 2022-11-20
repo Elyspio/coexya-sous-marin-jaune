@@ -29,7 +29,7 @@ public class NullableOperationProcessor : IOperationProcessor
 	}
 
 
-	public static bool IsNullable(ParameterInfo p)
+	private static bool IsNullable(ParameterInfo p)
 	{
 		var nullabilityInfo = context.Create(p);
 		return nullabilityInfo.WriteState is NullabilityState.Nullable;

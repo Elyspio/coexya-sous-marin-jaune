@@ -1,4 +1,4 @@
-﻿namespace SousMarinJaune.Api.Abstractions.Models;
+﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order;
 
 public class OrderBase
 {

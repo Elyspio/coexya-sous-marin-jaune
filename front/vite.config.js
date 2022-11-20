@@ -5,27 +5,28 @@ import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfil
 
 
 // https://vitejs.dev/config/
+let isProduction = process.env.NODE_ENV === "production";
 export default defineConfig({
 	resolve: {
 		alias: {
 			events: "rollup-plugin-node-polyfills/polyfills/events",
 		},
 	},
-	base: process.env.NODE_ENV === "production" ? "/coexya/burgers/" : undefined,
+	base: isProduction ? "/coexya/burgers/" : undefined,
 	server: {
 		port: 3000,
 		host: true,
 	},
 	build: {
 		minify: "terser",
-		terserOptions: {
-			compress: true,
-			mangle: true,
-			ie8: false,
-			keep_classnames: true,
-			ecma: 2020,
-			format: { comments: false },
-		},
+		sourcemap: true,
+		// terserOptions: {
+		// 	compress: isProduction,
+		// 	mangle: isProduction,
+		// 	ie8: false,
+		// 	keep_classnames: true,
+		// 	ecma:2 020,
+		// },
 		rollupOptions: {
 			output: {
 				manualChunks: (id) => {
@@ -47,7 +48,7 @@ export default defineConfig({
 			swcOptions: {
 				jsc: {
 					externalHelpers: true,
-					target: "es2015",
+					target: isProduction ? "es2015" : "es2021",
 					parser: {
 						syntax: "typescript",
 						jsx: true,

@@ -1,7 +1,7 @@
 ﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order;
 
-public enum Sauce
+public enum Dessert
 {
-	Ketchup,
-	Mayo
+	Cookie,
+	Brookie
 }

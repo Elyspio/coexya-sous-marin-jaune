@@ -8,18 +8,20 @@ import { Burgers } from "./burgers/Burgers";
 import { useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, withDrawer } from "./utils/drawer/Drawer.hoc";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { login, logout } from "../../store/module/authentication/authentication.action";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
+import { Orders } from "./orders/Orders";
 
 function Application() {
 	const dispatch = useDispatch();
 
-	const { theme, themeIcon, logged } = useAppSelector((s) => ({
+	const { theme, themeIcon, logged, user } = useAppSelector((s) => ({
 		theme: s.theme.current,
 		themeIcon: s.theme.current === "dark" ? <Brightness5Icon /> : <Brightness3Icon />,
 		logged: s.authentication.logged,
+		user: s.orders.name,
 	}));
 
 	const storeActions = React.useMemo(() => bindActionCreators({ toggleTheme, logout, login }, dispatch), [dispatch]);
@@ -48,7 +50,10 @@ function Application() {
 	}
 
 	const drawer = withDrawer({
-		component: <Burgers />,
+		component: <Stack spacing={3} width={"100%"}>
+			<Orders />
+			{user && <Burgers />}
+		</Stack>,
 		actions,
 		title: "Sous-marin Jaune V2",
 	});

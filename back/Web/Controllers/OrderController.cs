@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
-using SousMarinJaune.Api.Abstractions.Models;
-using SousMarinJaune.Api.Abstractions.Transports;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
 using System.Net;
 
@@ -26,15 +24,14 @@ public class OrderController : ControllerBase
 		return Ok(await _orderService.GetAll());
 	}
 
-	
-	
+
 	[HttpGet("users/{user}")]
 	[SwaggerResponse(HttpStatusCode.OK, typeof(List<Order>))]
 	public async Task<IActionResult> GetForUser(string user)
 	{
 		return Ok(await _orderService.GetForUser(user));
 	}
-	
+
 
 	[HttpPost("users/{user}")]
 	[SwaggerResponse(HttpStatusCode.Created, typeof(Order))]
@@ -44,13 +41,19 @@ public class OrderController : ControllerBase
 		return Created($"orders/{order.Id}", order);
 	}
 	
+	[HttpDelete("{order:guid}")]
+	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
+	public async Task<IActionResult> Delete(Guid order)
+	{
+		await _orderService.Delete(order);
+		return NoContent();
+	}
+	
 	[HttpPost("{order:guid}/records")]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	public async Task<IActionResult> AddRecord(Guid order, BurgerRecord record)
 	{
 		await _orderService.AddBurgerRecord(order, record);
-
 		return NoContent();
 	}
-	
 }

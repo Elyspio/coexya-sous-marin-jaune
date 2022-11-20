@@ -4,9 +4,10 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import dayjs from "dayjs";
 import { Order } from "../../../core/apis/backend/generated";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { createOrder, getOrders } from "../../../store/module/orders/orders.async.action";
+import { createOrder, deleteOrder, getOrders } from "../../../store/module/orders/orders.async.action";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BuildIcon from "@mui/icons-material/Build";
+import { setAlteringOrder } from "../../../store/module/orders/orders.action";
 
 const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 
@@ -59,6 +60,17 @@ export function OldOrders() {
 
 
 function OrderItem({ data }: { data: Order }) {
+
+	const dispatch = useAppDispatch();
+
+	const edit = React.useCallback(() => {
+		dispatch(setAlteringOrder(data.id));
+	}, [data]);
+
+	const del = React.useCallback(() => {
+		dispatch(deleteOrder(data.id));
+	}, [data]);
+
 	return <Stack direction={"row"} alignItems={"center"} spacing={2}>
 		<Typography>
 			{dayjs(data.date).format("DD/MM/YYYY")}
@@ -68,10 +80,10 @@ function OrderItem({ data }: { data: Order }) {
 		</Typography>
 		<ButtonGroup variant="outlined">
 			{isToday(data) && <IconButton>
-				<BuildIcon color={"primary"} />
+				<BuildIcon color={"primary"} onClick={edit} />
 			</IconButton>}
 			{<IconButton>
-				<DeleteIcon color={"error"} />
+				<DeleteIcon color={"error"} onClick={del}/>
 			</IconButton>}
 		</ButtonGroup>
 

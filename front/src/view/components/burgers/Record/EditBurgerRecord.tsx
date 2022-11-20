@@ -13,7 +13,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { closeOrderModal, updateBurgerRecord } from "../../../../store/module/orders/orders.action";
+import { closeOrderModal, setAlteringRecord, updateBurgerRecord } from "../../../../store/module/orders/orders.action";
 import { OrderFries } from "./OrderFries";
 import { OrderDrink } from "./OrderDrink";
 import { OrderOptions } from "./OrderOptions";
@@ -33,7 +33,7 @@ export function EditBurgerRecord() {
 	const dispatch = useAppDispatch();
 
 
-	const close = React.useCallback(() => dispatch(closeOrderModal()), [dispatch]);
+	const close = React.useCallback(() => dispatch(setAlteringRecord()), [dispatch]);
 
 
 	const updateExcluded = React.useCallback((ingredient: string) => () => {

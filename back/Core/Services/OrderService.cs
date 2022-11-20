@@ -1,6 +1,5 @@
 ﻿using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
-using SousMarinJaune.Api.Abstractions.Transports;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Core.Assemblers;
 
@@ -8,8 +7,8 @@ namespace SousMarinJaune.Api.Core.Services;
 
 public class OrderService : IOrderService
 {
-	private readonly IOrderRepository orderRepository;
 	private readonly OrderAssembler orderAssembler;
+	private readonly IOrderRepository orderRepository;
 
 	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler)
 	{
@@ -36,5 +35,9 @@ public class OrderService : IOrderService
 	{
 		await orderRepository.AddBurgerRecord(order, record);
 	}
-	
+
+	public async Task Delete(Guid order)
+	{
+		await orderRepository.Delete(order);
+	}
 }

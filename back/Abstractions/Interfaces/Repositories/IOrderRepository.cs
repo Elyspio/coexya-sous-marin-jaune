@@ -9,4 +9,5 @@ public interface IOrderRepository
 	Task<List<OrderEntity>> GetAll();
 	Task<List<OrderEntity>> GetForUser(string user);
 	Task AddBurgerRecord(Guid orderId, BurgerRecord record);
+	Task Delete(Guid order);
 }

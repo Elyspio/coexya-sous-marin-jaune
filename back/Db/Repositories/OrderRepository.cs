@@ -17,14 +17,13 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 	}
 
 
-
 	public async Task<OrderEntity> Create(string userName)
 	{
 		var order = new OrderEntity
 		{
 			Burgers = new List<BurgerRecord>(),
 			Date = DateTime.Now,
-			User = userName,
+			User = userName
 		};
 		await EntityCollection.InsertOneAsync(order);
 		return order;
@@ -44,5 +43,10 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 	{
 		var order = await EntityCollection.AsQueryable().Where(order => order.Id == orderId.AsObjectId()).FirstAsync();
 		order.Burgers.Add(record);
+	}
+
+	public async Task Delete(Guid order)
+	{
+		await EntityCollection.DeleteOneAsync(o => o.Id == order.AsObjectId());
 	}
 }

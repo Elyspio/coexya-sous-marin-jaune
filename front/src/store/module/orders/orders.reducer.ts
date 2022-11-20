@@ -1,12 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { BurgerRecord, Order } from "../../../core/apis/backend/generated";
-import { addOrderRecord, closeOrderModal, setUser, updateBurgerRecord } from "./orders.action";
+import {
+	addOrderRecord,
+	setAlteringOrder,
+	setAlteringRecord,
+	setUser,
+	updateBurgerRecord,
+} from "./orders.action";
 import { createOrder, getOrders } from "./orders.async.action";
 
 export type OrderState = {
 	altering?: {
 		order: Order["id"],
-		record: number | undefined
+		record?: number
 	},
 	name?: string,
 	wip: BurgerRecord[]
@@ -40,9 +46,6 @@ const slice = createSlice({
 			state.all[state.altering!.order].burgers[state.altering!.record!] = action.payload;
 		});
 
-		builder.addCase(closeOrderModal, (state, action) => {
-			state.altering!.record = undefined;
-		});
 		builder.addCase(setUser, (state, action) => {
 			state.name = action.payload;
 			localStorage.setItem("user", state.name!);
@@ -53,8 +56,20 @@ const slice = createSlice({
 				state.all[order.id] = order;
 			});
 		});
+
 		builder.addCase(createOrder.fulfilled, (state, action) => {
 			state.all[action.payload.id] = action.payload;
+		});
+
+
+		builder.addCase(setAlteringRecord, (state, action) => {
+			state.altering!.record = action.payload;
+		});
+		builder.addCase(setAlteringOrder, (state, action) => {
+			state.altering = action.payload ? {
+				order: action.payload,
+			} : undefined;
+
 		});
 
 	},

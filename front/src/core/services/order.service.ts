@@ -17,4 +17,7 @@ export class OrderService extends BaseService {
 		return this.backendApiClient.orders.create(user);
 	}
 
+	public deleteOrder(id: string) {
+		return this.backendApiClient.orders.delete(id);
+	}
 }

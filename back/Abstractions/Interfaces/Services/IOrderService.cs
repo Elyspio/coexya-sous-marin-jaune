@@ -9,4 +9,5 @@ public interface IOrderService
 
 	Task<Order> Create(string userName);
 	Task AddBurgerRecord(Guid order, BurgerRecord record);
+	Task Delete(Guid order);
 }

@@ -20,4 +20,8 @@ export class OrderService extends BaseService {
 	public deleteOrder(id: string) {
 		return this.backendApiClient.orders.delete(id);
 	}
+
+	async updateOrder(order: Order) {
+		return this.backendApiClient.orders.updateOrder(order.id, order);
+	}
 }

@@ -39,14 +39,19 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 		return await EntityCollection.AsQueryable().Where(order => order.User == user).ToListAsync();
 	}
 
+	public async Task Delete(Guid order)
+	{
+		await EntityCollection.DeleteOneAsync(o => o.Id == order.AsObjectId());
+	}
+
+	public async Task Update(OrderEntity order)
+	{
+		await EntityCollection.ReplaceOneAsync(o => o.Id == order.Id, order);
+	}
+
 	public async Task AddBurgerRecord(Guid orderId, BurgerRecord record)
 	{
 		var order = await EntityCollection.AsQueryable().Where(order => order.Id == orderId.AsObjectId()).FirstAsync();
 		order.Burgers.Add(record);
-	}
-
-	public async Task Delete(Guid order)
-	{
-		await EntityCollection.DeleteOneAsync(o => o.Id == order.AsObjectId());
 	}
 }

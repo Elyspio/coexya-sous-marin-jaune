@@ -2,7 +2,7 @@ import { Burger } from "../../../core/apis/backend/generated";
 import React from "react";
 import { Button, Divider, Paper, Stack, Typography, useTheme } from "@mui/material";
 import { useAppDispatch } from "../../../store";
-import { addOrderRecord } from "../../../store/module/orders/orders.action";
+import { setOrderRecordBurger } from "../../../store/module/orders/orders.action";
 
 type BurgerProps = { data: Burger };
 
@@ -15,7 +15,7 @@ export function BurgerItem({ data }: BurgerProps) {
 	const dispatch = useAppDispatch();
 
 	const onClick = React.useCallback(() => {
-		dispatch(addOrderRecord(data.name));
+		dispatch(setOrderRecordBurger(data.name));
 	}, [data]);
 
 	return <Button onClick={onClick}>

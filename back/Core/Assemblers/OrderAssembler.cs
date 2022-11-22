@@ -14,7 +14,10 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 			Id = obj.Id.AsGuid(),
 			User = obj.User,
 			Burgers = obj.Burgers,
-			Date = obj.Date
+			Date = obj.Date,
+			Dessert = obj.Dessert,
+			Drink = obj.Drink,
+			Fries = obj.Fries
 		};
 	}
 
@@ -25,7 +28,10 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 			Id = obj.Id.AsObjectId(),
 			User = obj.User,
 			Burgers = obj.Burgers,
-			Date = obj.Date
+			Date = obj.Date,
+			Dessert = obj.Dessert,
+			Drink = obj.Drink,
+			Fries = obj.Fries
 		};
 	}
 }

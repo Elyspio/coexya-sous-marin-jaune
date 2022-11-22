@@ -1,4 +1,4 @@
-import { BurgerRecord, Sauce } from "../../../../core/apis/backend/generated";
+import { Order, Sauce } from "../../../../core/apis/backend/generated";
 import { useAppDispatch } from "../../../../store";
 import React, { useCallback } from "react";
 import {
@@ -12,29 +12,29 @@ import {
 	SelectChangeEvent,
 	Stack,
 } from "@mui/material";
-import { updateBurgerRecord } from "../../../../store/module/orders/orders.action";
+import { updateOrder } from "../../../../store/module/orders/orders.action";
 
-export function OrderFries({ data }: { data: BurgerRecord }) {
+export function OrderFries({ data }: { data: Order }) {
 
 
 	const dispatch = useAppDispatch();
 
 	const setFries = useCallback((e: SelectChangeEvent<Sauce[]>) => {
-		dispatch(updateBurgerRecord({
+		dispatch(updateOrder({
 			...data,
 			fries: { sauces: e.target.value as Sauce[] },
 		}));
 	}, [data, dispatch]);
 
 	const toggleFries = useCallback(() => {
-		dispatch(updateBurgerRecord({
+		dispatch(updateOrder({
 			...data,
 			fries: data.fries ? undefined : { sauces: [] },
 		}));
 	}, [data, dispatch]);
 
 
-	return <Stack direction={"row"} alignItems={"center"}>
+	return <Stack direction={"row"} spacing={2} alignItems={"center"}>
 
 		<FormControlLabel
 			control={<Checkbox sx={{ pl: 0 }} checked={!!data.fries} onChange={toggleFries} />}

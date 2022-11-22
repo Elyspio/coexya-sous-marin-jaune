@@ -4,21 +4,21 @@ using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
 
 namespace SousMarinJaune.Api.Core.Injections;
 
-public class ExampleApiCoreModule : IDotnetModule
+public class CoreModule : IDotnetModule
 {
 	public void Load(IServiceCollection services, IConfiguration configuration)
 	{
-		var nsp = typeof(ExampleApiCoreModule).Namespace!;
+		var nsp = typeof(CoreModule).Namespace!;
 		var baseNamespace = nsp[..nsp.LastIndexOf(".")];
 		services.Scan(scan => scan
-			.FromAssemblyOf<ExampleApiCoreModule>()
+			.FromAssemblyOf<CoreModule>()
 			.AddClasses(classes => classes.InNamespaces(baseNamespace + ".Services"))
 			.AsImplementedInterfaces()
 			.WithSingletonLifetime()
 		);
 
 		services.Scan(scan => scan
-			.FromAssemblyOf<ExampleApiCoreModule>()
+			.FromAssemblyOf<CoreModule>()
 			.AddClasses(classes => classes.InNamespaces(baseNamespace + ".Assemblers"))
 			.AsSelf()
 			.WithSingletonLifetime());

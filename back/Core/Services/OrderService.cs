@@ -31,13 +31,13 @@ public class OrderService : IOrderService
 		return orderAssembler.Convert(await orderRepository.Create(userName));
 	}
 
-	public async Task AddBurgerRecord(Guid order, BurgerRecord record)
-	{
-		await orderRepository.AddBurgerRecord(order, record);
-	}
-
 	public async Task Delete(Guid order)
 	{
 		await orderRepository.Delete(order);
+	}
+
+	public async Task Update(Order order)
+	{
+		await orderRepository.Update(orderAssembler.Convert(order));
 	}
 }

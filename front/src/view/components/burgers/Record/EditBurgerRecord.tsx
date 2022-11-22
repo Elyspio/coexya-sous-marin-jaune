@@ -13,11 +13,10 @@ import {
 	Typography,
 } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { closeOrderModal, setAlteringRecord, updateBurgerRecord } from "../../../../store/module/orders/orders.action";
-import { OrderFries } from "./OrderFries";
-import { OrderDrink } from "./OrderDrink";
+import { setAlteringRecord, updateBurgerRecord } from "../../../../store/module/orders/orders.action";
 import { OrderOptions } from "./OrderOptions";
-import { OrderDessert } from "./OrderDessert";
+import { Burgers } from "../Burgers";
+import { noneBurger } from "../../../../store/module/orders/orders.reducer";
 
 export function EditBurgerRecord() {
 
@@ -45,39 +44,42 @@ export function EditBurgerRecord() {
 	}, [dispatch, data]);
 
 	return (
-		<Dialog open={display} onClose={close}>
-			{data && burger && <>
+		<Dialog open={display} onClose={close} maxWidth={false}>
+			{data && <>
 
 				<DialogTitle>
 					<Box justifyContent={"center"} display={"flex"}>
-						<Typography fontSize={"large"} variant={"overline"}>{data.name}</Typography>
+
+						<Typography fontSize={"large"}
+									variant={"overline"}>{data.name === noneBurger ? "Choisissez un burger" : data.name}</Typography>
 					</Box>
 				</DialogTitle>
 				<DialogContent dividers>
-					<Stack direction={"row"} spacing={4} my={1}>
-						<Stack>
-							<Typography variant={"overline"}>Ingrédients</Typography>
-							<Stack spacing={1}>
-								{burger.ingredients.map(i => <Box key={i}>
-									<FormControlLabel
-										control={<Checkbox
-											onClick={updateExcluded(i)}
-											checked={!data.excluded.includes(i)}
-										/>}
-										label={i} />
+					{burger
+						? <Stack direction={"row"} spacing={4} my={1}>
+							<Stack>
+								<Typography variant={"overline"}>Ingrédients</Typography>
+								<Stack spacing={1}>
+									{burger.ingredients.map(i => <Box key={i}>
+										<FormControlLabel
+											control={<Checkbox
+												onClick={updateExcluded(i)}
+												checked={!data.excluded.includes(i)}
+											/>}
+											label={i} />
 
-								</Box>)}
+									</Box>)}
+								</Stack>
 							</Stack>
-						</Stack>
-						<Divider flexItem orientation="vertical"></Divider>
-						<Stack spacing={2} minWidth={300}>
-							<OrderFries data={data} />
-							<OrderDrink data={data} />
-							<OrderDessert data={data} />
-							<OrderOptions data={data} />
-						</Stack>
+							<Divider flexItem orientation="vertical"></Divider>
+							<Stack spacing={2} minWidth={300}>
 
-					</Stack>
+								<OrderOptions data={data} />
+							</Stack>
+
+						</Stack>
+						: <Burgers />
+					}
 				</DialogContent>
 				<DialogActions>
 					<Button color={"inherit"} onClick={close}>Annuler</Button>

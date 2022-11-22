@@ -42,8 +42,10 @@ export function OldOrders() {
 				<Tooltip title={created ? "Vous avez déjà créé une commande pour aujourd'hui" : ""} placement={"right"}>
 					<div>
 						<IconButton size={"small"} sx={{ p: 0 }} disabled={created} onClick={createOrderOnClick}>
-							<AddCircleOutlineIcon sx={{ width: 40, height: 40 }}
-												  color={created ? "disabled" : "primary"} />
+							<AddCircleOutlineIcon
+								sx={{ width: 40, height: 40 }}
+								color={created ? "disabled" : "primary"}
+							/>
 						</IconButton>
 					</div>
 				</Tooltip>
@@ -71,19 +73,33 @@ function OrderItem({ data }: { data: Order }) {
 		dispatch(deleteOrder(data.id));
 	}, [data]);
 
+
+	const fritesElem = React.useMemo(() => {
+		if (!data.fries) return null;
+		let sauces = data.fries.sauces.join(", ");
+		return <Typography>frites {sauces.length ? `(${sauces})` : ""}</Typography>;
+	}, [data.fries]);
+
 	return <Stack direction={"row"} alignItems={"center"} spacing={2}>
 		<Typography>
 			{dayjs(data.date).format("DD/MM/YYYY")}
 		</Typography>
 		<Typography>
-			{data.burgers.map(o => o.name).join(",")}
+			{data.burgers.map(o => o.name).join(", ")}
 		</Typography>
+
+		<Stack direction={"row"} spacing={2}>
+			{fritesElem}
+			{data.drink && <Typography>{data.drink}</Typography>}
+			{data.dessert && <Typography>{data.dessert}</Typography>}
+		</Stack>
+
 		<ButtonGroup variant="outlined">
-			{isToday(data) && <IconButton>
-				<BuildIcon color={"primary"} onClick={edit} />
+			{isToday(data) && <IconButton onClick={edit}>
+				<BuildIcon color={"primary"} />
 			</IconButton>}
-			{<IconButton>
-				<DeleteIcon color={"error"} onClick={del}/>
+			{<IconButton onClick={del}>
+				<DeleteIcon color={"error"} />
 			</IconButton>}
 		</ButtonGroup>
 

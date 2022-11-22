@@ -1,6 +1,6 @@
-import { BurgerRecord, Drink } from "../../../../core/apis/backend/generated";
+import { BurgerRecord } from "../../../../core/apis/backend/generated";
 import { useAppDispatch } from "../../../../store";
-import React, { useCallback } from "react";
+import React from "react";
 import { Checkbox, debounce, FormControlLabel, TextField } from "@mui/material";
 import { updateBurgerRecord } from "../../../../store/module/orders/orders.action";
 
@@ -8,13 +8,6 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 
 
 	const dispatch = useAppDispatch();
-
-	const setOrder = useCallback((e, val: Drink | null) => {
-		dispatch(updateBurgerRecord({
-			...data,
-			drink: val ?? undefined,
-		}));
-	}, [data, dispatch]);
 
 
 	const setComment = React.useMemo(() => debounce((txt: string) => {

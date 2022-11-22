@@ -4,6 +4,8 @@ public class OrderBase
 {
 	public required List<BurgerRecord> Burgers;
 	public required string User { get; init; }
-
 	public required DateTime Date { get; init; }
+	public Drink? Drink { get; init; }
+	public Fries? Fries { get; init; }
+	public Dessert? Dessert { get; init; }
 }

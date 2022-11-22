@@ -1,16 +1,16 @@
-import { BurgerRecord, Dessert } from "../../../../core/apis/backend/generated";
+import { Dessert, Order } from "../../../../core/apis/backend/generated";
 import { useAppDispatch } from "../../../../store";
 import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
-import { updateBurgerRecord } from "../../../../store/module/orders/orders.action";
+import { updateOrder } from "../../../../store/module/orders/orders.action";
 
-export function OrderDessert({ data }: { data: BurgerRecord }) {
+export function OrderDessert({ data }: { data: Order }) {
 
 
 	const dispatch = useAppDispatch();
 
 	const setOrder = useCallback((e, val: Dessert | null) => {
-		dispatch(updateBurgerRecord({
+		dispatch(updateOrder({
 			...data,
 			dessert: val ?? undefined,
 		}));

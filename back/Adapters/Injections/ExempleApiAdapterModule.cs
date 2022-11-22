@@ -7,7 +7,7 @@ using SousMarinJaune.Api.Adapters.Custom;
 
 namespace SousMarinJaune.Api.Adapters.Injections;
 
-public class ExampleApiAdapterModule : IDotnetModule
+public class AdapterModule : IDotnetModule
 {
 	public void Load(IServiceCollection services, IConfiguration configuration)
 	{

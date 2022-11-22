@@ -6,7 +6,7 @@ const darkTheme = createTheme({
 		mode: "dark",
 		secondary: {
 			...colors.grey,
-			main: colors.grey["500"],
+			main: colors.amber["500"],
 		},
 		primary: {
 			main: colors.blue["800"],

@@ -54,9 +54,9 @@ public class ServerBuilder
 		);
 
 
-		builder.Services.AddModule<ExampleApiAdapterModule>(builder.Configuration);
-		builder.Services.AddModule<ExampleApiCoreModule>(builder.Configuration);
-		builder.Services.AddModule<ExampleApiDatabaseModule>(builder.Configuration);
+		builder.Services.AddModule<AdapterModule>(builder.Configuration);
+		builder.Services.AddModule<CoreModule>(builder.Configuration);
+		builder.Services.AddModule<DatabaseModule>(builder.Configuration);
 
 
 		// Setup Logging

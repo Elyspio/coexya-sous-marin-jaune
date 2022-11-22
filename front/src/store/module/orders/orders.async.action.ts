@@ -20,6 +20,17 @@ export const createOrder = createAsyncThunk("orders/createOrder", async (_, { ex
 });
 
 
+export const updateRemoteOrder = createAsyncThunk("orders/updateRemoteOrder", async (_, { extra, getState }) => {
+	const { orders: { all, altering } } = getState() as StoreState;
+	const order = all[altering!.order];
+
+	const orderService = getService(OrderService, extra);
+
+	await orderService.updateOrder(order);
+
+
+});
+
 export const deleteOrder = createAsyncThunk("orders/deleteOrder", async (id: Order["id"], { extra, getState }) => {
 	const orderService = getService(OrderService, extra);
 	await orderService.deleteOrder(id);

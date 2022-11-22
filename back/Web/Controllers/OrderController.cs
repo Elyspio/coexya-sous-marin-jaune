@@ -40,7 +40,7 @@ public class OrderController : ControllerBase
 		var order = await _orderService.Create(user);
 		return Created($"orders/{order.Id}", order);
 	}
-	
+
 	[HttpDelete("{order:guid}")]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	public async Task<IActionResult> Delete(Guid order)
@@ -48,12 +48,13 @@ public class OrderController : ControllerBase
 		await _orderService.Delete(order);
 		return NoContent();
 	}
-	
-	[HttpPost("{order:guid}/records")]
+
+	[HttpPut("{orderId:guid}")]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
-	public async Task<IActionResult> AddRecord(Guid order, BurgerRecord record)
+	public async Task<IActionResult> UpdateOrder(Guid orderId, Order order)
 	{
-		await _orderService.AddBurgerRecord(order, record);
+		order.Id = orderId;
+		await _orderService.Update(order);
 		return NoContent();
 	}
 }

@@ -1,9 +1,7 @@
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import * as React from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
 import { BurgerItem } from "./Burger";
-import { getBurgers } from "../../../store/module/burgers/burgers.async.action";
-import { EditBurgerRecord } from "./Record/EditBurgerRecord";
 
 
 export const Burgers = () => {
@@ -13,18 +11,12 @@ export const Burgers = () => {
 		burgers: state.burgers.all,
 	}));
 
-	const dispatch = useAppDispatch();
-
-	React.useEffect(() => {
-		dispatch(getBurgers());
-	}, [dispatch]);
 
 	return (
 		<Box id={"Burgers"}>
-			<Box display={"flex"} justifyContent={"center"} flexWrap={"wrap"}>
+			<Stack direction={"row"} spacing={2} display={"flex"} justifyContent={"center"} flexWrap={"nowrap"}>
 				{burgers.map(burger => <BurgerItem key={burger.name} data={burger} />)}
-			</Box>
-			{altering?.record && <EditBurgerRecord />}
+			</Stack>
 		</Box>
 	);
 };

@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
-import swcReact from "vite-plugin-swc-react";
 import usePluginImport from "vite-plugin-importer";
 import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
+import react from "@vitejs/plugin-react";
 
 
 // https://vitejs.dev/config/
@@ -15,7 +15,7 @@ export default defineConfig({
 	base: isProduction ? "/coexya/burgers/" : undefined,
 	server: {
 		port: 3000,
-		host: true,
+		host: "0.0.0.0",
 	},
 	build: {
 		minify: "terser",
@@ -44,21 +44,7 @@ export default defineConfig({
 		},
 	},
 	plugins: [
-		swcReact({
-			swcOptions: {
-				jsc: {
-					externalHelpers: true,
-					target: isProduction ? "es2015" : "es2021",
-					parser: {
-						syntax: "typescript",
-						jsx: true,
-						dynamicImport: true,
-						decorators: true,
-						exportDefaultFrom: true,
-					},
-				},
-			},
-		}),
+		react(),
 		usePluginImport({
 			libraryName: "@mui/icons-material",
 			libraryDirectory: "esm",

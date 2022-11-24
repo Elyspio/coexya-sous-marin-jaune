@@ -59,6 +59,7 @@ const slice = createSlice({
 		});
 
 		builder.addCase(getOrders.fulfilled, (state, action) => {
+			state.all = {};
 			action.payload.forEach(order => {
 				state.all[order.id] = order;
 			});
@@ -66,6 +67,9 @@ const slice = createSlice({
 
 		builder.addCase(createOrder.fulfilled, (state, action) => {
 			state.all[action.payload.id] = action.payload;
+			state.altering = {
+				order: action.payload.id,
+			};
 		});
 
 

@@ -1,4 +1,5 @@
-﻿using SousMarinJaune.Api.Abstractions.Assemblers;
+﻿using MongoDB.Bson.IO;
+using SousMarinJaune.Api.Abstractions.Assemblers;
 using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Models;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
@@ -17,6 +18,7 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 			Date = obj.Date,
 			Dessert = obj.Dessert,
 			Drink = obj.Drink,
+			Student = obj.Student,
 			Fries = obj.Fries
 		};
 	}
@@ -31,6 +33,7 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 			Date = obj.Date,
 			Dessert = obj.Dessert,
 			Drink = obj.Drink,
+			Student = obj.Student,
 			Fries = obj.Fries
 		};
 	}

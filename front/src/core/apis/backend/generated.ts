@@ -346,6 +346,7 @@ export interface OrderBase {
 	drink?: Drink | undefined;
 	fries?: Fries | undefined;
 	dessert?: Dessert | undefined;
+	student: boolean;
 }
 
 export interface Order extends OrderBase {

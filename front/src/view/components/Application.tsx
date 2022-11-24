@@ -13,6 +13,7 @@ import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
 import { EditOrder } from "./orders/EditOrder";
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
+import { UpdateSocketService } from "../../core/services/update.socket.service";
 
 function Application() {
 	const dispatch = useAppDispatch();
@@ -52,6 +53,7 @@ function Application() {
 
 	React.useEffect(() => {
 		dispatch(getBurgers());
+		new UpdateSocketService().createSocket();
 	}, [dispatch]);
 
 

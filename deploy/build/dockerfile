@@ -8,6 +8,7 @@ COPY back/Abstractions/SousMarinJaune.Api.Abstractions.csproj ./Abstractions/
 COPY back/Db/SousMarinJaune.Api.Db.csproj ./Db/
 COPY back/Adapters/SousMarinJaune.Api.Adapters.csproj ./Adapters/
 COPY back/Web/SousMarinJaune.Api.Web.csproj ./Web/
+COPY back/Sockets/SousMarinJaune.Api.Sockets.csproj ./Sockets/
 
 RUN dotnet restore
 

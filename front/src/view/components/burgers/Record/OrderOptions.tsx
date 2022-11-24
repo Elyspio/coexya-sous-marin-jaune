@@ -31,7 +31,7 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 
 	return <>
 		<FormControlLabel
-			control={<Checkbox sx={{ pl: 0 }} checked={data.vegetarian} onClick={updateCheckbox("vegetarian")} />}
+			control={<Checkbox checked={data.vegetarian} onClick={updateCheckbox("vegetarian")} />}
 			label={"Végétarien"} />
 		<FormControlLabel
 			control={<Checkbox sx={{ pl: 0 }} checked={data.xl} onClick={updateCheckbox("xl")} />}

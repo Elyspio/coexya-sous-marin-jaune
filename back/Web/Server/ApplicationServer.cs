@@ -1,4 +1,6 @@
-﻿namespace SousMarinJaune.Api.Web.Server;
+﻿using SousMarinJaune.Api.Sockets.Hubs;
+
+namespace SousMarinJaune.Api.Web.Server;
 
 public static class ApplicationServer
 {
@@ -18,6 +20,9 @@ public static class ApplicationServer
 
 		application.UseAuthentication();
 
+		application.MapHub<UpdateHub>("/ws/update");
+
+
 		// Start SPA serving
 		if (application.Environment.IsProduction())
 		{
@@ -32,6 +37,8 @@ public static class ApplicationServer
 					RedirectToAppendTrailingSlash = true
 				}
 			);
+
+
 			application.UseStaticFiles();
 
 			application.UseEndpoints(endpoints => { endpoints.MapFallbackToFile("/index.html"); });

@@ -4,12 +4,13 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import dayjs from "dayjs";
 import { Order } from "../../../core/apis/backend/generated";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { createOrder, deleteOrder, getOrders } from "../../../store/module/orders/orders.async.action";
+import { createOrder, deleteOrder, duplicateOrder, getOrders } from "../../../store/module/orders/orders.async.action";
 import DeleteIcon from "@mui/icons-material/Delete";
-import BuildIcon from "@mui/icons-material/Build";
+import EditIcon from "@mui/icons-material/Edit";
+import ContentCopy from "@mui/icons-material/ContentCopy";
 import { setAlteringOrder } from "../../../store/module/orders/orders.action";
 
-const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
+export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 
 export function OldOrders() {
 
@@ -35,11 +36,14 @@ export function OldOrders() {
 		dispatch(createOrder());
 	}, [dispatch]);
 
+	const ordersSorted = React.useMemo(() => [...orders].sort((o1, o2) => dayjs(o1.date).isBefore(o2.date) ? -1 : 1), [orders]);
+
+
 	return (
 		<Stack spacing={2}>
 			<Stack direction={"row"} spacing={1} alignItems={"center"}>
 				<Typography variant={"overline"} fontSize={"100%"}>Vos commandes </Typography>
-				<Tooltip title={created ? "Vous avez déjà créé une commande pour aujourd'hui" : ""} placement={"right"}>
+				<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} placement={"right"}>
 					<div>
 						<IconButton size={"small"} sx={{ p: 0 }} disabled={created} onClick={createOrderOnClick}>
 							<AddCircleOutlineIcon
@@ -51,9 +55,9 @@ export function OldOrders() {
 				</Tooltip>
 
 			</Stack>
-			{orders.length === 0 && <Typography>Vous n'avez pas d'ancienne commande</Typography>}
+			{ordersSorted.length === 0 && <Typography>Vous n'avez pas d'ancienne commande</Typography>}
 			<Stack spacing={2} p={2}>
-				{orders.map(order => <OrderItem key={order.id} data={order} />)}
+				{ordersSorted.map(order => <OrderItem key={order.id} data={order} />)}
 			</Stack>
 
 		</Stack>
@@ -62,6 +66,15 @@ export function OldOrders() {
 
 
 function OrderItem({ data }: { data: Order }) {
+
+	const { created } = useAppSelector(s => {
+		let name = s.orders.name;
+		let userOrders = Object.values(s.orders.all).filter(order => order.user === name);
+		return ({
+			created: userOrders.some(isToday),
+		});
+	});
+
 
 	const dispatch = useAppDispatch();
 
@@ -73,34 +86,49 @@ function OrderItem({ data }: { data: Order }) {
 		dispatch(deleteOrder(data.id));
 	}, [data]);
 
+	const duplicate = React.useCallback(() => {
+		dispatch(duplicateOrder(data.id));
+	}, [data]);
+
 
 	const fritesElem = React.useMemo(() => {
 		if (!data.fries) return null;
 		let sauces = data.fries.sauces.join(", ");
-		return <Typography>frites {sauces.length ? `(${sauces})` : ""}</Typography>;
+		return <Typography>Frites {sauces.length ? `(${sauces})` : ""}</Typography>;
 	}, [data.fries]);
 
 	return <Stack direction={"row"} alignItems={"center"} spacing={2}>
 		<Typography>
 			{dayjs(data.date).format("DD/MM/YYYY")}
 		</Typography>
-		<Typography>
-			{data.burgers.map(o => o.name).join(", ")}
-		</Typography>
 
-		<Stack direction={"row"} spacing={2}>
+		{data.burgers.length > 0 && <Typography>
+			{data.burgers.map(o => o.name).join(", ")}
+		</Typography>}
+
+
+		{(fritesElem || data.drink || data.dessert) && <Stack direction={"row"} spacing={2}>
 			{fritesElem}
 			{data.drink && <Typography>{data.drink}</Typography>}
 			{data.dessert && <Typography>{data.dessert}</Typography>}
-		</Stack>
+		</Stack>}
 
 		<ButtonGroup variant="outlined">
-			{isToday(data) && <IconButton onClick={edit}>
-				<BuildIcon color={"primary"} />
-			</IconButton>}
-			{<IconButton onClick={del}>
-				<DeleteIcon color={"error"} />
-			</IconButton>}
+			{isToday(data) ? <>
+				<IconButton onClick={edit}>
+					<EditIcon color={"primary"} />
+				</IconButton>
+				<IconButton onClick={del}>
+					<DeleteIcon color={"error"} />
+				</IconButton>
+			</> : !created &&
+				<Tooltip title={"Dupliquer la commande"}>
+					<IconButton onClick={duplicate}>
+						<ContentCopy color={"inherit"} />
+					</IconButton>
+				</Tooltip>
+
+			}
 		</ButtonGroup>
 
 

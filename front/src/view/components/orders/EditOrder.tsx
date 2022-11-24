@@ -25,9 +25,11 @@ import {
 import { BurgerRecord } from "../../../core/apis/backend/generated";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { EditBurgerRecord } from "../burgers/Record/EditBurgerRecord";
-import BuildIcon from "@mui/icons-material/Build";
+import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteOrder, updateRemoteOrder } from "../../../store/module/orders/orders.async.action";
+import { isToday } from "./OldOrders";
+import { OrderStudent } from "../burgers/Record/OrderStudent";
 
 export function EditOrder() {
 
@@ -57,11 +59,13 @@ export function EditOrder() {
 		close();
 	}, [dispatch, close]);
 
+	if (!order) return null;
+
 	return <Dialog open={Boolean(order)} onClose={close}>
-		<DialogTitle>Modification de votre commande</DialogTitle>
+		<DialogTitle>{isToday(order) ? "Création" : "Modification"} de votre commande</DialogTitle>
 		<DialogContent dividers>
 
-			{order?.burgers && <Stack spacing={2} p={3} minWidth={350}>
+			{<Stack spacing={2} p={3} minWidth={350}>
 				<Box>
 					<Stack direction={"row"} spacing={3}>
 						<Typography variant={"overline"}>Burgers </Typography>
@@ -70,16 +74,18 @@ export function EditOrder() {
 												  color={"secondary"} />
 						</IconButton>
 					</Stack>
-					<Box bgcolor={"background.default"} pl={2}>
-						<Stack p={1} m={1} spacing={1}>
-							{order.burgers.map((burger, i) => <BurgerItem data={burger} key={i} index={i} />)}
-						</Stack>
-					</Box>
+					{order.burgers.length > 0 &&
+						<Box bgcolor={"background.default"} pl={2}>
+							<Stack p={1} m={1} spacing={1}>
+								{order.burgers.map((burger, i) => <BurgerItem data={burger} key={i} index={i} />)}
+							</Stack>
+						</Box>}
 
 				</Box>
 
 				<Typography variant={"overline"}>Menu </Typography>
 
+				<OrderStudent data={order} />
 				<OrderFries data={order} />
 				<OrderDrink data={order} />
 				<OrderDessert data={order} />
@@ -129,7 +135,7 @@ function BurgerItem({ data, index }: { data: BurgerRecord, index: number }) {
 		<Box sx={{ marginLeft: "auto !important", pl: 2 }}>
 			<ButtonGroup variant="outlined">
 				<IconButton onClick={edit}>
-					<BuildIcon color={"primary"} />
+					<EditIcon color={"primary"} />
 				</IconButton>
 				<IconButton onClick={del}>
 					<DeleteIcon color={"error"} />

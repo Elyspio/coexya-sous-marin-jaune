@@ -23,7 +23,8 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 		{
 			Burgers = new List<BurgerRecord>(),
 			Date = DateTime.Now,
-			User = userName
+			User = userName,
+            Student = false
 		};
 		await EntityCollection.InsertOneAsync(order);
 		return order;

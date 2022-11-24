@@ -58,7 +58,6 @@ public class ServerBuilder
 		builder.Services.AddModule<CoreModule>(builder.Configuration);
 		builder.Services.AddModule<DatabaseModule>(builder.Configuration);
 
-
 		// Setup Logging
 		builder.Host.UseSerilog((_, lc) => lc
 			.Enrich.FromLogContext()
@@ -88,6 +87,15 @@ public class ServerBuilder
 		});
 		// Setup SPA Serving
 		if (builder.Environment.IsProduction()) Console.WriteLine($"Server in production, serving SPA from {frontPath} folder");
+
+		builder.Services.AddSignalR(options => { options.EnableDetailedErrors = true; })
+			.AddJsonProtocol(options =>
+				{
+					options.PayloadSerializerOptions.IncludeFields = true;
+					options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+				}
+			);
+
 
 		Application = builder.Build();
 	}

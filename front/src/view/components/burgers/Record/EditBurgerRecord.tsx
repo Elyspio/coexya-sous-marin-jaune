@@ -17,6 +17,7 @@ import { setAlteringRecord, updateBurgerRecord } from "../../../../store/module/
 import { OrderOptions } from "./OrderOptions";
 import { Burgers } from "../Burgers";
 import { noneBurger } from "../../../../store/module/orders/orders.reducer";
+import { deleteCurrentOrderRecord } from "../../../../store/module/orders/orders.async.action";
 
 export function EditBurgerRecord() {
 
@@ -32,7 +33,12 @@ export function EditBurgerRecord() {
 	const dispatch = useAppDispatch();
 
 
-	const close = React.useCallback(() => dispatch(setAlteringRecord()), [dispatch]);
+	const close = React.useCallback((mode: "success" | "cancel") => () => {
+		if (mode === "cancel") {
+			dispatch(deleteCurrentOrderRecord());
+		}
+		return dispatch(setAlteringRecord());
+	}, [dispatch]);
 
 
 	const updateExcluded = React.useCallback((ingredient: string) => () => {
@@ -73,7 +79,6 @@ export function EditBurgerRecord() {
 							</Stack>
 							<Divider flexItem orientation="vertical"></Divider>
 							<Stack spacing={2} minWidth={300}>
-
 								<OrderOptions data={data} />
 							</Stack>
 
@@ -82,8 +87,8 @@ export function EditBurgerRecord() {
 					}
 				</DialogContent>
 				<DialogActions>
-					<Button color={"inherit"} onClick={close}>Annuler</Button>
-					<Button color={"primary"} variant={"contained"} onClick={close}>Ajouter</Button>
+					<Button color={"inherit"} onClick={close("cancel")}>Annuler</Button>
+					<Button color={"primary"} variant={"contained"} onClick={close("success")}>Ajouter</Button>
 				</DialogActions>
 
 

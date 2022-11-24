@@ -9,10 +9,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import { setAlteringOrder } from "../../../store/module/orders/orders.action";
+import { OrderItem } from "./OrderItem";
 
 export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 
-export function OldOrders() {
+export function UserOrders() {
 
 	const { user, orders, created } = useAppSelector(s => {
 		let name = s.orders.name;
@@ -39,6 +40,7 @@ export function OldOrders() {
 	const ordersSorted = React.useMemo(() => [...orders].sort((o1, o2) => dayjs(o1.date).isBefore(o2.date) ? -1 : 1), [orders]);
 
 
+
 	return (
 		<Stack spacing={2}>
 			<Stack direction={"row"} spacing={1} alignItems={"center"}>
@@ -57,7 +59,7 @@ export function OldOrders() {
 			</Stack>
 			{ordersSorted.length === 0 && <Typography>Vous n'avez pas d'ancienne commande</Typography>}
 			<Stack spacing={2} p={2}>
-				{ordersSorted.map(order => <OrderItem key={order.id} data={order} />)}
+				{ordersSorted.map(order => <OrderItem key={order.id} data={order} show={{date: true, edit: isToday(order), del: isToday(order), duplicate: !created}} />)}
 			</Stack>
 
 		</Stack>
@@ -65,72 +67,3 @@ export function OldOrders() {
 }
 
 
-function OrderItem({ data }: { data: Order }) {
-
-	const { created } = useAppSelector(s => {
-		let name = s.orders.name;
-		let userOrders = Object.values(s.orders.all).filter(order => order.user === name);
-		return ({
-			created: userOrders.some(isToday),
-		});
-	});
-
-
-	const dispatch = useAppDispatch();
-
-	const edit = React.useCallback(() => {
-		dispatch(setAlteringOrder(data.id));
-	}, [data]);
-
-	const del = React.useCallback(() => {
-		dispatch(deleteOrder(data.id));
-	}, [data]);
-
-	const duplicate = React.useCallback(() => {
-		dispatch(duplicateOrder(data.id));
-	}, [data]);
-
-
-	const fritesElem = React.useMemo(() => {
-		if (!data.fries) return null;
-		let sauces = data.fries.sauces.join(", ");
-		return <Typography>Frites {sauces.length ? `(${sauces})` : ""}</Typography>;
-	}, [data.fries]);
-
-	return <Stack direction={"row"} alignItems={"center"} spacing={2}>
-		<Typography>
-			{dayjs(data.date).format("DD/MM/YYYY")}
-		</Typography>
-
-		{data.burgers.length > 0 && <Typography>
-			{data.burgers.map(o => o.name).join(", ")}
-		</Typography>}
-
-
-		{(fritesElem || data.drink || data.dessert) && <Stack direction={"row"} spacing={2}>
-			{fritesElem}
-			{data.drink && <Typography>{data.drink}</Typography>}
-			{data.dessert && <Typography>{data.dessert}</Typography>}
-		</Stack>}
-
-		<ButtonGroup variant="outlined">
-			{isToday(data) ? <>
-				<IconButton onClick={edit}>
-					<EditIcon color={"primary"} />
-				</IconButton>
-				<IconButton onClick={del}>
-					<DeleteIcon color={"error"} />
-				</IconButton>
-			</> : !created &&
-				<Tooltip title={"Dupliquer la commande"}>
-					<IconButton onClick={duplicate}>
-						<ContentCopy color={"inherit"} />
-					</IconButton>
-				</Tooltip>
-
-			}
-		</ButtonGroup>
-
-
-	</Stack>;
-}

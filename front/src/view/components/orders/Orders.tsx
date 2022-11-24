@@ -2,7 +2,8 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { Autocomplete, debounce, FormControl, Paper, Stack, TextField } from "@mui/material";
 import { setUser } from "../../../store/module/orders/orders.action";
-import { OldOrders } from "./OldOrders";
+import { UserOrders } from "./UserOrders";
+import { AllOrders } from "./AllOrders";
 
 export function Orders() {
 
@@ -38,9 +39,9 @@ export function Orders() {
 					</FormControl>
 				</Stack>
 
-				{user && <>
-					<OldOrders />
-				</>}
+				{user && <UserOrders />}
+
+				<AllOrders />
 
 
 			</Stack>

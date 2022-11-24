@@ -28,7 +28,7 @@ import { EditBurgerRecord } from "../burgers/Record/EditBurgerRecord";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteOrder, updateRemoteOrder } from "../../../store/module/orders/orders.async.action";
-import { isToday } from "./OldOrders";
+import { isToday } from "./UserOrders";
 import { OrderStudent } from "../burgers/Record/OrderStudent";
 
 export function EditOrder() {

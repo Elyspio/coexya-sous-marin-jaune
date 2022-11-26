@@ -100,7 +100,7 @@ export function EditOrder() {
 
 		</DialogContent>
 		<DialogActions>
-			<Button color={"inherit"} onClick={deleteOrderFn}>Annuler</Button>
+			<Button color={"inherit"} onClick={deleteOrderFn}>Fermer</Button>
 			<Button color={"success"} variant={"text"} onClick={updateOrderFn}
 					disabled={order?.burgers?.length === 0}>Valider</Button>
 		</DialogActions>

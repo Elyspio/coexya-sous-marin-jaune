@@ -5,7 +5,7 @@ import { StoreState } from "../../index";
 import { Order } from "../../../core/apis/backend/generated";
 import { deleteOrderRecord, removeOrder, updateOrder } from "./orders.action";
 import { UpdateSocketService } from "../../../core/services/socket/update.socket.service";
-
+import { cloneDeep } from "lodash";
 
 export const getOrders = createAsyncThunk("orders/getOrders", async (_, { extra }) => {
 	const orderService = getService(OrderService, extra);
@@ -48,20 +48,18 @@ export const deleteCurrentOrderRecord = createAsyncThunk<void>("orders/deleteCur
 
 
 export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (id: Order["id"], {
-	extra,
 	getState,
 	dispatch,
 }) => {
-	const orderService = getService(OrderService, extra);
 	const { orders } = getState() as StoreState;
 	const oldOrder = orders.all[id];
 
 
 	let newOrder = (await dispatch(createOrder())).payload as Order;
 	newOrder = {
-		...newOrder,
+		...cloneDeep(oldOrder),
 		date: new Date().toISOString(),
-		burgers: JSON.parse(JSON.stringify(oldOrder.burgers)),
+		id: newOrder.id,
 	};
 
 	dispatch(updateOrder(newOrder));

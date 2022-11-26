@@ -13,7 +13,6 @@ import { Provider as DiProvider } from "inversify-react";
 import { container } from "./core/di";
 
 declare module "@mui/styles/defaultTheme" {
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
 	interface DefaultTheme extends Theme {
 	}
 }

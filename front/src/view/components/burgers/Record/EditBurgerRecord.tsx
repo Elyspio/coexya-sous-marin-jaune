@@ -19,14 +19,19 @@ import { Burgers } from "../Burgers";
 import { noneBurger } from "../../../../store/module/orders/orders.reducer";
 import { deleteCurrentOrderRecord } from "../../../../store/module/orders/orders.async.action";
 
+/**
+ * Add or edit a burger record
+ * @constructor
+ */
 export function EditBurgerRecord() {
 
-	const { data, display, burger } = useAppSelector(s => {
+	const { data, display, burger, creating } = useAppSelector(s => {
 		let data = s.orders.all[s.orders.altering!.order].burgers[s.orders.altering!.record!];
 		return ({
 			data,
 			burger: s.burgers.all.find(b => b.name === data?.name),
 			display: s.orders.altering !== undefined,
+			creating: s.orders.mode.record === "create",
 		});
 	});
 
@@ -34,10 +39,11 @@ export function EditBurgerRecord() {
 
 
 	const close = React.useCallback((mode: "success" | "cancel") => () => {
-		if (mode === "cancel") {
+		if (mode === "cancel" && creating) {
 			dispatch(deleteCurrentOrderRecord());
+		} else {
+			dispatch(setAlteringRecord());
 		}
-		return dispatch(setAlteringRecord());
 	}, [dispatch]);
 
 

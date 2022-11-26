@@ -5,6 +5,7 @@ import { DiKeysService } from "./di.keys.service";
 import { BurgerService } from "../../services/burger.service";
 import { Container } from "inversify";
 import { OrderService } from "../../services/order.service";
+import { UpdateSocketService } from "../../services/socket/update.socket.service";
 
 export const addServices = (container: Container) => {
 	container.bind(AuthenticationService).toSelf();
@@ -13,5 +14,6 @@ export const addServices = (container: Container) => {
 	container.bind<LocalStorageService>(DiKeysService.localStorage.validation).toConstantValue(new LocalStorageService("elyspio-authentication-validation"));
 	container.bind(BurgerService).toSelf();
 	container.bind(OrderService).toSelf();
+	container.bind(UpdateSocketService).toSelf();
 
 };

@@ -12,8 +12,8 @@ import { login, logout } from "../../store/module/authentication/authentication.
 import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
 import { EditOrder } from "./orders/EditOrder";
+import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/orders.async.action";
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
-import { UpdateSocketService } from "../../core/services/update.socket.service";
 
 function Application() {
 	const dispatch = useAppDispatch();
@@ -52,8 +52,9 @@ function Application() {
 
 
 	React.useEffect(() => {
+		dispatch(startOrderUpdateSynchro());
 		dispatch(getBurgers());
-		new UpdateSocketService().createSocket();
+		dispatch(getOrders());
 	}, [dispatch]);
 
 

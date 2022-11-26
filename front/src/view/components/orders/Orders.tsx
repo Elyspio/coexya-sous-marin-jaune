@@ -27,7 +27,7 @@ export function Orders() {
 					<FormControl sx={{ maxWidth: 150 }}>
 						<Autocomplete
 							id="select-drink"
-							defaultValue={user ?? null}
+							value={user ?? ""}
 							freeSolo
 							options={users}
 							onChange={onChange as any}

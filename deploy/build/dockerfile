@@ -33,7 +33,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:latest AS production
 WORKDIR /back
 COPY --from=builder-back /app/out .
 
-COPY --from=builder-front /front/dist /back/wwwroot
+COPY --from=builder-front /front/build /back/wwwroot
 ENV FRONT_PATH /back/wwwroot
 
 EXPOSE 4003

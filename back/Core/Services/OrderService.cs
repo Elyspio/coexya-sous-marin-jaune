@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
@@ -9,11 +10,11 @@ namespace SousMarinJaune.Api.Core.Services;
 
 public class OrderService : IOrderService
 {
-	private readonly IHubContext<UpdateHub> hubContext;
+	private readonly IHubContext<UpdateHub, IUpdateHub> hubContext;
 	private readonly OrderAssembler orderAssembler;
 	private readonly IOrderRepository orderRepository;
 
-	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub> hubContext)
+	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext)
 	{
 		this.orderRepository = orderRepository;
 		this.orderAssembler = orderAssembler;
@@ -33,25 +34,19 @@ public class OrderService : IOrderService
 	public async Task<Order> Create(string userName)
 	{
 		var data = orderAssembler.Convert(await orderRepository.Create(userName));
-		await NotifyOrderUpdate();
+		await hubContext.Clients.All.OrderUpdated(data);
 		return data;
 	}
 
-	public async Task Delete(Guid order)
+	public async Task Delete(Guid orderId)
 	{
-		await orderRepository.Delete(order);
-		await NotifyOrderUpdate();
+		await orderRepository.Delete(orderId);
+		await hubContext.Clients.All.OrderDeleted(orderId);
 	}
 
 	public async Task Update(Order order)
 	{
 		await orderRepository.Update(orderAssembler.Convert(order));
-		await NotifyOrderUpdate();
-	}
-
-
-	private Task NotifyOrderUpdate()
-	{
-		return hubContext.Clients.All.SendAsync("orders-updated");
+		await hubContext.Clients.All.OrderUpdated(order);
 	}
 }

@@ -17,7 +17,7 @@ import { OrderFries } from "../burgers/Record/OrderFries";
 import { OrderDrink } from "../burgers/Record/OrderDrink";
 import { OrderDessert } from "../burgers/Record/OrderDessert";
 import {
-	addOrderRecord,
+	createOrderRecord,
 	deleteOrderRecord,
 	setAlteringOrder,
 	setAlteringRecord,
@@ -33,26 +33,29 @@ import { OrderStudent } from "../burgers/Record/OrderStudent";
 
 export function EditOrder() {
 
-	const { order, recordIndex } = useAppSelector(state => {
+	const { order, recordIndex, creating } = useAppSelector(state => {
 		let orderId = state.orders.altering?.order;
 		return ({
 			order: state.orders.all[orderId!],
 			recordIndex: state.orders.altering?.record,
+			creating: state.orders.mode.order === "create",
 		});
 	});
 
 	const dispatch = useAppDispatch();
 
 	const addRecord = React.useCallback(() => {
-		dispatch(addOrderRecord());
+		dispatch(createOrderRecord());
 	}, [order?.id]);
 
 	const close = React.useCallback(() => dispatch(setAlteringOrder()), []);
 
 	const deleteOrderFn = React.useCallback(() => {
-		dispatch(deleteOrder(order.id));
+		if (creating) {
+			dispatch(deleteOrder(order.id));
+		}
 		close();
-	}, [order, close]);
+	}, [creating, order, close]);
 
 	const updateOrderFn = React.useCallback(() => {
 		dispatch(updateRemoteOrder());
@@ -121,7 +124,7 @@ function BurgerItem({ data, index }: { data: BurgerRecord, index: number }) {
 	const exclusion = React.useMemo(() => <>(sans {data.excluded.join(", ")})</>, [data.excluded]);
 	return <Stack direction={"row"} spacing={2} justifyContent={"flex-start"} alignItems={"center"} width={"100%"}>
 		<Tooltip title={data.name}>
-			<Typography noWrap title={data.name}>
+			<Typography noWrap>
 				{data.name}
 			</Typography>
 		</Tooltip>

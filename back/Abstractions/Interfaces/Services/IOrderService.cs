@@ -8,6 +8,6 @@ public interface IOrderService
 	Task<List<Order>> GetForUser(string user);
 
 	Task<Order> Create(string userName);
-	Task Delete(Guid order);
+	Task Delete(Guid orderId);
 	Task Update(Order order);
 }

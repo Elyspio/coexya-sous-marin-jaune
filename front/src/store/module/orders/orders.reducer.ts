@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { BurgerRecord, Order } from "../../../core/apis/backend/generated";
+import { Order } from "../../../core/apis/backend/generated";
 import {
-	addOrderRecord,
+	createOrderRecord,
 	deleteOrderRecord,
+	removeOrder,
 	setAlteringOrder,
 	setAlteringRecord,
 	setOrderRecordBurger,
@@ -10,24 +11,28 @@ import {
 	updateBurgerRecord,
 	updateOrder,
 } from "./orders.action";
-import { createOrder, getOrders } from "./orders.async.action";
+import { createOrder, getOrders, updateRemoteOrder } from "./orders.async.action";
 
+type RecordId = `${Order["id"]}_${number}`;
 export type OrderState = {
 	altering?: {
 		order: Order["id"],
 		record?: number
 	},
 	name?: string,
-	wip: BurgerRecord[]
 	all: Record<Order["id"], Order>
+	mode: {
+		order?: "create" | "update",
+		record?: "create" | "update"
+	}
 };
 
 export const noneBurger = "none" as const;
 
 const initialState: OrderState = {
 	name: localStorage.getItem("user") ?? undefined,
-	wip: [],
 	all: {},
+	mode: {},
 };
 
 const slice = createSlice({
@@ -35,7 +40,7 @@ const slice = createSlice({
 	initialState,
 	reducers: {},
 	extraReducers: (builder) => {
-		builder.addCase(addOrderRecord, (state) => {
+		builder.addCase(createOrderRecord, (state) => {
 			const len = state.all[state.altering!.order].burgers.push({
 				name: noneBurger,
 				vegetarian: false,
@@ -43,6 +48,7 @@ const slice = createSlice({
 				excluded: [],
 			});
 			state.altering!.record = len - 1;
+			state.mode.record = "create";
 		});
 
 		builder.addCase(updateBurgerRecord, (state, action) => {
@@ -55,6 +61,7 @@ const slice = createSlice({
 
 		builder.addCase(setUser, (state, action) => {
 			state.name = action.payload;
+			state.mode = {};
 			localStorage.setItem("user", state.name!);
 		});
 
@@ -70,6 +77,8 @@ const slice = createSlice({
 			state.altering = {
 				order: action.payload.id,
 			};
+			state.mode.order = "create";
+			state.mode.record = undefined;
 		});
 
 
@@ -77,8 +86,17 @@ const slice = createSlice({
 			state.all[action.payload.id] = action.payload;
 		});
 
+		builder.addCase(updateRemoteOrder.fulfilled, (state, action) => {
+			state.mode = {};
+		});
+
 		builder.addCase(setAlteringRecord, (state, action) => {
 			state.altering!.record = action.payload;
+			if (action.payload === undefined) {
+				state.mode.record = undefined;
+			} else {
+				state.mode.record = "update";
+			}
 		});
 
 		builder.addCase(setAlteringOrder, (state, action) => {
@@ -91,8 +109,15 @@ const slice = createSlice({
 		builder.addCase(deleteOrderRecord, (state, action) => {
 			let order = state.all[state.altering!.order];
 			order.burgers = [...order.burgers.slice(0, action.payload), ...order.burgers.slice(action.payload + 1)];
+			if (action.payload === state.altering?.record) state.altering.record = undefined;
+		});
+
+		builder.addCase(removeOrder, (state, action) => {
+			delete state.all[action.payload];
 		});
 	},
 });
 
 export const ordersReducer = slice.reducer;
+
+

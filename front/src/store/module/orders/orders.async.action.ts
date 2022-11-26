@@ -3,7 +3,8 @@ import { getService } from "../../common/common.actions";
 import { OrderService } from "../../../core/services/order.service";
 import { StoreState } from "../../index";
 import { Order } from "../../../core/apis/backend/generated";
-import { deleteOrderRecord } from "./orders.action";
+import { deleteOrderRecord, removeOrder, updateOrder } from "./orders.action";
+import { UpdateSocketService } from "../../../core/services/socket/update.socket.service";
 
 
 export const getOrders = createAsyncThunk("orders/getOrders", async (_, { extra }) => {
@@ -49,19 +50,37 @@ export const deleteCurrentOrderRecord = createAsyncThunk<void>("orders/deleteCur
 export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (id: Order["id"], {
 	extra,
 	getState,
+	dispatch,
 }) => {
 	const orderService = getService(OrderService, extra);
 	const { orders } = getState() as StoreState;
 	const oldOrder = orders.all[id];
 
-	let newOrder = await orderService.createOrder(oldOrder.user);
 
+	let newOrder = (await dispatch(createOrder())).payload as Order;
 	newOrder = {
-		...oldOrder,
-		id: newOrder.id,
+		...newOrder,
 		date: new Date().toISOString(),
 		burgers: JSON.parse(JSON.stringify(oldOrder.burgers)),
 	};
 
-	await orderService.updateOrder(newOrder);
+	dispatch(updateOrder(newOrder));
+});
+
+
+export const startOrderUpdateSynchro = createAsyncThunk("orders/startWebSocketSynchro", async (_, {
+	extra,
+	dispatch,
+}) => {
+	const updateSocketService = getService(UpdateSocketService, extra);
+
+	const socket = await updateSocketService.createSocket();
+
+	socket.on("OrderUpdated", order => {
+		dispatch(updateOrder(order));
+	});
+
+	socket.on("OrderDeleted", orderId => {
+		dispatch(removeOrder(orderId));
+	});
 });

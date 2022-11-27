@@ -1,26 +1,25 @@
 import * as React from "react";
 import "./Application.scss";
-import Brightness5Icon from "@mui/icons-material/Brightness5";
-import Brightness3Icon from "@mui/icons-material/Brightness3";
 import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, withDrawer } from "./utils/drawer/Drawer.hoc";
-import { Box, Stack } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { login, logout } from "../../store/module/authentication/authentication.action";
 import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
 import { EditOrder } from "./orders/EditOrder";
 import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/orders.async.action";
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
+import { DarkMode, LightMode } from "@mui/icons-material";
 
 function Application() {
 	const dispatch = useAppDispatch();
 
 	const { theme, themeIcon, logged, user } = useAppSelector((s) => ({
 		theme: s.theme.current,
-		themeIcon: s.theme.current === "dark" ? <Brightness5Icon /> : <Brightness3Icon />,
+		themeIcon: s.theme.current === "light" ? <DarkMode /> : <LightMode />,
 		logged: s.authentication.logged,
 		user: s.orders.name,
 	}));
@@ -59,10 +58,11 @@ function Application() {
 
 
 	const drawer = withDrawer({
-		component: <Stack spacing={3} width={"100%"}>
+		component: <Container maxWidth={"xl"}>
 			<Orders />
 			<EditOrder />
-		</Stack>,
+
+		</Container>,
 		actions,
 		title: "Sous-marin Jaune V2",
 	});

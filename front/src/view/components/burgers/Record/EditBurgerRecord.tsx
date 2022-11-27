@@ -56,7 +56,7 @@ export function EditBurgerRecord() {
 	}, [dispatch, data]);
 
 	return (
-		<Dialog open={display} onClose={close} maxWidth={false} >
+		<Dialog open={display} onClose={close("cancel")} maxWidth={false}>
 			{data && <>
 
 				<DialogTitle>
@@ -94,7 +94,7 @@ export function EditBurgerRecord() {
 				</DialogContent>
 				<DialogActions>
 					<Button color={"inherit"} onClick={close("cancel")}>Fermer</Button>
-					<Button color={"primary"} variant={"contained"} onClick={close("success")}>Ajouter</Button>
+					<Button color={"primary"} variant={"contained"} onClick={close("success")}>Sauvegarder</Button>
 				</DialogActions>
 
 

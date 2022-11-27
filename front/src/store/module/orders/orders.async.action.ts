@@ -60,6 +60,7 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 		...cloneDeep(oldOrder),
 		date: new Date().toISOString(),
 		id: newOrder.id,
+		user: orders.name,
 	};
 
 	dispatch(updateOrder(newOrder));

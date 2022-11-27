@@ -19,7 +19,7 @@ function withPalette(palette: PaletteOptions) {
 			MuiTooltip: {
 				styleOverrides: {
 					tooltip: ({ theme }) => ({
-						backgroundColor: theme.palette.background.default,
+						backgroundColor: theme.palette.mode === "dark" ? theme.palette.background.default : "gray",
 						padding: 9,
 						border: `${theme.palette.divider} 1px solid`,
 						fontSize: 12,
@@ -35,7 +35,7 @@ const darkTheme = withPalette({
 	mode: "dark",
 	secondary: {
 		...colors.grey,
-		main: colors.amber["500"],
+		main: colors.amber["300"],
 	},
 	primary: {
 		main: colors.blue["400"],
@@ -51,11 +51,11 @@ const lightTheme = withPalette({
 	mode: "light",
 	secondary: {
 		...colors.grey,
-		main: colors.grey["900"],
+		main: colors.amber["800"],
 	},
 	primary: {
 		...colors.blue,
-		main: colors.blue["100"],
+		main: colors.blue["500"],
 	},
 	background: {
 		paper: "#ffffff",

@@ -22,7 +22,7 @@ export function Orders() {
 
 	return (
 		<Paper>
-			<Stack m={2} spacing={4}>
+			<Stack m={2} spacing={4} p={2}>
 				<Stack spacing={1}>
 					<FormControl sx={{ maxWidth: 150 }}>
 						<Autocomplete
@@ -32,8 +32,8 @@ export function Orders() {
 							options={users}
 							onChange={onChange as any}
 							renderInput={(params) => <TextField {...params} variant={"standard"}
-																placeholder={"Entrez votre nom"} required
-																label="Utilisateur" />}
+																required
+																label="Prénom" />}
 
 						/>
 					</FormControl>

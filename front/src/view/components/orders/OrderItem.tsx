@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import React from "react";
 import { setAlteringOrder } from "../../../store/module/orders/orders.action";
 import { deleteOrder, duplicateOrder } from "../../../store/module/orders/orders.async.action";
-import { ButtonGroup, IconButton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { ButtonGroup, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,12 +15,13 @@ type OrderItemProps = { data: Order, show: { name?: boolean, date?: boolean, edi
 
 export function OrderItem({ data, show }: OrderItemProps) {
 
-	const { canCreate, user } = useAppSelector(s => {
+	const { canCreate, user, logged } = useAppSelector(s => {
 		let name = s.orders.name;
 		let userOrders = Object.values(s.orders.all).filter(order => order.user === name);
 		return ({
 			canCreate: canCreateSelector(s),
 			user: name,
+			logged: s.authentication.logged,
 		});
 	});
 
@@ -49,18 +50,23 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const { palette } = useTheme();
 
-	return <Stack direction={"row"} alignItems={"center"} spacing={2}>
+	let isSelf = data.user === user;
+	return <Stack direction={"row"} alignItems={"center"} spacing={2}
+				  color={isSelf ? palette.secondary.main : "inherit"}
+		// sx={{ border: isSelf ? `1px ${palette.secondary.main} solid ` : undefined, borderRadius: 1 }} px={2}
+		// py={1}
+	>
 		{show.date && <Typography>
 			{dayjs(data.date).format("DD/MM/YYYY")}
 		</Typography>}
 
-		{show.name && <Typography color={data.user === user ? palette.success.main : "inherit"}>
+		{show.name && <Typography>
 			{data.user}
 		</Typography>}
 
-		{data.burgers.length > 0 && <Typography>
+		{data.burgers.length > 0 ? <Typography>
 			{data.burgers.map(o => o.name).join(", ")}
-		</Typography>}
+		</Typography> : <Skeleton width={100} variant={"text"} />}
 
 
 		{(fritesElem || data.drink || data.dessert) && <Stack direction={"row"} spacing={2}>
@@ -73,15 +79,16 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 
 		<ButtonGroup variant="outlined">
-
-			{isToday(data) ? <>
+			{((isToday(data) && isSelf) || logged) && <>
 				<IconButton onClick={edit}>
 					<EditIcon color={"primary"} />
 				</IconButton>
 				<IconButton onClick={del}>
 					<DeleteIcon color={"error"} />
 				</IconButton>
-			</> : canCreate &&
+			</>}
+
+			{canCreate &&
 				<Tooltip title={"Dupliquer la commande"}>
 					<IconButton onClick={duplicate}>
 						<ContentCopy color={"inherit"} />

@@ -26,7 +26,8 @@ export function UserOrders() {
 	return (
 		<Stack spacing={2}>
 			<Stack direction={"row"} spacing={1} alignItems={"center"}>
-				<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} placement={"right"}>
+				<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} arrow
+						 placement={"right"}>
 					<div>
 						<Button variant={"outlined"} color={created ? "inherit" : "success"} disabled={created}
 								onClick={createOrderOnClick}>Nouvelle commande</Button>

@@ -64,7 +64,7 @@ export function EditOrder() {
 
 	if (!order) return null;
 
-	return <Dialog open={Boolean(order)} onClose={close}>
+	return <Dialog open={Boolean(order)} onClose={deleteOrderFn}>
 		<DialogTitle>{isToday(order) ? "Création" : "Modification"} de votre commande</DialogTitle>
 		<DialogContent dividers>
 

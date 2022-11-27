@@ -38,7 +38,7 @@ export function AllOrders() {
 			return dayjs(date2, dateTemplate, "fr").isBefore(dayjs(date, dateTemplate, "fr")) ? -1 : 1;
 		});
 		return <Stack spacing={3}>
-			{entries.map(([date, orders]) => <Stack key={date} spacing={1}>
+			{entries.map(([date, orders]) => <Stack key={date} spacing={1.5}>
 				<Typography variant={"overline"}
 							color={isTodayFormatted(date) ? "primary" : "inherit"}>{date}</Typography>
 				{orders.map(order => <OrderItem key={order.id} data={order} show={{ name: true, duplicate: true }} />)}

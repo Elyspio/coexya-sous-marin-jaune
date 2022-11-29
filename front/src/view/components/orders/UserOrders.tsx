@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Stack, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import dayjs from "dayjs";
 import { Order } from "../../../core/apis/backend/generated";
@@ -24,18 +24,15 @@ export function UserOrders() {
 	}, [dispatch]);
 
 	return (
-		<Stack spacing={2}>
-			<Stack direction={"row"} spacing={1} alignItems={"center"}>
-				<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} arrow
-						 placement={"right"}>
-					<div>
-						<Button variant={"outlined"} color={created ? "inherit" : "success"} disabled={created}
-								onClick={createOrderOnClick}>Nouvelle commande</Button>
-					</div>
-				</Tooltip>
 
-			</Stack>
-		</Stack>
+		<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} arrow
+				 placement={"right"}>
+			<div>
+				<Button variant={"outlined"} color={created ? "inherit" : "success"} disabled={created}
+						onClick={createOrderOnClick}>Nouvelle commande</Button>
+			</div>
+		</Tooltip>
+
 	);
 }
 

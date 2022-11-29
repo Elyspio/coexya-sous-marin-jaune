@@ -7,6 +7,7 @@ import {
 	setAlteringOrder,
 	setAlteringRecord,
 	setOrderRecordBurger,
+	setOrderTimeRange,
 	setUser,
 	updateBurgerRecord,
 	updateOrder,
@@ -14,6 +15,16 @@ import {
 import { createOrder, getOrders, updateRemoteOrder } from "./orders.async.action";
 
 type RecordId = `${Order["id"]}_${number}`;
+
+export enum OrderTime {
+	"today" = "Aujourd'hui",
+	"month" = "1 mois",
+	"months3" = "3 mois",
+	"months6" = "6 mois",
+	"year" = "1 an",
+	"all" = "Toutes",
+}
+
 export type OrderState = {
 	altering?: {
 		order: Order["id"],
@@ -25,6 +36,7 @@ export type OrderState = {
 		order?: "create" | "update",
 		record?: "create" | "update"
 	}
+	timeRange: OrderTime
 };
 
 export const noneBurger = "none" as const;
@@ -33,6 +45,7 @@ const initialState: OrderState = {
 	name: localStorage.getItem("user") ?? undefined,
 	all: {},
 	mode: {},
+	timeRange: OrderTime.months3,
 };
 
 const slice = createSlice({
@@ -114,6 +127,11 @@ const slice = createSlice({
 
 		builder.addCase(removeOrder, (state, action) => {
 			delete state.all[action.payload];
+		});
+
+
+		builder.addCase(setOrderTimeRange, (state, action) => {
+			state.timeRange = action.payload;
 		});
 	},
 });

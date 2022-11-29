@@ -4,6 +4,7 @@ import { Autocomplete, debounce, FormControl, Paper, Stack, TextField } from "@m
 import { setUser } from "../../../store/module/orders/orders.action";
 import { UserOrders } from "./UserOrders";
 import { AllOrders } from "./AllOrders";
+import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
 
 export function Orders() {
 
@@ -20,12 +21,15 @@ export function Orders() {
 
 	const onChange = React.useCallback((_, str: string) => setUserDebounced(str), [setUserDebounced]);
 
+
 	return (
 		<Paper>
 			<Stack m={2} spacing={4} p={2}>
-				<Stack spacing={1}>
-					<FormControl sx={{ maxWidth: 150 }}>
+				<Stack spacing={4} direction={"row"} alignItems={"center"}>
+
+				<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
+							fullWidth
 							id="select-drink"
 							value={user ?? ""}
 							freeSolo
@@ -37,9 +41,11 @@ export function Orders() {
 
 						/>
 					</FormControl>
+
+					{user && <UserOrders />}
+
 				</Stack>
 
-				{user && <UserOrders />}
 
 				<AllOrders />
 

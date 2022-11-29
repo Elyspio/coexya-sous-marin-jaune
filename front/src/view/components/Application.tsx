@@ -12,25 +12,33 @@ import { Orders } from "./orders/Orders";
 import { EditOrder } from "./orders/EditOrder";
 import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/orders.async.action";
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
-import { DarkMode, LightMode } from "@mui/icons-material";
+import { DarkMode, LightMode, Message } from "@mui/icons-material";
+import { toggleModal } from "../../store/module/workflow/workflow.action";
+import { OrderMessageModal } from "./orders/modal/OrderMessageModal";
 
 function Application() {
 	const dispatch = useAppDispatch();
 
-	const { theme, themeIcon, logged, user } = useAppSelector((s) => ({
+	const { theme, themeIcon, logged, modals } = useAppSelector((s) => ({
 		theme: s.theme.current,
 		themeIcon: s.theme.current === "light" ? <DarkMode /> : <LightMode />,
 		logged: s.authentication.logged,
-		user: s.orders.name,
+		modals: s.workflow.modals,
 	}));
 
-	const storeActions = React.useMemo(() => bindActionCreators({ toggleTheme, logout, login }, dispatch), [dispatch]);
+	const storeActions = React.useMemo(() => bindActionCreators({
+		toggleTheme,
+		logout,
+		login,
+		toggleModal,
+	}, dispatch), [dispatch]);
 
 	const actions = [
 		createDrawerAction(theme === "dark" ? "Light Mode" : "Dark Mode", {
 			icon: themeIcon,
 			onClick: storeActions.toggleTheme,
 		}),
+
 	];
 
 	if (logged) {
@@ -49,6 +57,13 @@ function Application() {
 		);
 	}
 
+	actions.push(createDrawerAction("Message", {
+		icon: <Message />,
+		onClick: () => {
+			storeActions.toggleModal("message");
+		},
+	}));
+
 
 	React.useEffect(() => {
 		dispatch(startOrderUpdateSynchro());
@@ -61,6 +76,7 @@ function Application() {
 		component: <Container maxWidth={"xl"}>
 			<Orders />
 			<EditOrder />
+			<OrderMessageModal />
 
 		</Container>,
 		actions,

@@ -41,8 +41,12 @@ export type OrderState = {
 
 export const noneBurger = "none" as const;
 
+let previousName = localStorage.getItem("user") ?? undefined;
+
+if (previousName === "undefined") previousName = "";
+
 const initialState: OrderState = {
-	name: localStorage.getItem("user") ?? undefined,
+	name: previousName,
 	all: {},
 	mode: {},
 	timeRange: OrderTime.months3,

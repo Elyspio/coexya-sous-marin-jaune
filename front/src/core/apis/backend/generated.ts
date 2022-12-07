@@ -343,10 +343,10 @@ export interface OrderBase {
 	burgers: BurgerRecord[];
 	user: string;
 	date: string;
+	student: boolean;
 	drink?: Drink | undefined;
 	fries?: Fries | undefined;
 	dessert?: Dessert | undefined;
-	student: boolean;
 }
 
 export interface Order extends OrderBase {

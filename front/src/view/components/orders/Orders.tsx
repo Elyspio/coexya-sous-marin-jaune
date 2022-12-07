@@ -4,7 +4,6 @@ import { Autocomplete, debounce, FormControl, Paper, Stack, TextField } from "@m
 import { setUser } from "../../../store/module/orders/orders.action";
 import { UserOrders } from "./UserOrders";
 import { AllOrders } from "./AllOrders";
-import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
 
 export function Orders() {
 
@@ -27,7 +26,7 @@ export function Orders() {
 			<Stack m={2} spacing={4} p={2}>
 				<Stack spacing={4} direction={"row"} alignItems={"center"}>
 
-				<FormControl sx={{ maxWidth: 150 }} fullWidth>
+					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
 							fullWidth
 							id="select-drink"

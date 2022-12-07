@@ -116,7 +116,7 @@ export function OrderMessageModal() {
 
 				<Stack direction={"row"} spacing={1}>
 					<FormControlLabel
-						control={<Checkbox sx={{ mr: 1,  }} checked={header} onChange={toggleHeader} />}
+						control={<Checkbox sx={{ mr: 1 }} checked={header} onChange={toggleHeader} />}
 						label={"Entête"}
 					/>
 
@@ -137,7 +137,7 @@ export function OrderMessageModal() {
 					<List>
 						{todayOrders.map(order => <ListItem key={order.id}>
 							<Typography>
-								{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}, {order.drink ? drinkLabels[order.drink] : ""}
+								{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}, {order.drink ? drinkLabels[order.drink] : ""} {order.dessert}
 							</Typography>
 						</ListItem>)}
 					</List>

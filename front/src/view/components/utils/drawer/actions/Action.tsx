@@ -1,21 +1,34 @@
 import React, { ReactNode } from "react";
-import { IconButton, Typography } from "@mui/material";
+import { Divider, IconButton, Stack, Typography, useTheme } from "@mui/material";
 
 export type ActionComponentProps = {
 	icon: React.ReactNode;
 	children?: React.ReactNode;
 	className?: string;
 	onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+	divider?: string
 };
 
-export const ActionComponent = ({ children, icon, onClick, className }: ActionComponentProps) => {
+export const ActionComponent = ({ children, icon, onClick, className, divider }: ActionComponentProps) => {
+
+	const { palette: { primary } } = useTheme();
+
+
 	return (
-		<div className={"Action " + (className ?? "")} onClick={onClick}>
-			<div className={"icon"}>
-				<IconButton size="medium">{icon}</IconButton>
-			</div>
-			<div className={"description"}>{children}</div>
-		</div>
+		(!divider) ?
+			<Stack className={`Action ${className ?? ""}`} onClick={onClick} direction={"row"} alignItems={"center"}>
+				<div className={"icon"}>
+					<IconButton size="medium">{icon}</IconButton>
+				</div>
+				<div className={"description"}>{children}</div>
+			</Stack>
+
+			: <Stack direction={"row"} width={"100%"} alignItems={"center"} pt={1}>
+				<Divider sx={{ flex: 1 }} color={primary.main}></Divider>
+				<Typography variant={"overline"} fontSize={14} textAlign={"center"} sx={{ flex: 1 }}>{divider}</Typography>
+				<Divider sx={{ flex: 1 }} color={primary.main}></Divider>
+			</Stack>
+
 	);
 };
 

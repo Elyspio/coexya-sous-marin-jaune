@@ -50,7 +50,7 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 		await EntityCollection.ReplaceOneAsync(o => o.Id == order.Id, order);
 	}
 
-	public async Task MergeUsers(string newName, List<string> users)
+	public async Task<List<OrderEntity>> MergeUsers(string newName, List<string> users)
 	{
 		var orders = await EntityCollection.AsQueryable().Where(order => users.Contains(order.User)).ToListAsync();
 
@@ -59,5 +59,7 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 			order.User = newName;
 			await Update(order);
 		}));
+
+		return orders;
 	}
 }

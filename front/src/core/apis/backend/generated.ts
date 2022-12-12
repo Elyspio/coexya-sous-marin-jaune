@@ -334,6 +334,71 @@ export class OrderClient {
 	}
 }
 
+export class UserClient {
+	protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+	private instance: AxiosInstance;
+	private baseUrl: string;
+
+	constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+		this.instance = instance ? instance : axios.create();
+
+		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
+
+	}
+
+	mergeUsers(user: string, users: string[], cancelToken?: CancelToken | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/users/{user}/merge";
+		if (user === undefined || user === null)
+			throw new Error("The parameter 'user' must be defined.");
+		url_ = url_.replace("{user}", encodeURIComponent("" + user));
+		url_ = url_.replace(/[?&]$/, "");
+
+		const content_ = JSON.stringify(users);
+
+		let options_: AxiosRequestConfig = {
+			data: content_,
+			method: "PATCH",
+			url: url_,
+			headers: {
+				"Content-Type": "application/json",
+			},
+			cancelToken,
+		};
+
+		return this.instance.request(options_).catch((_error: any) => {
+			if (isAxiosError(_error) && _error.response) {
+				return _error.response;
+			} else {
+				throw _error;
+			}
+		}).then((_response: AxiosResponse) => {
+			return this.processMergeUsers(_response);
+		});
+	}
+
+	protected processMergeUsers(response: AxiosResponse): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && typeof response.headers === "object") {
+			for (let k in response.headers) {
+				if (response.headers.hasOwnProperty(k)) {
+					_headers[k] = response.headers[k];
+				}
+			}
+		}
+		if (status === 204) {
+			const _responseText = response.data;
+			return Promise.resolve<void>(null as any);
+
+		} else if (status !== 200 && status !== 204) {
+			const _responseText = response.data;
+			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+		}
+		return Promise.resolve<void>(null as any);
+	}
+}
+
 export interface Burger {
 	ingredients: string[];
 	name: string;

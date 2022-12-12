@@ -1,9 +1,9 @@
-import { openPage } from "../utils/web";
+import { openPage } from "../../utils/web";
 import { inject, injectable } from "inversify";
 import { ThemeService } from "./theme.service";
-import { AuthenticationApiClient } from "../apis/authentication";
-import { EventManager } from "../utils/event";
-import { BaseService } from "./base.service";
+import { AuthenticationApiClient } from "../../apis/authentication";
+import { EventManager } from "../../utils/event";
+import { BaseService } from "../technical/base.service";
 
 @injectable()
 export class AuthenticationService extends BaseService {

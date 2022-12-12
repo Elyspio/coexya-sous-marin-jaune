@@ -65,11 +65,8 @@ public class ServerBuilder
 			.WriteTo.Console(LogEventLevel.Debug, "[{Timestamp:HH:mm:ss} {Level} {SourceContext:l}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code)
 		);
 
-		builder.Services.AddLogging(log =>
-		{
-			log.AddConsole();
-		});
-		
+		builder.Services.AddLogging(log => { log.AddConsole(); });
+
 		// Convert Enum to String 
 		builder.Services.AddControllers(o =>
 				{

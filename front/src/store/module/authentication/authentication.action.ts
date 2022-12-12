@@ -3,8 +3,8 @@ import store, { StoreState } from "../../index";
 import { setTheme } from "../theme/theme.action";
 import { toast } from "react-toastify";
 import { container } from "../../../core/di";
-import { AuthenticationEvents, AuthenticationService } from "../../../core/services/authentication.service";
-import { LocalStorageService } from "../../../core/services/localStorage.service";
+import { AuthenticationEvents, AuthenticationService } from "../../../core/services/common/authentication.service";
+import { LocalStorageService } from "../../../core/services/common/localStorage.service";
 import { UserSettingsModelThemeEnum } from "../../../core/apis/authentication/generated";
 import { DiKeysService } from "../../../core/di/services/di.keys.service";
 

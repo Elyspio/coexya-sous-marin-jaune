@@ -9,6 +9,7 @@ export type WithDrawerProps = {
 	actions: {
 		component: ActionComponentProps;
 		description: ActionDescriptionProps;
+		key?: string;
 	}[];
 	title: string;
 };
@@ -17,7 +18,7 @@ function Actions(props: { elements: WithDrawerProps["actions"] }) {
 	return (
 		<Box className={"Actions"}>
 			{props.elements.map((action) => (
-				<ActionComponent key={action.description.children?.toString()} {...action.component}>
+				<ActionComponent key={action.key ?? action.description.children?.toString()} {...action.component}>
 					<ActionDescription children={action.description.children} />
 				</ActionComponent>
 			))}
@@ -49,5 +50,19 @@ export function createDrawerAction(name: string, config: ActionComponentProps): 
 	return {
 		description: { children: name },
 		component: config,
+	};
+}
+
+
+export function createDrawerDivider(name: string): WithDrawerProps["actions"][number] {
+	return {
+		description: { children: null },
+		key: name,
+		component: {
+			divider: name,
+			onClick: () => {
+			},
+			icon: null,
+		},
 	};
 }

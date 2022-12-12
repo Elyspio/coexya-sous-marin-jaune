@@ -4,12 +4,12 @@ import { BaseService } from "./technical/base.service";
 
 
 @injectable()
-export class BurgerService extends BaseService {
+export class UserService extends BaseService {
 	@inject(BackendApi)
 	private backendApiClient!: BackendApi;
 
-	public getAll() {
-		return this.backendApiClient.burgers.getAll();
+	public merge(nextName: string, users: string[]) {
+		return this.backendApiClient.users.mergeUsers(nextName, users);
 	}
 
 

@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import axios from "axios";
-import { BurgerClient, OrderClient } from "./generated";
+import { BurgerClient, OrderClient, UserClient } from "./generated";
 
 const instance = axios.create({
 	withCredentials: true,
@@ -11,4 +11,5 @@ const instance = axios.create({
 export class BackendApi {
 	public burgers = new BurgerClient(window.config.endpoints.core, instance);
 	public orders = new OrderClient(window.config.endpoints.core, instance);
+	public users = new UserClient(window.config.endpoints.core, instance);
 }

@@ -4,7 +4,7 @@ import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
-import { createDrawerAction, withDrawer } from "./utils/drawer/Drawer.hoc";
+import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box, Container } from "@mui/material";
 import { login, logout } from "../../store/module/authentication/authentication.action";
 import { bindActionCreators } from "redux";
@@ -12,9 +12,10 @@ import { Orders } from "./orders/Orders";
 import { EditOrder } from "./orders/EditOrder";
 import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/orders.async.action";
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
-import { DarkMode, LightMode, Message } from "@mui/icons-material";
+import { DarkMode, LightMode, Merge, Message } from "@mui/icons-material";
 import { toggleModal } from "../../store/module/workflow/workflow.action";
 import { OrderMessageModal } from "./orders/modal/OrderMessageModal";
+import { Modals } from "./modals/Modals";
 
 function Application() {
 	const dispatch = useAppDispatch();
@@ -65,6 +66,16 @@ function Application() {
 	}));
 
 
+	if (logged) {
+		actions.push(createDrawerDivider("Admin"));
+
+		actions.push(createDrawerAction("Merge Users", {
+			icon: <Merge />,
+			onClick: () => storeActions.toggleModal("mergeUsers"),
+		}));
+	}
+
+
 	React.useEffect(() => {
 		dispatch(startOrderUpdateSynchro());
 		dispatch(getBurgers());
@@ -77,7 +88,7 @@ function Application() {
 			<Orders />
 			<EditOrder />
 			<OrderMessageModal />
-
+			<Modals />
 		</Container>,
 		actions,
 		title: "Sous-marin Jaune V2",

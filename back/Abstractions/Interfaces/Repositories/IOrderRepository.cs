@@ -9,5 +9,5 @@ public interface IOrderRepository
 	Task<List<OrderEntity>> GetForUser(string user);
 	Task Delete(Guid order);
 	Task Update(OrderEntity order);
-	Task MergeUsers(string newName, List<string> users);
+	Task<List<OrderEntity>> MergeUsers(string newName, List<string> users);
 }

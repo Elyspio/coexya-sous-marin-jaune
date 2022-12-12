@@ -1,4 +1,4 @@
-import { Themes } from "../../config/theme";
+import { Themes } from "../../../config/theme";
 import { injectable } from "inversify";
 
 @injectable()

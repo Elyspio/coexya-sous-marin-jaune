@@ -12,10 +12,10 @@ namespace SousMarinJaune.Api.Core.Services;
 
 public class OrderService : IOrderService
 {
+	private readonly ILogger<OrderService> _logger;
 	private readonly IHubContext<UpdateHub, IUpdateHub> hubContext;
 	private readonly OrderAssembler orderAssembler;
 	private readonly IOrderRepository orderRepository;
-	private readonly ILogger<OrderService> _logger;
 
 	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext, ILogger<OrderService> logger)
 	{

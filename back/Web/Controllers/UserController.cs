@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
-using SousMarinJaune.Api.Abstractions.Transports;
 using System.Net;
 
 namespace SousMarinJaune.Api.Web.Controllers;
@@ -24,7 +23,7 @@ public class UserController : ControllerBase
 	/// <returns></returns>
 	[HttpPatch("merge")]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
-	public async Task<IActionResult> MergeUsers(string user,  [FromBody] List<string> users)
+	public async Task<IActionResult> MergeUsers(string user, [FromBody] List<string> users)
 	{
 		await _userService.MergeUsers(user, users);
 		return NoContent();

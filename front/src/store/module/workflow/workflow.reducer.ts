@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toggleModal } from "./workflow.action";
 
 
-type ModalType = "message";
+export type ModalType = "message" | "mergeUsers";
 
 export type WorkflowState = {
 	/**
@@ -15,6 +15,7 @@ export type WorkflowState = {
 const initialState: WorkflowState = {
 	modals: {
 		message: false,
+		mergeUsers: false,
 	},
 };
 

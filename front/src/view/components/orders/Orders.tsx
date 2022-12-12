@@ -29,14 +29,18 @@ export function Orders() {
 					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
 							fullWidth
-							id="select-drink"
+							id="select-user"
 							value={user ?? ""}
 							freeSolo
 							options={users}
 							onChange={onChange as any}
-							renderInput={(params) => <TextField {...params} variant={"standard"}
-																required
-																label="Prénom" />}
+							renderInput={(params) => (
+								<TextField {...params} variant={"standard"}
+										   required
+										   label="Prénom"
+										   onBlur={e => setUserDebounced(e.target.value)}
+								/>)
+							}
 
 						/>
 					</FormControl>

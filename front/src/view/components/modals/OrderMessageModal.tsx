@@ -6,21 +6,23 @@ import {
 	DialogContent,
 	DialogTitle,
 	Fade,
+	FormControl,
 	FormControlLabel,
+	InputLabel,
 	MenuItem,
 	Select,
 	SelectChangeEvent,
 	Stack,
 	Typography,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { toggleModal } from "../../../../store/module/workflow/workflow.action";
-import { isToday } from "../../../../store/module/orders/orders.utils";
-import { BurgerRecord, Drink, Fries } from "../../../../core/apis/backend/generated";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../store";
+import { toggleModal } from "../../../store/module/workflow/workflow.action";
+import { BurgerRecord, Drink, Fries } from "../../../core/apis/backend/generated";
 import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
+import dayjs from "dayjs";
 
 
 export const drinkLabels: Record<Drink, string> = {
@@ -48,36 +50,52 @@ while (t < 14 * 3600 + 5) {
 
 export function OrderMessageModal() {
 
+	const dispatch = useAppDispatch();
 
 	const { orders, open } = useAppSelector(s => ({
 		orders: s.orders.all,
 		open: s.workflow.modals.message,
-
 	}));
 
 
 	const [header, setHeader] = useState(true);
 
-	const toggleHeader = React.useCallback(() => setHeader(old => !old), []);
+	const toggleHeader = useCallback(() => setHeader(old => !old), []);
 
-	const [time, setTime] = React.useState("12h15");
+	const [time, setTime] = useState("12h15");
 
-	const onTimeChange = React.useCallback((e: SelectChangeEvent<string>) => setTime(e.target.value), []);
+	const [selectedDay, setSelectedDay] = useState(dayjs().startOf("day"));
+
+
+	const availableDates = useMemo(() => {
+		let dates = Object.values(orders).map(order => dayjs(order.date).startOf("day").toISOString());
+		const distinctDates = [...new Set(dates)];
+		const dayjsDates = distinctDates.map(dayjs);
+
+		dayjsDates.sort((d1, d2) => d1.isBefore(d2) ? -1 : 1);
+
+		return dayjsDates;
+
+	}, [orders]);
+
+
+	const onTimeChange = useCallback((e: SelectChangeEvent<string>) => setTime(e.target.value), []);
+
+
+	const onSelectedDateChanged = useCallback((e: SelectChangeEvent<string>) => setSelectedDay(dayjs(e.target.value)), []);
 
 	// region message
 
-	const todayOrders = React.useMemo(() => Object.values(orders).filter(order => isToday(order)), [orders]);
+	const todayOrders = useMemo(() => Object.values(orders).filter(order => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
 
 
-	const dispatch = useAppDispatch();
-
-	const close = React.useCallback(() => dispatch(toggleModal("message")), [dispatch]);
+	const close = useCallback(() => dispatch(toggleModal("message")), [dispatch]);
 
 
-	const getFriteLabel = React.useCallback((frites: Fries | undefined) => frites ? `Frites${frites.sauces.length ? ` (${frites.sauces.join(", ")})` : ""}` : "", []);
+	const getFriteLabel = useCallback((frites: Fries | undefined) => frites ? `Frites${frites.sauces.length ? ` (${frites.sauces.join(", ")})` : ""}` : "", []);
 
 
-	const getBurgerLabel = React.useCallback((burgers: BurgerRecord[]) => {
+	const getBurgerLabel = useCallback((burgers: BurgerRecord[]) => {
 		let str = "";
 		for (let burger of burgers) {
 			str += burger.name;
@@ -109,7 +127,27 @@ export function OrderMessageModal() {
 
 
 	return <Dialog open={open} onClose={close}>
-		<DialogTitle>Message à envoyer</DialogTitle>
+		<DialogTitle>
+
+			<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+				<Typography>Message à envoyer</Typography>
+
+				<FormControl>
+					<InputLabel id="select-date-label">Date</InputLabel>
+					<Select
+						labelId="select-date-label"
+						id="select-date"
+						value={selectedDay.toISOString()} label={"Date"}
+						onChange={onSelectedDateChanged}
+					>
+						{availableDates.map(time => <MenuItem value={time.toISOString()}
+															  key={time.toISOString()}>{time.format("DD/MM/YYYY")}</MenuItem>)}
+					</Select>
+				</FormControl>
+
+			</Stack>
+
+		</DialogTitle>
 		<DialogContent dividers>
 
 			<Stack spacing={3}>
@@ -137,7 +175,7 @@ export function OrderMessageModal() {
 					<List>
 						{todayOrders.map(order => <ListItem key={order.id}>
 							<Typography>
-								{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}, {order.drink ? drinkLabels[order.drink] : ""} {order.dessert}
+								{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}{order.drink ? `, ${drinkLabels[order.drink]}` : ""} {order.dessert}
 							</Typography>
 						</ListItem>)}
 					</List>

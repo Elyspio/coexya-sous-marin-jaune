@@ -14,7 +14,7 @@ import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/or
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
 import { DarkMode, LightMode, Merge, Message } from "@mui/icons-material";
 import { toggleModal } from "../../store/module/workflow/workflow.action";
-import { OrderMessageModal } from "./orders/modal/OrderMessageModal";
+import { OrderMessageModal } from "./modals/OrderMessageModal";
 import { Modals } from "./modals/Modals";
 
 function Application() {

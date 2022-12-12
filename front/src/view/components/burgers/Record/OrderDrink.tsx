@@ -3,7 +3,7 @@ import { useAppDispatch } from "../../../../store";
 import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
 import { updateOrder } from "../../../../store/module/orders/orders.action";
-import { drinkLabels } from "../../orders/modal/OrderMessageModal";
+import { drinkLabels } from "../../modals/OrderMessageModal";
 
 type DrinkPair = { key: Drink, label: string };
 const drinks = (Object.values(Drink) as Drink[]).reduce((acc, current) => {

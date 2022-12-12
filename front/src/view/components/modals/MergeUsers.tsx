@@ -34,7 +34,7 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 
 	const allUsers = useAppSelector(s => s.orders.all);
 	const dispatch = useAppDispatch();
-	const users = useMemo(() => [...new Set(Object.values(allUsers).map(order => order.user))], [allUsers]);
+	const users = useMemo(() => [...new Set(Object.values(allUsers).map(order => order.user))].sort((o1, o2) => o1.localeCompare(o2)), [allUsers]);
 
 	const [nextName, setNextName] = useState(users[0] ?? "");
 

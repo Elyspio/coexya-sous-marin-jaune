@@ -50,9 +50,14 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 		await EntityCollection.ReplaceOneAsync(o => o.Id == order.Id, order);
 	}
 
-	public async Task AddBurgerRecord(Guid orderId, BurgerRecord record)
+	public async Task MergeUsers(string newName, List<string> users)
 	{
-		var order = await EntityCollection.AsQueryable().Where(order => order.Id == orderId.AsObjectId()).FirstAsync();
-		order.Burgers.Add(record);
+		var orders = await EntityCollection.AsQueryable().Where(order => users.Contains(order.User)).ToListAsync();
+
+		await Task.WhenAll(orders.Select(async order =>
+		{
+			order.User = newName;
+			await Update(order);
+		}));
 	}
 }

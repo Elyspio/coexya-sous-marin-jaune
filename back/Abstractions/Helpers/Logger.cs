@@ -1,48 +1,78 @@
-﻿using Serilog;
-using Serilog.Configuration;
-using Serilog.Core;
-using Serilog.Events;
-using System.Diagnostics;
-using System.Reflection;
+﻿using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SousMarinJaune.Api.Abstractions.Helpers;
 
-public class CallerEnricher : ILogEventEnricher
+public static class Log
 {
-	public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
-	{
-		var skip = 3;
-		while (true)
-		{
-			var stack = new StackFrame(skip);
-			if (!stack.HasMethod())
-			{
-				logEvent.AddPropertyIfAbsent(new LogEventProperty("Caller", new ScalarValue("<unknown method>")));
-				return;
-			}
+    private static readonly JsonSerializerOptions options = new JsonSerializerOptions()
+    {
+        Converters =
+        {
+            new JsonStringEnumConverter()
+        }
+    };
 
-			var method = stack.GetMethod();
-			if (method!.DeclaringType!.Assembly != typeof(Log).Assembly)
-			{
-				var caller = NeedLogging(method) ? $" {method.DeclaringType.Name}.{method.Name}" : "";
-				logEvent.AddPropertyIfAbsent(new LogEventProperty("Caller", new ScalarValue(caller)));
-				return;
-			}
+    public static string Format(object? value, [CallerArgumentExpression("value")] string name = "")
+    {
+        return $"{name}={JsonSerializer.Serialize(value, options)}";
+    }
 
-			skip++;
-		}
-	}
 
-	private bool NeedLogging(MethodBase method)
-	{
-		return method!.DeclaringType!.FullName!.Contains("Backend");
-	}
-}
+    public static LoggerInstance<T> Enter<T>(this ILogger<T> logger, string arguments = "", LogLevel level = LogLevel.Debug, [CallerMemberName] string method = "")
+    {
+        var loggerInstance = new LoggerInstance<T>(logger, method, arguments, level);
 
-public static class LoggerCallerEnrichmentConfiguration
-{
-	public static LoggerConfiguration WithCaller(this LoggerEnrichmentConfiguration enrichmentConfiguration)
-	{
-		return enrichmentConfiguration.With<CallerEnricher>();
-	}
+        loggerInstance.Enter();
+
+        return loggerInstance;
+    }
+
+
+    public class LoggerInstance<T>
+    {
+        private readonly string _arguments;
+        private readonly string _method;
+        private readonly ILogger<T> _logger;
+        private readonly LogLevel _level;
+
+        public LoggerInstance(ILogger<T> logger, string method,  string arguments, LogLevel level)
+        {
+            this._arguments = arguments;
+            this._level = level;
+            this._method = method;
+            this._logger = logger;
+        }
+
+        public void Enter()
+        {
+            if (!_logger.IsEnabled(_level)) return;
+            
+            var sb = new StringBuilder($"Entering method {_method}");
+            if (_arguments?.Length > 0)
+            {
+                sb.Append($": {_arguments}");
+            }
+            _logger.Log(_level, sb.ToString());
+        }
+
+
+        public void Exit()
+        {
+            if (!_logger.IsEnabled(_level)) return;
+            
+            var sb = new StringBuilder($"Exiting method {_method}");
+            if (_arguments?.Length > 0)
+            {
+                sb.Append($": {_arguments}");
+            }
+            _logger.Log(_level, sb.ToString());
+            _logger.Log(_level, _arguments);
+        }
+
+
+    }
 }

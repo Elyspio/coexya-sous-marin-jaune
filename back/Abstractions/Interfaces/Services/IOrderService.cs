@@ -7,7 +7,7 @@ public interface IOrderService
 	Task<List<Order>> GetAll();
 	Task<List<Order>> GetForUser(string user);
 
-	Task<Order> Create(string userName);
+	Task<Order> Create(string user);
 	Task Delete(Guid orderId);
 	Task Update(Order order);
 }

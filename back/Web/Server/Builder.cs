@@ -60,11 +60,16 @@ public class ServerBuilder
 
 		// Setup Logging
 		builder.Host.UseSerilog((_, lc) => lc
+			.MinimumLevel.Debug()
 			.Enrich.FromLogContext()
-			.Enrich.With(new CallerEnricher())
-			.WriteTo.Console(LogEventLevel.Debug, "[{Timestamp:HH:mm:ss} {Level}{Caller}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code)
+			.WriteTo.Console(LogEventLevel.Debug, "[{Timestamp:HH:mm:ss} {Level} {SourceContext:l}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code)
 		);
 
+		builder.Services.AddLogging(log =>
+		{
+			log.AddConsole();
+		});
+		
 		// Convert Enum to String 
 		builder.Services.AddControllers(o =>
 				{

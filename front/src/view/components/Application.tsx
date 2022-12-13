@@ -100,7 +100,7 @@ function Application() {
 	});
 
 	return (
-		<Box className={"Application"} bgcolor={"background.default"}>
+		<Box className={`Application ${theme}`} bgcolor={"background.default"}>
 			{drawer}
 		</Box>
 	);

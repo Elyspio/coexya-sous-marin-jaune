@@ -6,7 +6,6 @@ import { UserOrders } from "./UserOrders";
 import { AllOrders } from "./AllOrders";
 
 export function Orders() {
-
 	const { orders, user } = useAppSelector(s => ({
 		user: s.orders.name,
 		orders: s.orders.all,
@@ -20,12 +19,10 @@ export function Orders() {
 
 	const onChange = React.useCallback((_, str: string) => setUserDebounced(str), [setUserDebounced]);
 
-
 	return (
-		<Paper>
-			<Stack m={2} spacing={4} p={2}>
+		<Paper className={"maxHeightWidth"}>
+			<Stack m={2} spacing={4} p={2} className={"maxHeightWidth"}>
 				<Stack spacing={4} direction={"row"} alignItems={"center"}>
-
 					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
 							fullWidth
@@ -34,28 +31,15 @@ export function Orders() {
 							freeSolo
 							options={users}
 							onChange={onChange as any}
-							renderInput={(params) => (
-								<TextField {...params} variant={"standard"}
-										   required
-										   label="Prénom"
-										   onBlur={e => setUserDebounced(e.target.value)}
-								/>)
-							}
-
+							renderInput={params => <TextField {...params} variant={"standard"} required label="Prénom" onBlur={e => setUserDebounced(e.target.value)} />}
 						/>
 					</FormControl>
 
 					{user && <UserOrders />}
-
 				</Stack>
 
-
 				<AllOrders />
-
-
 			</Stack>
 		</Paper>
-
 	);
 }
-

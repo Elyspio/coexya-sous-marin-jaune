@@ -28,4 +28,12 @@ public class UserController : ControllerBase
 		await _userService.MergeUsers(user, users);
 		return NoContent();
 	}
+
+
+	[HttpGet("balance")]
+	[SwaggerResponse(HttpStatusCode.OK, typeof(double))]
+	public async Task<IActionResult> GetUserBalance(string user)
+	{
+		return Ok(await _userService.GetUserBalance(user));
+	}
 }

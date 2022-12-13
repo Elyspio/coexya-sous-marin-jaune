@@ -19,5 +19,7 @@ public class AdapterModule : IDotnetModule
 		services.AddHttpClient<IAuthenticationClient, AuthenticationClient>(client => { client.BaseAddress = new Uri(conf.Authentication); });
 
 		services.AddHttpClient<BurgerAdapter>();
+
+		services.AddMemoryCache();
 	}
 }

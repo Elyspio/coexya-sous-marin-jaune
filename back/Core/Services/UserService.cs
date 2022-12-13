@@ -28,4 +28,10 @@ public class UserService : IUserService
 
 		await Task.WhenAll(orders.Select(_hubContext.Clients.All.OrderUpdated));
 	}
+
+	public async Task<double> GetUserBalance(string user)
+	{
+		var orders = await _orderRepository.GetForUser(user);
+		return orders.Sum(order => order.Price);
+	}
 }

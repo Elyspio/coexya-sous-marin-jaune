@@ -377,6 +377,33 @@ export class UserClient {
 		});
 	}
 
+	getUserBalance(user: string, cancelToken?: CancelToken | undefined): Promise<number> {
+		let url_ = this.baseUrl + "/api/users/{user}/balance";
+		if (user === undefined || user === null)
+			throw new Error("The parameter 'user' must be defined.");
+		url_ = url_.replace("{user}", encodeURIComponent("" + user));
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: AxiosRequestConfig = {
+			method: "GET",
+			url: url_,
+			headers: {
+				"Accept": "application/json",
+			},
+			cancelToken,
+		};
+
+		return this.instance.request(options_).catch((_error: any) => {
+			if (isAxiosError(_error) && _error.response) {
+				return _error.response;
+			} else {
+				throw _error;
+			}
+		}).then((_response: AxiosResponse) => {
+			return this.processGetUserBalance(_response);
+		});
+	}
+
 	protected processMergeUsers(response: AxiosResponse): Promise<void> {
 		const status = response.status;
 		let _headers: any = {};
@@ -397,6 +424,30 @@ export class UserClient {
 		}
 		return Promise.resolve<void>(null as any);
 	}
+
+	protected processGetUserBalance(response: AxiosResponse): Promise<number> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && typeof response.headers === "object") {
+			for (let k in response.headers) {
+				if (response.headers.hasOwnProperty(k)) {
+					_headers[k] = response.headers[k];
+				}
+			}
+		}
+		if (status === 200) {
+			const _responseText = response.data;
+			let result200: any = null;
+			let resultData200 = _responseText;
+			result200 = JSON.parse(resultData200);
+			return Promise.resolve<number>(result200);
+
+		} else if (status !== 200 && status !== 204) {
+			const _responseText = response.data;
+			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+		}
+		return Promise.resolve<number>(null as any);
+	}
 }
 
 export interface Burger {
@@ -412,6 +463,7 @@ export interface OrderBase {
 	drink?: Drink | undefined;
 	fries?: Fries | undefined;
 	dessert?: Dessert | undefined;
+	price: number;
 }
 
 export interface Order extends OrderBase {

@@ -57,7 +57,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 		>
 			{show.date && <Typography>{dayjs(data.date).format("DD/MM/YYYY")}</Typography>}
 
-			{show.name && <Typography>{data.user}</Typography>}
+			{show.name && <Typography minWidth={80}>{data.user}</Typography>}
 
 			{data.burgers.length > 0 ? <Typography>{data.burgers.map(o => o.name).join(", ")}</Typography> : <Skeleton width={100} variant={"text"} />}
 

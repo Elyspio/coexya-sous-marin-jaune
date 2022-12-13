@@ -3,6 +3,7 @@ import { useAppDispatch } from "../../../../store";
 import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
 import { updateOrder } from "../../../../store/module/orders/orders.action";
+import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
 export function OrderDessert({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export function OrderDessert({ data }: { data: Order }) {
 					dessert: val ?? undefined,
 				})
 			);
+			dispatch(updateRemoteOrder());
 		},
 		[data, dispatch]
 	);

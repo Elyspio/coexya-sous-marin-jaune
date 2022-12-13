@@ -3,6 +3,7 @@ import { useAppDispatch } from "../../../../store";
 import React, { useCallback } from "react";
 import { Checkbox, Fade, FormControl, FormControlLabel, InputLabel, MenuItem, Select, SelectChangeEvent, Stack } from "@mui/material";
 import { updateOrder } from "../../../../store/module/orders/orders.action";
+import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
 export function OrderFries({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export function OrderFries({ data }: { data: Order }) {
 					fries: { sauces: e.target.value as Sauce[] },
 				})
 			);
+			dispatch(updateRemoteOrder());
 		},
 		[data, dispatch]
 	);
@@ -26,6 +28,7 @@ export function OrderFries({ data }: { data: Order }) {
 				fries: data.fries ? undefined : { sauces: [] },
 			})
 		);
+		dispatch(updateRemoteOrder());
 	}, [data, dispatch]);
 
 	return (

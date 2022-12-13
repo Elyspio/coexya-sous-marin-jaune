@@ -3,6 +3,7 @@ import { useAppDispatch } from "../../../../store";
 import React, { useCallback } from "react";
 import { Box, Checkbox, FormControlLabel } from "@mui/material";
 import { updateOrder } from "../../../../store/module/orders/orders.action";
+import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
 export function OrderStudent({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();
@@ -15,6 +16,7 @@ export function OrderStudent({ data }: { data: Order }) {
 					student: e.target.checked,
 				})
 			);
+			dispatch(updateRemoteOrder());
 		},
 		[data, dispatch]
 	);

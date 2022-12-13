@@ -86,7 +86,7 @@ export function EditOrder() {
 					Fermer
 				</Button>
 				<Button color={"success"} variant={"text"} onClick={updateOrderFn} disabled={order?.burgers?.length === 0}>
-					Valider
+					Valider {order.price}€
 				</Button>
 			</DialogActions>
 		</Dialog>
@@ -102,6 +102,7 @@ function BurgerItem({ data, index }: { data: BurgerRecord; index: number }) {
 
 	const del = React.useCallback(() => {
 		dispatch(deleteOrderRecord(index));
+		dispatch(updateRemoteOrder());
 	}, [data]);
 
 	const exclusion = React.useMemo(() => <>(sans {data.excluded.join(", ")})</>, [data.excluded]);

@@ -31,10 +31,11 @@ public class OrderBase
 
 				if (Drink != null && Fries != null) menu = 11.5; // promotion du meny
 
-				if (Dessert != null) menu += 3;
 
 				sum += menu;
 			}
+			
+			if (Dessert != null) sum += 3;
 
 
 			foreach (var burger in Burgers.Skip(1))

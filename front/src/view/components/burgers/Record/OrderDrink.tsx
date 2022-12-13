@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
 import { updateOrder } from "../../../../store/module/orders/orders.action";
 import { drinkLabels } from "../../modals/OrderMessageModal";
+import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
 type DrinkPair = { key: Drink; label: string };
 const drinks = (Object.values(Drink) as Drink[]).reduce((acc, current) => {
@@ -27,6 +28,7 @@ export function OrderDrink({ data }: { data: Order }) {
 					drink: val?.key ?? undefined,
 				})
 			);
+			dispatch(updateRemoteOrder());
 		},
 		[data, dispatch]
 	);

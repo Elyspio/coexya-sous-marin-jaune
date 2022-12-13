@@ -13,7 +13,7 @@ export function Orders() {
 
 	const dispatch = useAppDispatch();
 
-	const users = React.useMemo(() => [...new Set(Object.values(orders).map(order => order.user))], [orders]);
+	const users = React.useMemo(() => [...new Set(Object.values(orders).map(order => order.user))].sort(), [orders]);
 
 	const setUserDebounced = React.useMemo(() => debounce((usr: string | null) => dispatch(setUser(usr ?? undefined)), 50), [dispatch]);
 

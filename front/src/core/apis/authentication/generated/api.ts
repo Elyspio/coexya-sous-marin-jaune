@@ -395,7 +395,7 @@ export enum UserSettingsModelThemeEnum {
  * AuthenticationApi - axios parameter creator
  * @export
  */
-export const AuthenticationApiAxiosParamCreator = function(configuration?: Configuration) {
+export const AuthenticationApiAxiosParamCreator = function (configuration?: Configuration) {
 	return {
 		/**
 		 * Return all logged users (Not available in production)
@@ -555,7 +555,7 @@ export const AuthenticationApiAxiosParamCreator = function(configuration?: Confi
  * AuthenticationApi - functional programming interface
  * @export
  */
-export const AuthenticationApiFp = function(configuration?: Configuration) {
+export const AuthenticationApiFp = function (configuration?: Configuration) {
 	const localVarAxiosParamCreator = AuthenticationApiAxiosParamCreator(configuration);
 	return {
 		/**
@@ -585,7 +585,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
 		 */
 		async loginInit(
 			postLoginInitRequest?: PostLoginInitRequest,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostLoginModelWithSalt>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.loginInit(postLoginInitRequest, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -617,7 +617,7 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
  * AuthenticationApi - factory interface
  * @export
  */
-export const AuthenticationApiFactory = function(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+export const AuthenticationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
 	const localVarFp = AuthenticationApiFp(configuration);
 	return {
 		/**
@@ -626,7 +626,7 @@ export const AuthenticationApiFactory = function(configuration?: Configuration, 
 		 * @throws {RequiredError}
 		 */
 		get(options?: any): AxiosPromise<void> {
-			return localVarFp.get(options).then((request) => request(axios, basePath));
+			return localVarFp.get(options).then(request => request(axios, basePath));
 		},
 		/**
 		 * Login second step: check if the token provided match with the one computed by the server
@@ -635,7 +635,7 @@ export const AuthenticationApiFactory = function(configuration?: Configuration, 
 		 * @throws {RequiredError}
 		 */
 		login(postLoginRequest: PostLoginRequest, options?: any): AxiosPromise<PostLoginModel> {
-			return localVarFp.login(postLoginRequest, options).then((request) => request(axios, basePath));
+			return localVarFp.login(postLoginRequest, options).then(request => request(axios, basePath));
 		},
 		/**
 		 * Login first step: create a salt from user\'s name
@@ -644,7 +644,7 @@ export const AuthenticationApiFactory = function(configuration?: Configuration, 
 		 * @throws {RequiredError}
 		 */
 		loginInit(postLoginInitRequest?: PostLoginInitRequest, options?: any): AxiosPromise<PostLoginModelWithSalt> {
-			return localVarFp.loginInit(postLoginInitRequest, options).then((request) => request(axios, basePath));
+			return localVarFp.loginInit(postLoginInitRequest, options).then(request => request(axios, basePath));
 		},
 		/**
 		 *
@@ -653,7 +653,7 @@ export const AuthenticationApiFactory = function(configuration?: Configuration, 
 		 * @throws {RequiredError}
 		 */
 		logout(authenticationLogin?: string, options?: any): AxiosPromise<void> {
-			return localVarFp.logout(authenticationLogin, options).then((request) => request(axios, basePath));
+			return localVarFp.logout(authenticationLogin, options).then(request => request(axios, basePath));
 		},
 		/**
 		 *
@@ -662,7 +662,7 @@ export const AuthenticationApiFactory = function(configuration?: Configuration, 
 		 * @throws {RequiredError}
 		 */
 		validToken(token?: string, options?: any): AxiosPromise<boolean> {
-			return localVarFp.validToken(token, options).then((request) => request(axios, basePath));
+			return localVarFp.validToken(token, options).then(request => request(axios, basePath));
 		},
 	};
 };
@@ -683,7 +683,7 @@ export class AuthenticationApi extends BaseAPI {
 	public get(options?: AxiosRequestConfig) {
 		return AuthenticationApiFp(this.configuration)
 			.get(options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -696,7 +696,7 @@ export class AuthenticationApi extends BaseAPI {
 	public login(postLoginRequest: PostLoginRequest, options?: AxiosRequestConfig) {
 		return AuthenticationApiFp(this.configuration)
 			.login(postLoginRequest, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -709,7 +709,7 @@ export class AuthenticationApi extends BaseAPI {
 	public loginInit(postLoginInitRequest?: PostLoginInitRequest, options?: AxiosRequestConfig) {
 		return AuthenticationApiFp(this.configuration)
 			.loginInit(postLoginInitRequest, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -722,7 +722,7 @@ export class AuthenticationApi extends BaseAPI {
 	public logout(authenticationLogin?: string, options?: AxiosRequestConfig) {
 		return AuthenticationApiFp(this.configuration)
 			.logout(authenticationLogin, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -735,7 +735,7 @@ export class AuthenticationApi extends BaseAPI {
 	public validToken(token?: string, options?: AxiosRequestConfig) {
 		return AuthenticationApiFp(this.configuration)
 			.validToken(token, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 }
 
@@ -743,7 +743,7 @@ export class AuthenticationApi extends BaseAPI {
  * UsersApi - axios parameter creator
  * @export
  */
-export const UsersApiAxiosParamCreator = function(configuration?: Configuration) {
+export const UsersApiAxiosParamCreator = function (configuration?: Configuration) {
 	return {
 		/**
 		 * Create an user
@@ -821,7 +821,7 @@ export const UsersApiAxiosParamCreator = function(configuration?: Configuration)
  * UsersApi - functional programming interface
  * @export
  */
-export const UsersApiFp = function(configuration?: Configuration) {
+export const UsersApiFp = function (configuration?: Configuration) {
 	const localVarAxiosParamCreator = UsersApiAxiosParamCreator(configuration);
 	return {
 		/**
@@ -846,7 +846,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
 			kind: "username" | "token",
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.getUserInfo(kind, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -858,7 +858,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
  * UsersApi - factory interface
  * @export
  */
-export const UsersApiFactory = function(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+export const UsersApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
 	const localVarFp = UsersApiFp(configuration);
 	return {
 		/**
@@ -868,7 +868,7 @@ export const UsersApiFactory = function(configuration?: Configuration, basePath?
 		 * @throws {RequiredError}
 		 */
 		addUser(addUserModel: AddUserModel, options?: any): AxiosPromise<string> {
-			return localVarFp.addUser(addUserModel, options).then((request) => request(axios, basePath));
+			return localVarFp.addUser(addUserModel, options).then(request => request(axios, basePath));
 		},
 		/**
 		 * Return username or token of logged user
@@ -879,7 +879,7 @@ export const UsersApiFactory = function(configuration?: Configuration, basePath?
 		 * @throws {RequiredError}
 		 */
 		getUserInfo(kind: "username" | "token", authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<string> {
-			return localVarFp.getUserInfo(kind, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.getUserInfo(kind, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 	};
 };
@@ -901,7 +901,7 @@ export class UsersApi extends BaseAPI {
 	public addUser(addUserModel: AddUserModel, options?: AxiosRequestConfig) {
 		return UsersApiFp(this.configuration)
 			.addUser(addUserModel, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -916,7 +916,7 @@ export class UsersApi extends BaseAPI {
 	public getUserInfo(kind: "username" | "token", authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersApiFp(this.configuration)
 			.getUserInfo(kind, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 }
 
@@ -924,7 +924,7 @@ export class UsersApi extends BaseAPI {
  * UsersAuthorisationsApi - axios parameter creator
  * @export
  */
-export const UsersAuthorisationsApiAxiosParamCreator = function(configuration?: Configuration) {
+export const UsersAuthorisationsApiAxiosParamCreator = function (configuration?: Configuration) {
 	return {
 		/**
 		 *
@@ -976,7 +976,7 @@ export const UsersAuthorisationsApiAxiosParamCreator = function(configuration?: 
 			authorizationModel: AuthorizationModel,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options: AxiosRequestConfig = {},
+			options: AxiosRequestConfig = {}
 		): Promise<RequestArgs> => {
 			// verify required parameter 'username' is not null or undefined
 			assertParamExists("set", "username", username);
@@ -1017,7 +1017,7 @@ export const UsersAuthorisationsApiAxiosParamCreator = function(configuration?: 
  * UsersAuthorisationsApi - functional programming interface
  * @export
  */
-export const UsersAuthorisationsApiFp = function(configuration?: Configuration) {
+export const UsersAuthorisationsApiFp = function (configuration?: Configuration) {
 	const localVarAxiosParamCreator = UsersAuthorisationsApiAxiosParamCreator(configuration);
 	return {
 		/**
@@ -1032,7 +1032,7 @@ export const UsersAuthorisationsApiFp = function(configuration?: Configuration) 
 			username: string,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AuthorizationModel>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.get(username, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1051,7 +1051,7 @@ export const UsersAuthorisationsApiFp = function(configuration?: Configuration) 
 			authorizationModel: AuthorizationModel,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.set(username, authorizationModel, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1063,7 +1063,7 @@ export const UsersAuthorisationsApiFp = function(configuration?: Configuration) 
  * UsersAuthorisationsApi - factory interface
  * @export
  */
-export const UsersAuthorisationsApiFactory = function(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+export const UsersAuthorisationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
 	const localVarFp = UsersAuthorisationsApiFp(configuration);
 	return {
 		/**
@@ -1075,7 +1075,7 @@ export const UsersAuthorisationsApiFactory = function(configuration?: Configurat
 		 * @throws {RequiredError}
 		 */
 		get(username: string, authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<AuthorizationModel> {
-			return localVarFp.get(username, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.get(username, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 		/**
 		 *
@@ -1087,7 +1087,7 @@ export const UsersAuthorisationsApiFactory = function(configuration?: Configurat
 		 * @throws {RequiredError}
 		 */
 		set(username: string, authorizationModel: AuthorizationModel, authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<void> {
-			return localVarFp.set(username, authorizationModel, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.set(username, authorizationModel, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 	};
 };
@@ -1111,7 +1111,7 @@ export class UsersAuthorisationsApi extends BaseAPI {
 	public get(username: string, authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersAuthorisationsApiFp(this.configuration)
 			.get(username, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -1127,7 +1127,7 @@ export class UsersAuthorisationsApi extends BaseAPI {
 	public set(username: string, authorizationModel: AuthorizationModel, authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersAuthorisationsApiFp(this.configuration)
 			.set(username, authorizationModel, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 }
 
@@ -1135,7 +1135,7 @@ export class UsersAuthorisationsApi extends BaseAPI {
  * UsersCredentialsApi - axios parameter creator
  * @export
  */
-export const UsersCredentialsApiAxiosParamCreator = function(configuration?: Configuration) {
+export const UsersCredentialsApiAxiosParamCreator = function (configuration?: Configuration) {
 	return {
 		/**
 		 *
@@ -1187,7 +1187,7 @@ export const UsersCredentialsApiAxiosParamCreator = function(configuration?: Con
 			credentialsModel: CredentialsModel,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options: AxiosRequestConfig = {},
+			options: AxiosRequestConfig = {}
 		): Promise<RequestArgs> => {
 			// verify required parameter 'username' is not null or undefined
 			assertParamExists("set", "username", username);
@@ -1228,7 +1228,7 @@ export const UsersCredentialsApiAxiosParamCreator = function(configuration?: Con
  * UsersCredentialsApi - functional programming interface
  * @export
  */
-export const UsersCredentialsApiFp = function(configuration?: Configuration) {
+export const UsersCredentialsApiFp = function (configuration?: Configuration) {
 	const localVarAxiosParamCreator = UsersCredentialsApiAxiosParamCreator(configuration);
 	return {
 		/**
@@ -1243,7 +1243,7 @@ export const UsersCredentialsApiFp = function(configuration?: Configuration) {
 			username: string,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CredentialsModel>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.get(username, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1262,7 +1262,7 @@ export const UsersCredentialsApiFp = function(configuration?: Configuration) {
 			credentialsModel: CredentialsModel,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.set(username, credentialsModel, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1274,7 +1274,7 @@ export const UsersCredentialsApiFp = function(configuration?: Configuration) {
  * UsersCredentialsApi - factory interface
  * @export
  */
-export const UsersCredentialsApiFactory = function(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+export const UsersCredentialsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
 	const localVarFp = UsersCredentialsApiFp(configuration);
 	return {
 		/**
@@ -1286,7 +1286,7 @@ export const UsersCredentialsApiFactory = function(configuration?: Configuration
 		 * @throws {RequiredError}
 		 */
 		get(username: string, authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<CredentialsModel> {
-			return localVarFp.get(username, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.get(username, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 		/**
 		 *
@@ -1298,7 +1298,7 @@ export const UsersCredentialsApiFactory = function(configuration?: Configuration
 		 * @throws {RequiredError}
 		 */
 		set(username: string, credentialsModel: CredentialsModel, authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<void> {
-			return localVarFp.set(username, credentialsModel, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.set(username, credentialsModel, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 	};
 };
@@ -1322,7 +1322,7 @@ export class UsersCredentialsApi extends BaseAPI {
 	public get(username: string, authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersCredentialsApiFp(this.configuration)
 			.get(username, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -1338,7 +1338,7 @@ export class UsersCredentialsApi extends BaseAPI {
 	public set(username: string, credentialsModel: CredentialsModel, authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersCredentialsApiFp(this.configuration)
 			.set(username, credentialsModel, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 }
 
@@ -1346,7 +1346,7 @@ export class UsersCredentialsApi extends BaseAPI {
  * UsersSettingsApi - axios parameter creator
  * @export
  */
-export const UsersSettingsApiAxiosParamCreator = function(configuration?: Configuration) {
+export const UsersSettingsApiAxiosParamCreator = function (configuration?: Configuration) {
 	return {
 		/**
 		 *
@@ -1398,7 +1398,7 @@ export const UsersSettingsApiAxiosParamCreator = function(configuration?: Config
 			windowsTheme: "dark" | "light",
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options: AxiosRequestConfig = {},
+			options: AxiosRequestConfig = {}
 		): Promise<RequestArgs> => {
 			// verify required parameter 'username' is not null or undefined
 			assertParamExists("getTheme", "username", username);
@@ -1447,7 +1447,7 @@ export const UsersSettingsApiAxiosParamCreator = function(configuration?: Config
 			setUserSettingsModel: SetUserSettingsModel,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options: AxiosRequestConfig = {},
+			options: AxiosRequestConfig = {}
 		): Promise<RequestArgs> => {
 			// verify required parameter 'username' is not null or undefined
 			assertParamExists("set", "username", username);
@@ -1488,7 +1488,7 @@ export const UsersSettingsApiAxiosParamCreator = function(configuration?: Config
  * UsersSettingsApi - functional programming interface
  * @export
  */
-export const UsersSettingsApiFp = function(configuration?: Configuration) {
+export const UsersSettingsApiFp = function (configuration?: Configuration) {
 	const localVarAxiosParamCreator = UsersSettingsApiAxiosParamCreator(configuration);
 	return {
 		/**
@@ -1503,7 +1503,7 @@ export const UsersSettingsApiFp = function(configuration?: Configuration) {
 			username: string,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserSettingsModel>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.get(username, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1522,7 +1522,7 @@ export const UsersSettingsApiFp = function(configuration?: Configuration) {
 			windowsTheme: "dark" | "light",
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FrontThemeReturnModel>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.getTheme(username, windowsTheme, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1541,7 +1541,7 @@ export const UsersSettingsApiFp = function(configuration?: Configuration) {
 			setUserSettingsModel: SetUserSettingsModel,
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: AxiosRequestConfig,
+			options?: AxiosRequestConfig
 		): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
 			const localVarAxiosArgs = await localVarAxiosParamCreator.set(username, setUserSettingsModel, authenticationToken, authenticationToken2, options);
 			return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
@@ -1553,7 +1553,7 @@ export const UsersSettingsApiFp = function(configuration?: Configuration) {
  * UsersSettingsApi - factory interface
  * @export
  */
-export const UsersSettingsApiFactory = function(configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+export const UsersSettingsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
 	const localVarFp = UsersSettingsApiFp(configuration);
 	return {
 		/**
@@ -1565,7 +1565,7 @@ export const UsersSettingsApiFactory = function(configuration?: Configuration, b
 		 * @throws {RequiredError}
 		 */
 		get(username: string, authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<UserSettingsModel> {
-			return localVarFp.get(username, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.get(username, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 		/**
 		 *
@@ -1581,9 +1581,9 @@ export const UsersSettingsApiFactory = function(configuration?: Configuration, b
 			windowsTheme: "dark" | "light",
 			authenticationToken?: string,
 			authenticationToken2?: string,
-			options?: any,
+			options?: any
 		): AxiosPromise<FrontThemeReturnModel> {
-			return localVarFp.getTheme(username, windowsTheme, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.getTheme(username, windowsTheme, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 		/**
 		 *
@@ -1595,7 +1595,7 @@ export const UsersSettingsApiFactory = function(configuration?: Configuration, b
 		 * @throws {RequiredError}
 		 */
 		set(username: string, setUserSettingsModel: SetUserSettingsModel, authenticationToken?: string, authenticationToken2?: string, options?: any): AxiosPromise<object> {
-			return localVarFp.set(username, setUserSettingsModel, authenticationToken, authenticationToken2, options).then((request) => request(axios, basePath));
+			return localVarFp.set(username, setUserSettingsModel, authenticationToken, authenticationToken2, options).then(request => request(axios, basePath));
 		},
 	};
 };
@@ -1619,7 +1619,7 @@ export class UsersSettingsApi extends BaseAPI {
 	public get(username: string, authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersSettingsApiFp(this.configuration)
 			.get(username, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -1635,7 +1635,7 @@ export class UsersSettingsApi extends BaseAPI {
 	public getTheme(username: string, windowsTheme: "dark" | "light", authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersSettingsApiFp(this.configuration)
 			.getTheme(username, windowsTheme, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 
 	/**
@@ -1651,6 +1651,6 @@ export class UsersSettingsApi extends BaseAPI {
 	public set(username: string, setUserSettingsModel: SetUserSettingsModel, authenticationToken?: string, authenticationToken2?: string, options?: AxiosRequestConfig) {
 		return UsersSettingsApiFp(this.configuration)
 			.set(username, setUserSettingsModel, authenticationToken, authenticationToken2, options)
-			.then((request) => request(this.axios, this.basePath));
+			.then(request => request(this.axios, this.basePath));
 	}
 }

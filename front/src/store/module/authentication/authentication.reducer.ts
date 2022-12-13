@@ -12,14 +12,14 @@ const defaultState: AuthenticationState = {
 	logged: false,
 };
 
-export const authenticationReducer = createReducer(defaultState, (builder) => {
+export const authenticationReducer = createReducer(defaultState, builder => {
 	builder.addCase(getUserInfos.fulfilled, (state, action) => {
 		state.logged = true;
 		state.username = action.payload.username;
 		state.settings = action.payload.settings;
 	});
 
-	builder.addCase(logout.fulfilled, (state) => {
+	builder.addCase(logout.fulfilled, state => {
 		state.logged = defaultState.logged;
 		state.username = defaultState.username;
 		state.settings = defaultState.settings;

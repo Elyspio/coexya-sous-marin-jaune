@@ -24,7 +24,6 @@ import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import dayjs from "dayjs";
 
-
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
 	IceTea: "Ice Tea",
@@ -32,9 +31,7 @@ export const drinkLabels: Record<Drink, string> = {
 	Limonade: "Limonade",
 };
 
-
-let pad = number => number < 10 ? `0${number}` : number;
-
+let pad = number => (number < 10 ? `0${number}` : number);
 
 const times: string[] = [];
 
@@ -47,16 +44,13 @@ while (t < 14 * 3600 + 5) {
 	t += 5 * 60;
 }
 
-
 export function OrderMessageModal() {
-
 	const dispatch = useAppDispatch();
 
 	const { orders, open } = useAppSelector(s => ({
 		orders: s.orders.all,
 		open: s.workflow.modals.message,
 	}));
-
 
 	const [header, setHeader] = useState(true);
 
@@ -66,21 +60,17 @@ export function OrderMessageModal() {
 
 	const [selectedDay, setSelectedDay] = useState(dayjs().startOf("day"));
 
-
 	const availableDates = useMemo(() => {
 		let dates = Object.values(orders).map(order => dayjs(order.date).startOf("day").toISOString());
 		const distinctDates = [...new Set(dates)];
 		const dayjsDates = distinctDates.map(dayjs);
 
-		dayjsDates.sort((d1, d2) => d1.isBefore(d2) ? -1 : 1);
+		dayjsDates.sort((d1, d2) => (d1.isBefore(d2) ? -1 : 1));
 
 		return dayjsDates;
-
 	}, [orders]);
 
-
 	const onTimeChange = useCallback((e: SelectChangeEvent<string>) => setTime(e.target.value), []);
-
 
 	const onSelectedDateChanged = useCallback((e: SelectChangeEvent<string>) => setSelectedDay(dayjs(e.target.value)), []);
 
@@ -88,12 +78,9 @@ export function OrderMessageModal() {
 
 	const todayOrders = useMemo(() => Object.values(orders).filter(order => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
 
-
 	const close = useCallback(() => dispatch(toggleModal("message")), [dispatch]);
 
-
-	const getFriteLabel = useCallback((frites: Fries | undefined) => frites ? `Frites${frites.sauces.length ? ` (${frites.sauces.join(", ")})` : ""}` : "", []);
-
+	const getFriteLabel = useCallback((frites: Fries | undefined) => (frites ? `Frites${frites.sauces.length ? ` (${frites.sauces.join(", ")})` : ""}` : ""), []);
 
 	const getBurgerLabel = useCallback((burgers: BurgerRecord[]) => {
 		let str = "";
@@ -108,14 +95,11 @@ export function OrderMessageModal() {
 			str += ", ";
 		}
 		return str;
-
 	}, []);
 
 	// endregion message
 
-
 	const textRef = useRef<HTMLElement>(null);
-
 
 	const copy = React.useCallback(async () => {
 		if (textRef.current) {
@@ -125,76 +109,70 @@ export function OrderMessageModal() {
 		}
 	}, [textRef.current, close]);
 
+	return (
+		<Dialog open={open} onClose={close}>
+			<DialogTitle>
+				<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+					<Typography>Message à envoyer</Typography>
 
-	return <Dialog open={open} onClose={close}>
-		<DialogTitle>
-
-			<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
-				<Typography>Message à envoyer</Typography>
-
-				<FormControl>
-					<InputLabel id="select-date-label">Date</InputLabel>
-					<Select
-						labelId="select-date-label"
-						id="select-date"
-						value={selectedDay.toISOString()} label={"Date"}
-						onChange={onSelectedDateChanged}
-					>
-						{availableDates.map(time => <MenuItem value={time.toISOString()}
-															  key={time.toISOString()}>{time.format("DD/MM/YYYY")}</MenuItem>)}
-					</Select>
-				</FormControl>
-
-			</Stack>
-
-		</DialogTitle>
-		<DialogContent dividers>
-
-			<Stack spacing={3}>
-
-				<Stack direction={"row"} spacing={1}>
-					<FormControlLabel
-						control={<Checkbox sx={{ mr: 1 }} checked={header} onChange={toggleHeader} />}
-						label={"Entête"}
-					/>
-
-
-					<Fade in={header}>
-						<Select value={time} onChange={onTimeChange}>
-							{times.map(time => <MenuItem value={time} key={time}>{time}</MenuItem>)}
+					<FormControl>
+						<InputLabel id="select-date-label">Date</InputLabel>
+						<Select labelId="select-date-label" id="select-date" value={selectedDay.toISOString()} label={"Date"} onChange={onSelectedDateChanged}>
+							{availableDates.map(time => (
+								<MenuItem value={time.toISOString()} key={time.toISOString()}>
+									{time.format("DD/MM/YYYY")}
+								</MenuItem>
+							))}
 						</Select>
-					</Fade>
+					</FormControl>
 				</Stack>
+			</DialogTitle>
+			<DialogContent dividers>
+				<Stack spacing={3}>
+					<Stack direction={"row"} spacing={1}>
+						<FormControlLabel control={<Checkbox sx={{ mr: 1 }} checked={header} onChange={toggleHeader} />} label={"Entête"} />
 
+						<Fade in={header}>
+							<Select value={time} onChange={onTimeChange}>
+								{times.map(time => (
+									<MenuItem value={time} key={time}>
+										{time}
+									</MenuItem>
+								))}
+							</Select>
+						</Fade>
+					</Stack>
 
-				<Stack spacing={2} ref={textRef}>
-					<Fade in={header}>
-						<Typography>Bonjour, J'aimerai commander
-							pour {todayOrders.length} personnne{todayOrders.length > 1 ? "s" : ""} pour {time} :</Typography>
-					</Fade>
-					<List>
-						{todayOrders.map(order => <ListItem key={order.id}>
+					<Stack spacing={2} ref={textRef}>
+						<Fade in={header}>
 							<Typography>
-								{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}{order.drink ? `, ${drinkLabels[order.drink]}` : ""} {order.dessert}
+								Bonjour, J'aimerai commander pour {todayOrders.length} personnne{todayOrders.length > 1 ? "s" : ""} pour {time} :
 							</Typography>
-						</ListItem>)}
-					</List>
-					<Fade in={header}>
-						<Typography>Nous viendrons récupérer la commande sur place à Limonest. Si ça fait trop juste
-							pour {time}, pour quelle heure ça serait ? Merci </Typography>
-					</Fade>
-
+						</Fade>
+						<List>
+							{todayOrders.map(order => (
+								<ListItem key={order.id}>
+									<Typography>
+										{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}
+										{order.drink ? `, ${drinkLabels[order.drink]}` : ""} {order.dessert}
+									</Typography>
+								</ListItem>
+							))}
+						</List>
+						<Fade in={header}>
+							<Typography>
+								Nous viendrons récupérer la commande sur place à Limonest. Si ça fait trop juste pour {time}, pour quelle heure ça serait ? Merci{" "}
+							</Typography>
+						</Fade>
+					</Stack>
 				</Stack>
-			</Stack>
+			</DialogContent>
 
-
-		</DialogContent>
-
-		<DialogActions>
-			<Button color={"primary"} onClick={copy} variant={"outlined"}>Copier</Button>
-		</DialogActions>
-	</Dialog>;
+			<DialogActions>
+				<Button color={"primary"} onClick={copy} variant={"outlined"}>
+					Copier
+				</Button>
+			</DialogActions>
+		</Dialog>
+	);
 }
-
-
-

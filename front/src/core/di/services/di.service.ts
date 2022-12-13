@@ -17,5 +17,4 @@ export const addServices = (container: Container) => {
 	container.bind(OrderService).toSelf();
 	container.bind(UpdateSocketService).toSelf();
 	container.bind(UserService).toSelf();
-
 };

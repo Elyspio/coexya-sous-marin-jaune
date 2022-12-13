@@ -17,11 +17,9 @@ export class BurgerClient {
 	private baseUrl: string;
 
 	constructor(baseUrl?: string, instance?: AxiosInstance) {
-
 		this.instance = instance ? instance : axios.create();
 
 		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
-
 	}
 
 	getAll(cancelToken?: CancelToken | undefined): Promise<Burger[]> {
@@ -32,20 +30,23 @@ export class BurgerClient {
 			method: "GET",
 			url: url_,
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 			},
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processGetAll(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processGetAll(_response);
+			});
 	}
 
 	protected processGetAll(response: AxiosResponse): Promise<Burger[]> {
@@ -64,7 +65,6 @@ export class BurgerClient {
 			let resultData200 = _responseText;
 			result200 = JSON.parse(resultData200);
 			return Promise.resolve<Burger[]>(result200);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -79,11 +79,9 @@ export class OrderClient {
 	private baseUrl: string;
 
 	constructor(baseUrl?: string, instance?: AxiosInstance) {
-
 		this.instance = instance ? instance : axios.create();
 
 		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
-
 	}
 
 	getAll2(cancelToken?: CancelToken | undefined): Promise<Order[]> {
@@ -94,26 +92,28 @@ export class OrderClient {
 			method: "GET",
 			url: url_,
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 			},
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processGetAll2(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processGetAll2(_response);
+			});
 	}
 
 	getForUser(user: string, cancelToken?: CancelToken | undefined): Promise<Order[]> {
 		let url_ = this.baseUrl + "/api/orders/users/{user}";
-		if (user === undefined || user === null)
-			throw new Error("The parameter 'user' must be defined.");
+		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
 		url_ = url_.replace("{user}", encodeURIComponent("" + user));
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -121,26 +121,28 @@ export class OrderClient {
 			method: "GET",
 			url: url_,
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 			},
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processGetForUser(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processGetForUser(_response);
+			});
 	}
 
 	create(user: string, cancelToken?: CancelToken | undefined): Promise<Order> {
 		let url_ = this.baseUrl + "/api/orders/users/{user}";
-		if (user === undefined || user === null)
-			throw new Error("The parameter 'user' must be defined.");
+		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
 		url_ = url_.replace("{user}", encodeURIComponent("" + user));
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -148,26 +150,28 @@ export class OrderClient {
 			method: "POST",
 			url: url_,
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 			},
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processCreate(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processCreate(_response);
+			});
 	}
 
 	delete(order: string, cancelToken?: CancelToken | undefined): Promise<void> {
 		let url_ = this.baseUrl + "/api/orders/{order}";
-		if (order === undefined || order === null)
-			throw new Error("The parameter 'order' must be defined.");
+		if (order === undefined || order === null) throw new Error("The parameter 'order' must be defined.");
 		url_ = url_.replace("{order}", encodeURIComponent("" + order));
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -178,21 +182,23 @@ export class OrderClient {
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processDelete(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processDelete(_response);
+			});
 	}
 
 	updateOrder(orderId: string, order: Order, cancelToken?: CancelToken | undefined): Promise<void> {
 		let url_ = this.baseUrl + "/api/orders/{orderId}";
-		if (orderId === undefined || orderId === null)
-			throw new Error("The parameter 'orderId' must be defined.");
+		if (orderId === undefined || orderId === null) throw new Error("The parameter 'orderId' must be defined.");
 		url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -208,15 +214,18 @@ export class OrderClient {
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processUpdateOrder(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processUpdateOrder(_response);
+			});
 	}
 
 	protected processGetAll2(response: AxiosResponse): Promise<Order[]> {
@@ -235,7 +244,6 @@ export class OrderClient {
 			let resultData200 = _responseText;
 			result200 = JSON.parse(resultData200);
 			return Promise.resolve<Order[]>(result200);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -259,7 +267,6 @@ export class OrderClient {
 			let resultData200 = _responseText;
 			result200 = JSON.parse(resultData200);
 			return Promise.resolve<Order[]>(result200);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -283,7 +290,6 @@ export class OrderClient {
 			let resultData201 = _responseText;
 			result201 = JSON.parse(resultData201);
 			return Promise.resolve<Order>(result201);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -304,7 +310,6 @@ export class OrderClient {
 		if (status === 204) {
 			const _responseText = response.data;
 			return Promise.resolve<void>(null as any);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -325,7 +330,6 @@ export class OrderClient {
 		if (status === 204) {
 			const _responseText = response.data;
 			return Promise.resolve<void>(null as any);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -340,17 +344,14 @@ export class UserClient {
 	private baseUrl: string;
 
 	constructor(baseUrl?: string, instance?: AxiosInstance) {
-
 		this.instance = instance ? instance : axios.create();
 
 		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
-
 	}
 
 	mergeUsers(user: string, users: string[], cancelToken?: CancelToken | undefined): Promise<void> {
 		let url_ = this.baseUrl + "/api/users/{user}/merge";
-		if (user === undefined || user === null)
-			throw new Error("The parameter 'user' must be defined.");
+		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
 		url_ = url_.replace("{user}", encodeURIComponent("" + user));
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -366,21 +367,23 @@ export class UserClient {
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processMergeUsers(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processMergeUsers(_response);
+			});
 	}
 
 	getUserBalance(user: string, cancelToken?: CancelToken | undefined): Promise<number> {
 		let url_ = this.baseUrl + "/api/users/{user}/balance";
-		if (user === undefined || user === null)
-			throw new Error("The parameter 'user' must be defined.");
+		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
 		url_ = url_.replace("{user}", encodeURIComponent("" + user));
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -388,20 +391,23 @@ export class UserClient {
 			method: "GET",
 			url: url_,
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 			},
 			cancelToken,
 		};
 
-		return this.instance.request(options_).catch((_error: any) => {
-			if (isAxiosError(_error) && _error.response) {
-				return _error.response;
-			} else {
-				throw _error;
-			}
-		}).then((_response: AxiosResponse) => {
-			return this.processGetUserBalance(_response);
-		});
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processGetUserBalance(_response);
+			});
 	}
 
 	protected processMergeUsers(response: AxiosResponse): Promise<void> {
@@ -417,7 +423,6 @@ export class UserClient {
 		if (status === 204) {
 			const _responseText = response.data;
 			return Promise.resolve<void>(null as any);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -441,7 +446,6 @@ export class UserClient {
 			let resultData200 = _responseText;
 			result200 = JSON.parse(resultData200);
 			return Promise.resolve<number>(result200);
-
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -503,11 +507,11 @@ export class ApiException extends Error {
 	override message: string;
 	status: number;
 	response: string;
-	headers: { [key: string]: any; };
+	headers: { [key: string]: any };
 	result: any;
 	protected isApiException = true;
 
-	constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+	constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
 		super();
 
 		this.message = message;
@@ -522,11 +526,9 @@ export class ApiException extends Error {
 	}
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
-	if (result !== null && result !== undefined)
-		throw result;
-	else
-		throw new ApiException(message, status, response, headers, null);
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any }, result?: any): any {
+	if (result !== null && result !== undefined) throw result;
+	else throw new ApiException(message, status, response, headers, null);
 }
 
 function isAxiosError(obj: any | undefined): obj is AxiosError {

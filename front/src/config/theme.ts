@@ -2,7 +2,6 @@ import { createTheme, Theme } from "@mui/material";
 import * as colors from "@mui/material/colors";
 import { PaletteOptions } from "@mui/material/styles/createPalette";
 
-
 function withPalette(palette: PaletteOptions) {
 	return createTheme({
 		palette,
@@ -29,7 +28,6 @@ function withPalette(palette: PaletteOptions) {
 		},
 	});
 }
-
 
 const darkTheme = withPalette({
 	mode: "dark",
@@ -63,7 +61,6 @@ const lightTheme = withPalette({
 	},
 	divider: "#FFFFFF1E",
 });
-
 
 export const themes = {
 	dark: darkTheme,

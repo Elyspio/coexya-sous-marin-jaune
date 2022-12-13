@@ -2,7 +2,6 @@ import { BurgerRecord, Order } from "../../../core/apis/backend/generated";
 import { createActionBase } from "../../common/common.actions";
 import { OrderState } from "./orders.reducer";
 
-
 const createAction = createActionBase("orders");
 
 export const updateBurgerRecord = createAction<BurgerRecord>("updateBurgerRecord");

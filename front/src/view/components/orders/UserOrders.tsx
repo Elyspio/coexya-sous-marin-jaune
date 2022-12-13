@@ -9,12 +9,10 @@ import { canCreateSelector } from "../../../store/module/orders/orders.utils";
 export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 
 export function UserOrders() {
-
 	const { created } = useAppSelector(s => {
-
-		return ({
+		return {
 			created: !canCreateSelector(s),
-		});
+		};
 	});
 
 	const dispatch = useAppDispatch();
@@ -24,16 +22,12 @@ export function UserOrders() {
 	}, [dispatch]);
 
 	return (
-
-		<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} arrow
-				 placement={"right"}>
+		<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} arrow placement={"right"}>
 			<div>
-				<Button variant={"outlined"} color={created ? "inherit" : "success"} disabled={created}
-						onClick={createOrderOnClick}>Nouvelle commande</Button>
+				<Button variant={"outlined"} color={created ? "inherit" : "success"} disabled={created} onClick={createOrderOnClick}>
+					Nouvelle commande
+				</Button>
 			</div>
 		</Tooltip>
-
 	);
 }
-
-

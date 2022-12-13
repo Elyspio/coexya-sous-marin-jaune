@@ -3,7 +3,7 @@ import { Burger } from "../../../core/apis/backend/generated";
 import { getBurgers } from "./burgers.async.action";
 
 export type TodoState = {
-	all: Burger[]
+	all: Burger[];
 };
 
 const initialState: TodoState = {
@@ -14,7 +14,7 @@ const slice = createSlice({
 	name: "burgers",
 	initialState,
 	reducers: {},
-	extraReducers: (builder) => {
+	extraReducers: builder => {
 		builder.addCase(getBurgers.fulfilled, (state, action) => {
 			state.all = action.payload;
 		});

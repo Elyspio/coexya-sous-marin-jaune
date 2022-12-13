@@ -9,11 +9,8 @@ interface UpdateHub extends HubConnection {
 	on(event: "OrderDeleted", callback: (orderId: Order["id"]) => void);
 }
 
-
 @injectable()
 export class UpdateSocketService {
-
-
 	async createSocket() {
 		const connection = new signalR.HubConnectionBuilder()
 			.withUrl(`${window.config.endpoints.core}/ws/update`)
@@ -21,11 +18,7 @@ export class UpdateSocketService {
 			.withAutomaticReconnect({ nextRetryDelayInMilliseconds: () => 5000 })
 			.build();
 
-
 		await connection.start();
 		return connection as UpdateHub;
-
 	}
-
 }
-

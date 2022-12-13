@@ -1,40 +1,34 @@
 $header-size: 3.5rem;
 
-
 .Drawer {
+	height: calc(100% - #{$header-size});
 
-  height: calc(100% - #{$header-size});
+	main {
+		display: flex;
+		height: 100%;
+	}
 
+	.drawer-btn {
+		margin: 0.5rem 0;
+	}
 
-  main {
-    display: flex;
-    height: 100%;
-  }
+	.actions {
+		overflow: hidden;
+		user-select: none;
+	}
 
-  .drawer-btn {
-    margin: 0.5rem 0;
-  }
-
-  .actions {
-    overflow: hidden;
-    user-select: none;
-  }
-
-  .content {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 1rem;
-
-
-  }
-
+	.content {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		padding: 1rem;
+	}
 }
 
 .Drawer-hoc {
-  height: 100vh;
+	height: 100vh;
 
-  .header {
-    height: $header-size;
-  }
+	.header {
+		height: $header-size;
+	}
 }

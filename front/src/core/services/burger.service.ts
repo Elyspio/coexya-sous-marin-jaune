@@ -2,7 +2,6 @@ import { inject, injectable } from "inversify";
 import { BackendApi } from "../apis/backend";
 import { BaseService } from "./technical/base.service";
 
-
 @injectable()
 export class BurgerService extends BaseService {
 	@inject(BackendApi)
@@ -11,6 +10,4 @@ export class BurgerService extends BaseService {
 	public getAll() {
 		return this.backendApiClient.burgers.getAll();
 	}
-
-
 }

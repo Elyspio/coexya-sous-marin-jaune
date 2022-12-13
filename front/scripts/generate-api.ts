@@ -26,14 +26,6 @@ if (require.main === module) {
 	generateFromNswag({
 		input: "http://localhost:4000/swagger/SousMarinJaune.Api/swagger.json",
 		file: path.resolve(__dirname, "nswag-api-rest.nswag"),
-		outputFile: path.resolve(
-			__dirname,
-			"..",
-			"src",
-			"core",
-			"apis",
-			"backend",
-			"generated.ts",
-		),
+		outputFile: path.resolve(__dirname, "..", "src", "core", "apis", "backend", "generated.ts"),
 	});
 }

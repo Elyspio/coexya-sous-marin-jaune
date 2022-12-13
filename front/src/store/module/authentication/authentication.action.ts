@@ -15,7 +15,7 @@ const localStorages = {
 };
 
 function waitForLogin(page: Window) {
-	return new Promise<void>(async (resolve) => {
+	return new Promise<void>(async resolve => {
 		let interval: NodeJS.Timer | undefined;
 
 		const clearInter = () => interval !== undefined && clearInterval(interval);
@@ -93,7 +93,7 @@ export const logout = createAsyncThunk("authentication/logout", async () => {
 	AuthenticationEvents.emit("logout");
 });
 
-window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", e => {
 	const newColorScheme = e.matches ? "dark" : "light";
 	const { settings } = store.getState().authentication;
 	if (settings?.theme === UserSettingsModelThemeEnum.System) {

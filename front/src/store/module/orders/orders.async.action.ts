@@ -12,25 +12,25 @@ export const getOrders = createAsyncThunk("orders/getOrders", async (_, { extra 
 	return orderService.getAll();
 });
 
-
 export const createOrder = createAsyncThunk("orders/createOrder", async (_, { extra, getState }) => {
 	const orderService = getService(OrderService, extra);
 
-	const { orders: { name } } = getState() as StoreState;
+	const {
+		orders: { name },
+	} = getState() as StoreState;
 
 	return orderService.createOrder(name!);
 });
 
-
 export const updateRemoteOrder = createAsyncThunk("orders/updateRemoteOrder", async (_, { extra, getState }) => {
-	const { orders: { all, altering } } = getState() as StoreState;
+	const {
+		orders: { all, altering },
+	} = getState() as StoreState;
 	const order = all[altering!.order];
 
 	const orderService = getService(OrderService, extra);
 
 	await orderService.updateOrder(order);
-
-
 });
 
 export const deleteOrder = createAsyncThunk("orders/deleteOrder", async (id: Order["id"], { extra, getState }) => {
@@ -38,22 +38,16 @@ export const deleteOrder = createAsyncThunk("orders/deleteOrder", async (id: Ord
 	await orderService.deleteOrder(id);
 });
 
-export const deleteCurrentOrderRecord = createAsyncThunk<void>("orders/deleteCurrentOrderRecord", (_, {
-	getState,
-	dispatch,
-}) => {
-	const { orders: { altering } } = getState() as StoreState;
+export const deleteCurrentOrderRecord = createAsyncThunk<void>("orders/deleteCurrentOrderRecord", (_, { getState, dispatch }) => {
+	const {
+		orders: { altering },
+	} = getState() as StoreState;
 	dispatch(deleteOrderRecord(altering!.record!));
 });
 
-
-export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (id: Order["id"], {
-	getState,
-	dispatch,
-}) => {
+export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (id: Order["id"], { getState, dispatch }) => {
 	const { orders } = getState() as StoreState;
 	const oldOrder = orders.all[id];
-
 
 	let newOrder = (await dispatch(createOrder())).payload as Order;
 	newOrder = {
@@ -66,11 +60,7 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 	dispatch(updateOrder(newOrder));
 });
 
-
-export const startOrderUpdateSynchro = createAsyncThunk("orders/startWebSocketSynchro", async (_, {
-	extra,
-	dispatch,
-}) => {
+export const startOrderUpdateSynchro = createAsyncThunk("orders/startWebSocketSynchro", async (_, { extra, dispatch }) => {
 	const updateSocketService = getService(UpdateSocketService, extra);
 
 	const socket = await updateSocketService.createSocket();

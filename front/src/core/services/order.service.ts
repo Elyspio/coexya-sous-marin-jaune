@@ -3,7 +3,6 @@ import { BackendApi } from "../apis/backend";
 import { BaseService } from "./technical/base.service";
 import { Order } from "../apis/backend/generated";
 
-
 @injectable()
 export class OrderService extends BaseService {
 	@inject(BackendApi)

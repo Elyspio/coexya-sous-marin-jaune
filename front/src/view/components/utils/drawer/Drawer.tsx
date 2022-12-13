@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const getActions = (actions: Action[]) => {
-	const separatorIndexes = actions.map((action, index) => (action.text === null ? index : null)).filter((index) => index !== null) as number[];
+	const separatorIndexes = actions.map((action, index) => (action.text === null ? index : null)).filter(index => index !== null) as number[];
 
 	const comp = separatorIndexes.map((value, index, array) => actions.slice(value, array[index + 1]));
 

@@ -27,16 +27,16 @@ export enum OrderTime {
 
 export type OrderState = {
 	altering?: {
-		order: Order["id"],
-		record?: number
-	},
-	name?: string,
-	all: Record<Order["id"], Order>
+		order: Order["id"];
+		record?: number;
+	};
+	name?: string;
+	all: Record<Order["id"], Order>;
 	mode: {
-		order?: "create" | "update",
-		record?: "create" | "update"
-	}
-	timeRange: OrderTime
+		order?: "create" | "update";
+		record?: "create" | "update";
+	};
+	timeRange: OrderTime;
 };
 
 export const noneBurger = "none" as const;
@@ -56,8 +56,8 @@ const slice = createSlice({
 	name: "orders",
 	initialState,
 	reducers: {},
-	extraReducers: (builder) => {
-		builder.addCase(createOrderRecord, (state) => {
+	extraReducers: builder => {
+		builder.addCase(createOrderRecord, state => {
 			const len = state.all[state.altering!.order].burgers.push({
 				name: noneBurger,
 				vegetarian: false,
@@ -98,7 +98,6 @@ const slice = createSlice({
 			state.mode.record = undefined;
 		});
 
-
 		builder.addCase(updateOrder, (state, action) => {
 			state.all[action.payload.id] = action.payload;
 		});
@@ -117,10 +116,11 @@ const slice = createSlice({
 		});
 
 		builder.addCase(setAlteringOrder, (state, action) => {
-			state.altering = action.payload ? {
-				order: action.payload,
-			} : undefined;
-
+			state.altering = action.payload
+				? {
+						order: action.payload,
+				  }
+				: undefined;
 		});
 
 		builder.addCase(deleteOrderRecord, (state, action) => {
@@ -133,7 +133,6 @@ const slice = createSlice({
 			delete state.all[action.payload];
 		});
 
-
 		builder.addCase(setOrderTimeRange, (state, action) => {
 			state.timeRange = action.payload;
 		});
@@ -141,5 +140,3 @@ const slice = createSlice({
 });
 
 export const ordersReducer = slice.reducer;
-
-

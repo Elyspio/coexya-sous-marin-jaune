@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import "./Application.scss";
 import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
@@ -99,8 +100,12 @@ function Application() {
 		title: "Sous-marin Jaune V2",
 	});
 
+	useEffect(() => {
+		document.body.parentElement!.className = theme;
+	}, [theme]);
+
 	return (
-		<Box className={`Application ${theme}`} bgcolor={"background.default"}>
+		<Box className={`Application`} bgcolor={"background.default"}>
 			{drawer}
 		</Box>
 	);

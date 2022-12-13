@@ -51,6 +51,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 			direction={"row"}
 			alignItems={"center"}
 			spacing={2}
+			position={"relative"}
 			color={isSelf ? palette.secondary.main : "inherit"}
 			// sx={{ border: isSelf ? `1px ${palette.secondary.main} solid ` : undefined, borderRadius: 1 }} px={2}
 			// py={1}
@@ -75,10 +76,10 @@ export function OrderItem({ data, show }: OrderItemProps) {
 				{((isToday(data) && isSelf) || logged) && (
 					<>
 						<IconButton onClick={edit}>
-							<EditIcon color={"primary"} />
+							<EditIcon color={"primary"} fontSize={"small"} />
 						</IconButton>
 						<IconButton onClick={del}>
-							<DeleteIcon color={"error"} />
+							<DeleteIcon color={"error"} fontSize={"small"} />
 						</IconButton>
 					</>
 				)}
@@ -86,7 +87,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 				{canCreate && (
 					<Tooltip title={"Dupliquer la commande"}>
 						<IconButton onClick={duplicate}>
-							<ContentCopy color={"inherit"} />
+							<ContentCopy color={"inherit"} fontSize={"small"} />
 						</IconButton>
 					</Tooltip>
 				)}

@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import { useAppSelector } from "../../../store";
 import dayjs from "dayjs";
 import { Order } from "../../../core/apis/backend/generated";
@@ -47,6 +47,8 @@ export function AllOrders() {
 		return groupBy(allOrders, smallDate) as Record<string, Order[]>;
 	}, [orders, timeRange]);
 
+	const { palette } = useTheme();
+
 	const groupedElem = React.useMemo(() => {
 		const entries = Object.entries(grouped).sort(([date], [date2]) => {
 			return dayjs(date2, dateTemplate, "fr").isBefore(dayjs(date, dateTemplate, "fr")) ? -1 : 1;
@@ -55,7 +57,19 @@ export function AllOrders() {
 			<Stack spacing={5} position={"absolute"} top={0} bottom={0} left={0} right={0} overflow={"auto"}>
 				{entries.map(([date, orders]) => (
 					<Stack key={date} spacing={1.5}>
-						<Typography variant={"overline"} color={isTodayFormatted(date) ? "primary" : "inherit"}>
+						<Typography
+							variant={"overline"}
+							color={isTodayFormatted(date) ? "primary" : palette.text.disabled}
+							sx={{
+								position: "sticky",
+								top: 0,
+								left: 0,
+								width: "100%",
+								fontWeight: "bold",
+								zIndex: 10,
+								background: palette.background.paper,
+							}}
+						>
 							{date}
 						</Typography>
 						{orders.map(order => (

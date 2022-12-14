@@ -17,12 +17,12 @@ import {
 } from "@mui/material";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { toggleModal } from "../../../store/module/workflow/workflow.action";
 import { BurgerRecord, Drink, Fries } from "../../../core/apis/backend/generated";
 import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import dayjs from "dayjs";
+import { ModalComponentProps } from "./MergeUsers";
 
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
@@ -44,12 +44,11 @@ while (t < 14 * 3600 + 5) {
 	t += 5 * 60;
 }
 
-export function OrderMessageModal() {
+export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 	const dispatch = useAppDispatch();
 
-	const { orders, open } = useAppSelector(s => ({
+	const { orders } = useAppSelector(s => ({
 		orders: s.orders.all,
-		open: s.workflow.modals.message,
 	}));
 
 	const [header, setHeader] = useState(true);
@@ -58,17 +57,17 @@ export function OrderMessageModal() {
 
 	const [time, setTime] = useState("12h15");
 
-	const [selectedDay, setSelectedDay] = useState(dayjs().startOf("day"));
-
 	const availableDates = useMemo(() => {
 		let dates = Object.values(orders).map(order => dayjs(order.date).startOf("day").toISOString());
 		const distinctDates = [...new Set(dates)];
 		const dayjsDates = distinctDates.map(dayjs);
 
-		dayjsDates.sort((d1, d2) => (d1.isBefore(d2) ? -1 : 1));
+		dayjsDates.sort((d1, d2) => (d1.isAfter(d2) ? -1 : 1));
 
 		return dayjsDates;
 	}, [orders]);
+
+	const [selectedDay, setSelectedDay] = useState(availableDates[0]);
 
 	const onTimeChange = useCallback((e: SelectChangeEvent<string>) => setTime(e.target.value), []);
 
@@ -77,8 +76,6 @@ export function OrderMessageModal() {
 	// region message
 
 	const todayOrders = useMemo(() => Object.values(orders).filter(order => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
-
-	const close = useCallback(() => dispatch(toggleModal("message")), [dispatch]);
 
 	const getFriteLabel = useCallback((frites: Fries | undefined) => (frites ? `Frites${frites.sauces.length ? ` (${frites.sauces.join(", ")})` : ""}` : ""), []);
 
@@ -94,6 +91,8 @@ export function OrderMessageModal() {
 			if (burger.comment) str += ` (${burger.comment})`;
 			str += ", ";
 		}
+		if (str.endsWith(", ")) str = str.slice(0, str.length - 2);
+
 		return str;
 	}, []);
 
@@ -105,12 +104,12 @@ export function OrderMessageModal() {
 		if (textRef.current) {
 			await navigator.clipboard.writeText(textRef.current.innerText);
 			toast.success("Texte copié dans le presse papier");
-			close();
+			setClose();
 		}
-	}, [textRef.current, close]);
+	}, [textRef.current, setClose]);
 
 	return (
-		<Dialog open={open} onClose={close}>
+		<Dialog open={open} onClose={setClose}>
 			<DialogTitle>
 				<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
 					<Typography>Message à envoyer</Typography>

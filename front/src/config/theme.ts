@@ -32,8 +32,7 @@ function withPalette(palette: PaletteOptions) {
 const darkTheme = withPalette({
 	mode: "dark",
 	secondary: {
-		...colors.grey,
-		main: colors.amber["300"],
+		main: "#69ec6b",
 	},
 	primary: {
 		main: colors.blue["400"],
@@ -48,7 +47,6 @@ const darkTheme = withPalette({
 const lightTheme = withPalette({
 	mode: "light",
 	secondary: {
-		...colors.grey,
 		main: colors.amber["800"],
 	},
 	primary: {

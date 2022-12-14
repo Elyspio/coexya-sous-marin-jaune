@@ -1,14 +1,14 @@
-import { Order } from "../../../core/apis/backend/generated";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { BurgerRecord, Order } from "../../../../core/apis/backend/generated";
+import { useAppDispatch, useAppSelector } from "../../../../store";
 import React from "react";
-import { setAlteringOrder } from "../../../store/module/orders/orders.action";
-import { deleteOrder, duplicateOrder } from "../../../store/module/orders/orders.async.action";
-import { ButtonGroup, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
+import { deleteOrder, duplicateOrder } from "../../../../store/module/orders/orders.async.action";
+import { ButtonGroup, Chip, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
-import { canCreateSelector, isToday } from "../../../store/module/orders/orders.utils";
+import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
 
 type OrderItemProps = { data: Order; show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean } };
 
@@ -47,20 +47,20 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	let isSelf = data.user === user;
 	return (
-		<Stack
-			direction={"row"}
-			alignItems={"center"}
-			spacing={2}
-			position={"relative"}
-			color={isSelf ? palette.secondary.main : "inherit"}
-			// sx={{ border: isSelf ? `1px ${palette.secondary.main} solid ` : undefined, borderRadius: 1 }} px={2}
-			// py={1}
-		>
+		<Stack direction={"row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>
 			{show.date && <Typography>{dayjs(data.date).format("DD/MM/YYYY")}</Typography>}
 
 			{show.name && <Typography minWidth={80}>{data.user}</Typography>}
 
-			{data.burgers.length > 0 ? <Typography>{data.burgers.map(o => o.name).join(", ")}</Typography> : <Skeleton width={100} variant={"text"} />}
+			{data.burgers.length > 0 ? (
+				<Stack direction={"row"} spacing={2}>
+					{data.burgers.map(burger => (
+						<BurgerItem key={burger.name} data={burger} />
+					))}
+				</Stack>
+			) : (
+				<Skeleton width={100} variant={"text"} />
+			)}
 
 			{(fritesElem || data.drink || data.dessert) && (
 				<Stack direction={"row"} spacing={2}>
@@ -92,6 +92,15 @@ export function OrderItem({ data, show }: OrderItemProps) {
 					</Tooltip>
 				)}
 			</ButtonGroup>
+		</Stack>
+	);
+}
+
+function BurgerItem({ data }: { data: BurgerRecord }) {
+	return (
+		<Stack direction={"row"} spacing={1} alignItems={"center"}>
+			<Typography>{data.name}</Typography>
+			{data.xl && <Chip label={"XL"} size={"small"} variant={"outlined"} />}
 		</Stack>
 	);
 }

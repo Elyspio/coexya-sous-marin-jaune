@@ -5,6 +5,8 @@ import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
 import { updateOrder } from "../../../../store/module/orders/orders.action";
 import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
+const unavailableDesserts: Dessert[] = [Dessert.Brookie];
+
 export function OrderDessert({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();
 
@@ -29,6 +31,7 @@ export function OrderDessert({ data }: { data: Order }) {
 					value={data.dessert ?? null}
 					options={Object.values(Dessert) as Dessert[]}
 					onChange={setOrder as any}
+					getOptionDisabled={option => unavailableDesserts.includes(option)}
 					renderInput={params => <TextField {...params} variant={"standard"} label="Dessert" />}
 				/>
 			</FormControl>

@@ -15,6 +15,9 @@ public class OrderBase
 	{
 		get
 		{
+			if (!Burgers.Any()) return 0;
+			
+			
 			double sum = 0;
 
 			if (Student)
@@ -30,10 +33,12 @@ public class OrderBase
 				if (Fries != null) menu += 3.5;
 
 				if (Drink != null && Fries != null) menu = 11.5; // promotion du meny
-
-
+				
 				sum += menu;
 			}
+			
+			if (Burgers[0].Xl == true) sum += 5;
+
 			
 			if (Dessert != null) sum += 3;
 

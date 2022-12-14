@@ -2,8 +2,8 @@ import React from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { Autocomplete, debounce, FormControl, Paper, Stack, TextField } from "@mui/material";
 import { setUser } from "../../../store/module/orders/orders.action";
-import { UserOrders } from "./UserOrders";
-import { AllOrders } from "./AllOrders";
+import { CreateOrder } from "./list/CreateOrder";
+import { AllOrders } from "./list/AllOrders";
 
 export function Orders() {
 	const { orders, user } = useAppSelector(s => ({
@@ -35,7 +35,7 @@ export function Orders() {
 						/>
 					</FormControl>
 
-					{user && <UserOrders />}
+					{user && <CreateOrder />}
 				</Stack>
 
 				<AllOrders />

@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { mergeUsers } from "../../../store/module/users/users.async.action";
 import { TransitionProps } from "@mui/material/transitions";
 
-type ModalComponentProps = {
+export type ModalComponentProps = {
 	setClose: () => void;
 	open: boolean;
 };

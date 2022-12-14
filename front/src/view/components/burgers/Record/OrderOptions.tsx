@@ -3,7 +3,6 @@ import { useAppDispatch } from "../../../../store";
 import React from "react";
 import { Checkbox, debounce, FormControlLabel, TextField } from "@mui/material";
 import { updateBurgerRecord } from "../../../../store/module/orders/orders.action";
-import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
 export function OrderOptions({ data }: { data: BurgerRecord }) {
 	const dispatch = useAppDispatch();
@@ -36,7 +35,6 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 					[key]: !data[key],
 				})
 			);
-			dispatch(updateRemoteOrder());
 		},
 		[data]
 	);

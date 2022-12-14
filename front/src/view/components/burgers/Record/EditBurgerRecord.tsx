@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
 	Box,
 	Button,
@@ -17,7 +17,7 @@ import { setAlteringRecord, updateBurgerRecord } from "../../../../store/module/
 import { OrderOptions } from "./OrderOptions";
 import { Burgers } from "../Burgers";
 import { noneBurger } from "../../../../store/module/orders/orders.reducer";
-import { deleteCurrentOrderRecord } from "../../../../store/module/orders/orders.async.action";
+import { deleteCurrentOrderRecord, updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 
 /**
  * Add or edit a burger record
@@ -34,10 +34,19 @@ export function EditBurgerRecord() {
 		};
 	});
 
+	const unchangedData = useRef(data);
+
 	const dispatch = useAppDispatch();
 
 	const close = React.useCallback(
 		(mode: "success" | "cancel") => () => {
+			// Update or reset record
+			if (mode === "success") {
+				dispatch(updateRemoteOrder());
+			} else {
+				dispatch(updateBurgerRecord(unchangedData.current));
+			}
+			// Delete remote order or unset altering order
 			if (mode === "cancel" && creating) {
 				dispatch(deleteCurrentOrderRecord());
 			} else {
@@ -94,12 +103,14 @@ export function EditBurgerRecord() {
 						)}
 					</DialogContent>
 					<DialogActions>
-						<Button color={"inherit"} onClick={close("cancel")}>
-							Fermer
-						</Button>
-						<Button color={"primary"} variant={"contained"} onClick={close("success")}>
-							Sauvegarder
-						</Button>
+						<Stack direction={"row"} spacing={2} p={1}>
+							<Button color={"inherit"} variant={"outlined"} onClick={close("cancel")}>
+								Fermer
+							</Button>
+							<Button color={"success"} variant={"contained"} onClick={close("success")}>
+								Sauvegarder
+							</Button>
+						</Stack>
 					</DialogActions>
 				</>
 			)}

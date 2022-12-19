@@ -2380,7 +2380,7 @@ namespace SousMarinJaune.Api.Adapters.AuthenticationApi
                         if (status_ == 200)
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            var result_ = (bool)System.Convert.ChangeType(responseData_, typeof(bool));
+                            var result_ = (bool)System.Convert.ChangeType(responseData_, typeof(bool))!;
                             return result_;
                         }
                         else
@@ -2452,7 +2452,7 @@ namespace SousMarinJaune.Api.Adapters.AuthenticationApi
                         if (status_ == 200)
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            var result_ = (string)System.Convert.ChangeType(responseData_, typeof(string));
+                            var result_ = (string)System.Convert.ChangeType(responseData_, typeof(string))!;
                             return result_;
                         }
                         else

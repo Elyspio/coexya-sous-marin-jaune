@@ -24,8 +24,8 @@ namespace SousMarinJaune.Api.Web.Server;
 
 public class ServerBuilder
 {
-	private readonly string appPath = "/example";
-	private readonly string frontPath = Env.Get("FRONT_PATH", "/front");
+	private const string AppPath = "/example";
+	private readonly string _frontPath = Env.Get("FRONT_PATH", "/front");
 
 	public ServerBuilder(string[] args)
 	{
@@ -94,7 +94,7 @@ public class ServerBuilder
 			document.OperationProcessors.Add(new RequireAuthAttribute.Swagger());
 		});
 		// Setup SPA Serving
-		if (builder.Environment.IsProduction()) Console.WriteLine($"Server in production, serving SPA from {frontPath} folder");
+		if (builder.Environment.IsProduction()) Console.WriteLine($"Server in production, serving SPA from {_frontPath} folder");
 
 		builder.Services.AddSignalR(options => { options.EnableDetailedErrors = true; })
 			.AddJsonProtocol(options =>

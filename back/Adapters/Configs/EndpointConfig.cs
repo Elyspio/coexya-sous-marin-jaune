@@ -3,5 +3,5 @@
 public class EndpointConfig
 {
 	public const string Section = "Endpoints";
-	public string Authentication { get; set; }
+	public required string Authentication { get; set; }
 }

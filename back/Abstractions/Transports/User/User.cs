@@ -6,4 +6,14 @@ public class User : UserBase
 {
 	[Required]
 	public required Guid Id { get; set; }
+
+
+	public double Sold
+	{
+		get
+		{
+			return 0;
+		}
+	}
+
 }

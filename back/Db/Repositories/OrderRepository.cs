@@ -21,10 +21,11 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 	{
 		var order = new OrderEntity
 		{
-			Burgers = new List<BurgerRecord>(),
+			Burgers = new(),
 			Date = DateTime.Now,
 			User = userName,
-			Student = false
+			Student = false,
+			Payments = new()
 		};
 		await EntityCollection.InsertOneAsync(order);
 		return order;

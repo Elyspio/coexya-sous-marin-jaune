@@ -9,6 +9,8 @@ public class OrderBase
 	public Drink? Drink { get; init; }
 	public Fries? Fries { get; init; }
 	public Dessert? Dessert { get; init; }
+	
+	public required List<OrderPayment> Payments { get; init; }                               
 
 
 	public double Price

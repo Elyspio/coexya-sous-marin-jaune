@@ -468,6 +468,7 @@ export interface OrderBase {
 	fries?: Fries | undefined;
 	dessert?: Dessert | undefined;
 	price: number;
+	payments: OrderPayment[];
 }
 
 export interface Order extends OrderBase {
@@ -501,6 +502,18 @@ export enum Sauce {
 export enum Dessert {
 	Cookie = "Cookie",
 	Brookie = "Brookie",
+}
+
+export interface OrderPayment {
+	type: OrderPaymentType;
+	amount: number;
+}
+
+export enum OrderPaymentType {
+	Paypal = "Paypal",
+	LunchVoucher = "LunchVoucher",
+	BankTransfer = "BankTransfer",
+	Cash = "Cash",
 }
 
 export class ApiException extends Error {

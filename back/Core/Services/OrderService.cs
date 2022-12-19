@@ -14,13 +14,13 @@ public class OrderService : IOrderService
 {
 	private readonly ILogger<OrderService> _logger;
 	private readonly IHubContext<UpdateHub, IUpdateHub> hubContext;
-	private readonly OrderAssembler orderAssembler;
-	private readonly IOrderRepository orderRepository;
+	private readonly OrderAssembler _orderAssembler;
+	private readonly IOrderRepository _orderRepository;
 
 	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext, ILogger<OrderService> logger)
 	{
-		this.orderRepository = orderRepository;
-		this.orderAssembler = orderAssembler;
+		this._orderRepository = orderRepository;
+		this._orderAssembler = orderAssembler;
 		this.hubContext = hubContext;
 		_logger = logger;
 	}
@@ -29,7 +29,7 @@ public class OrderService : IOrderService
 	{
 		var logger = _logger.Enter();
 
-		var orders = orderAssembler.Convert(await orderRepository.GetAll());
+		var orders = _orderAssembler.Convert(await _orderRepository.GetAll());
 
 		logger.Exit();
 		return orders;
@@ -39,7 +39,7 @@ public class OrderService : IOrderService
 	{
 		var logger = _logger.Enter(Log.Format(user));
 
-		var orders = orderAssembler.Convert(await orderRepository.GetForUser(user));
+		var orders = _orderAssembler.Convert(await _orderRepository.GetForUser(user));
 
 		logger.Exit();
 
@@ -50,7 +50,7 @@ public class OrderService : IOrderService
 	{
 		var logger = _logger.Enter(Log.Format(user));
 
-		var data = orderAssembler.Convert(await orderRepository.Create(user));
+		var data = _orderAssembler.Convert(await _orderRepository.Create(user));
 		await hubContext.Clients.All.OrderUpdated(data);
 
 		logger.Exit();
@@ -62,7 +62,7 @@ public class OrderService : IOrderService
 	{
 		var logger = _logger.Enter(Log.Format(orderId));
 
-		await orderRepository.Delete(orderId);
+		await _orderRepository.Delete(orderId);
 		await hubContext.Clients.All.OrderDeleted(orderId);
 
 		logger.Exit();
@@ -72,7 +72,7 @@ public class OrderService : IOrderService
 	{
 		var logger = _logger.Enter(Log.Format(order.Id));
 
-		await orderRepository.Update(orderAssembler.Convert(order));
+		await _orderRepository.Update(_orderAssembler.Convert(order));
 		await hubContext.Clients.All.OrderUpdated(order);
 
 		logger.Exit();

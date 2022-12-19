@@ -11,8 +11,7 @@ public class AdapterModule : IDotnetModule
 {
 	public void Load(IServiceCollection services, IConfiguration configuration)
 	{
-		var conf = new EndpointConfig();
-		configuration.GetSection(EndpointConfig.Section).Bind(conf);
+		var conf = configuration.GetValue<EndpointConfig>(EndpointConfig.Section)!;
 
 		services.AddHttpClient<IUsersClient, UsersClient>(client => { client.BaseAddress = new Uri(conf.Authentication); });
 

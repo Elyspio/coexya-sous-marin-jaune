@@ -1,11 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using MongoDB.Bson;
 using Newtonsoft.Json.Converters;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
+using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
+using SousMarinJaune.Api.Abstractions.Models;
+using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Adapters.Injections;
 using SousMarinJaune.Api.Core.Injections;
 using SousMarinJaune.Api.Db.Injections;
@@ -61,8 +66,9 @@ public class ServerBuilder
 		// Setup Logging
 		builder.Host.UseSerilog((_, lc) => lc
 			.MinimumLevel.Debug()
+			.Filter.ByExcluding(e => e.Level == LogEventLevel.Debug && e.Properties["SourceContext"].ToString().Contains("Microsoft"))
 			.Enrich.FromLogContext()
-			.WriteTo.Console(LogEventLevel.Debug, "[{Timestamp:HH:mm:ss} {Level} {SourceContext:l}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Code)
+			.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level} {SourceContext:l}] {Message:lj}{NewLine}{Exception}", theme: AnsiConsoleTheme.Sixteen)
 		);
 
 		builder.Services.AddLogging(log => { log.AddConsole(); });
@@ -98,6 +104,8 @@ public class ServerBuilder
 				}
 			);
 
+		TypeAdapterConfig.GlobalSettings.ForType<Guid, ObjectId>().MapWith(id => id.AsObjectId());
+		TypeAdapterConfig.GlobalSettings.ForType<ObjectId, Guid>().MapWith(id => id.AsGuid());
 
 		Application = builder.Build();
 	}

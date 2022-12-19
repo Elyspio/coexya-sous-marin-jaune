@@ -1,4 +1,5 @@
-﻿using SousMarinJaune.Api.Abstractions.Assemblers;
+﻿using Mapster;
+using SousMarinJaune.Api.Abstractions.Assemblers;
 using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Models;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
@@ -9,31 +10,11 @@ public class OrderAssembler : BaseAssembler<Order, OrderEntity>
 {
 	public override Order Convert(OrderEntity obj)
 	{
-		return new Order
-		{
-			Id = obj.Id.AsGuid(),
-			User = obj.User,
-			Burgers = obj.Burgers,
-			Date = obj.Date,
-			Dessert = obj.Dessert,
-			Drink = obj.Drink,
-			Student = obj.Student,
-			Fries = obj.Fries
-		};
+		return obj.Adapt<Order>();
 	}
 
 	public override OrderEntity Convert(Order obj)
 	{
-		return new OrderEntity
-		{
-			Id = obj.Id.AsObjectId(),
-			User = obj.User,
-			Burgers = obj.Burgers,
-			Date = obj.Date,
-			Dessert = obj.Dessert,
-			Drink = obj.Drink,
-			Student = obj.Student,
-			Fries = obj.Fries
-		};
+		return obj.Adapt<OrderEntity>();
 	}
 }

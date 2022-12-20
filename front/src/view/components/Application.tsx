@@ -7,12 +7,12 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box, Container } from "@mui/material";
-import { login, logout } from "../../store/module/authentication/authentication.action";
+import { login, logout, silentLogin } from "../../store/module/authentication/authentication.action";
 import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
 import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/orders.async.action";
 import { getBurgers } from "../../store/module/burgers/burgers.async.action";
-import { DarkMode, LightMode, Merge, Message } from "@mui/icons-material";
+import { AccountBalance, DarkMode, LightMode, Merge, Message } from "@mui/icons-material";
 import { toggleModal } from "../../store/module/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
 
@@ -43,7 +43,7 @@ function Application() {
 	const actions = [
 		createDrawerAction(theme === "dark" ? "Light Mode" : "Dark Mode", {
 			icon: themeIcon,
-			onClick: storeActions.toggleTheme,
+			onClick: () => storeActions.toggleTheme(),
 		}),
 	];
 
@@ -73,12 +73,15 @@ function Application() {
 	);
 
 	if (logged) {
-		actions.push(createDrawerDivider("Admin"));
-
 		actions.push(
+			createDrawerDivider("Admin"),
 			createDrawerAction("Merge Users", {
 				icon: <Merge />,
 				onClick: () => storeActions.toggleModal("mergeUsers"),
+			}),
+			createDrawerAction("Balances", {
+				icon: <AccountBalance />,
+				onClick: () => storeActions.toggleModal("balances"),
 			})
 		);
 	}
@@ -87,6 +90,7 @@ function Application() {
 		dispatch(startOrderUpdateSynchro());
 		dispatch(getBurgers());
 		dispatch(getOrders());
+		dispatch(silentLogin());
 	}, [dispatch]);
 
 	const drawer = withDrawer({

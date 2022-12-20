@@ -17,7 +17,9 @@ export function SelectTimeRangeOrder() {
 		<FormControl sx={{ maxWidth: 120 }} fullWidth>
 			<Select value={timeRange} onChange={onTimeRangeChange} label={"Depuis"} variant={"standard"}>
 				{Object.values(OrderTime).map(time => (
-					<MenuItem value={time}>{time}</MenuItem>
+					<MenuItem key={time} value={time}>
+						{time}
+					</MenuItem>
 				))}
 			</Select>
 		</FormControl>

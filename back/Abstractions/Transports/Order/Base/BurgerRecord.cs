@@ -1,4 +1,4 @@
-﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order;
+﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order.Base;
 
 public class BurgerRecord
 {

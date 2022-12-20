@@ -1,4 +1,4 @@
-import { BurgerRecord, Order } from "../../../core/apis/backend/generated";
+import { BurgerRecord, Order, OrderPaymentType } from "../../../core/apis/backend/generated";
 import { createActionBase } from "../../common/common.actions";
 import { OrderState } from "./orders.reducer";
 
@@ -15,3 +15,5 @@ export const setAlteringRecord = createAction<number | undefined>("setAlteringRe
 export const deleteOrderRecord = createAction<number>("deleteOrderRecordBurger");
 
 export const setOrderTimeRange = createAction<OrderState["timeRange"]>("setMaxOrderTimeToDisplay");
+
+export const updateOrderPayment = createAction<{ type: OrderPaymentType; value: number }>("updateOrderPayment");

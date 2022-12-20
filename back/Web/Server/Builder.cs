@@ -9,8 +9,6 @@ using Serilog.Sinks.SystemConsole.Themes;
 using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
-using SousMarinJaune.Api.Abstractions.Models;
-using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Adapters.Injections;
 using SousMarinJaune.Api.Core.Injections;
 using SousMarinJaune.Api.Db.Injections;

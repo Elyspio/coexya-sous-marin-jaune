@@ -17,20 +17,26 @@ import { setAlteringRecord, updateBurgerRecord } from "../../../../store/module/
 import { OrderOptions } from "./OrderOptions";
 import { Burgers } from "../Burgers";
 import { noneBurger } from "../../../../store/module/orders/orders.reducer";
-import { deleteCurrentOrderRecord, updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
+import {
+	deleteCurrentOrderRecord,
+	deleteOrder,
+	updateRemoteOrder,
+} from "../../../../store/module/orders/orders.async.action";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 /**
  * Add or edit a burger record
  * @constructor
  */
 export function EditBurgerRecord() {
-	const { data, display, burger, creating } = useAppSelector(s => {
+	const { data, display, burger, creating, orderId } = useAppSelector(s => {
 		let data = s.orders.all[s.orders.altering!.order].burgers[s.orders.altering!.record!];
 		return {
 			data,
 			burger: s.burgers.all.find(b => b.name === data?.name),
 			display: s.orders.altering !== undefined,
-			creating: s.orders.mode.record === "create",
+			creating: s.orders.mode,
+			orderId: s.orders.altering!.order,
 		};
 	});
 
@@ -47,13 +53,17 @@ export function EditBurgerRecord() {
 				dispatch(updateBurgerRecord(unchangedData.current));
 			}
 			// Delete remote order or unset altering order
-			if (mode === "cancel" && creating) {
-				dispatch(deleteCurrentOrderRecord());
+			if (mode === "cancel") {
+				if (creating.order == "create") {
+					dispatch(deleteOrder(orderId));
+				} else if (creating.record === "create") {
+					dispatch(deleteCurrentOrderRecord());
+				}
 			} else {
 				dispatch(setAlteringRecord());
 			}
 		},
-		[dispatch]
+		[dispatch, orderId]
 	);
 
 	const updateExcluded = React.useCallback(
@@ -69,51 +79,55 @@ export function EditBurgerRecord() {
 		[dispatch, data]
 	);
 
+	const isSmall = useBreakpoint("sm", "down");
+
+	if (!data) return null;
+
 	return (
 		<Dialog open={display} onClose={close("cancel")} maxWidth={false}>
-			{data && (
-				<>
-					<DialogTitle>
-						<Box justifyContent={"center"} display={"flex"}>
-							<Typography fontSize={"large"} variant={"overline"}>
-								{data.name === noneBurger ? "Choisissez un burger" : data.name}
-							</Typography>
-						</Box>
-					</DialogTitle>
-					<DialogContent dividers>
-						{burger ? (
-							<Stack direction={"row"} spacing={4} my={1}>
-								<Stack>
-									<Typography variant={"overline"}>Ingrédients</Typography>
-									<Stack spacing={1}>
-										{burger.ingredients.map(i => (
-											<Box key={i}>
-												<FormControlLabel control={<Checkbox onClick={updateExcluded(i)} checked={!data.excluded.includes(i)} />} label={i} />
-											</Box>
-										))}
-									</Stack>
-								</Stack>
-								<Divider flexItem orientation="vertical"></Divider>
-								<Stack spacing={2} minWidth={300}>
-									<OrderOptions data={data} />
-								</Stack>
+			<DialogTitle>
+				<Box justifyContent={"center"} display={"flex"}>
+					<Typography fontSize={"large"} variant={"overline"}>
+						{data.name === noneBurger ? "Choisissez un burger" : data.name}
+					</Typography>
+				</Box>
+			</DialogTitle>
+			<DialogContent dividers>
+				{burger ? (
+					<Stack direction={"row"} spacing={4} my={1}>
+						<Stack>
+							<Typography variant={"overline"}>Ingrédients</Typography>
+							<Stack spacing={1}>
+								{burger.ingredients.map(i => (
+									<Box key={i}>
+										<FormControlLabel
+											control={<Checkbox onClick={updateExcluded(i)} checked={!data.excluded.includes(i)} />}
+											label={i}
+											sx={{ whiteSpace: isSmall ? "inherit" : "nowrap" }}
+										/>
+									</Box>
+								))}
 							</Stack>
-						) : (
-							<Burgers />
-						)}
-					</DialogContent>
-					<DialogActions>
-						<Stack direction={"row"} spacing={2} p={1}>
-							<Button color={"inherit"} variant={"outlined"} onClick={close("cancel")}>
-								Fermer
-							</Button>
-							<Button color={"success"} variant={"contained"} onClick={close("success")}>
-								Sauvegarder
-							</Button>
 						</Stack>
-					</DialogActions>
-				</>
-			)}
+						<Divider flexItem orientation="vertical"></Divider>
+						<Stack spacing={2} width={"100%"}>
+							<OrderOptions data={data} />
+						</Stack>
+					</Stack>
+				) : (
+					<Burgers />
+				)}
+			</DialogContent>
+			<DialogActions>
+				<Stack direction={"row"} spacing={2} p={1}>
+					<Button color={"inherit"} variant={"outlined"} onClick={close("cancel")}>
+						Fermer
+					</Button>
+					<Button color={"success"} variant={"contained"} onClick={close("success")}>
+						Sauvegarder
+					</Button>
+				</Stack>
+			</DialogActions>
 		</Dialog>
 	);
 }

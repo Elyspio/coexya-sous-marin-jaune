@@ -1,4 +1,6 @@
-﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order;
+﻿using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
+
+namespace SousMarinJaune.Api.Abstractions.Transports.Order.Base;
 
 public class OrderBase
 {
@@ -9,8 +11,8 @@ public class OrderBase
 	public Drink? Drink { get; init; }
 	public Fries? Fries { get; init; }
 	public Dessert? Dessert { get; init; }
-	
-	public required List<OrderPayment> Payments { get; init; }                               
+
+	public required List<OrderPayment> Payments { get; init; }
 
 
 	public double Price
@@ -18,8 +20,8 @@ public class OrderBase
 		get
 		{
 			if (!Burgers.Any()) return 0;
-			
-			
+
+
 			double sum = 0;
 
 			if (Student)
@@ -35,13 +37,13 @@ public class OrderBase
 				if (Fries != null) menu += 3.5;
 
 				if (Drink != null && Fries != null) menu = 11.5; // promotion du meny
-				
+
 				sum += menu;
 			}
-			
-			if (Burgers[0].Xl == true) sum += 5;
 
-			
+			if (Burgers[0].Xl) sum += 5;
+
+
 			if (Dessert != null) sum += 3;
 
 

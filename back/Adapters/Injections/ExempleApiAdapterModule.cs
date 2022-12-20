@@ -13,9 +13,9 @@ public class AdapterModule : IDotnetModule
 	{
 		var conf = configuration.GetValue<EndpointConfig>(EndpointConfig.Section)!;
 
-		services.AddHttpClient<IUsersClient, UsersClient>(client => { client.BaseAddress = new Uri(conf.Authentication); });
+		services.AddHttpClient<IUsersClient, UsersClient>(client => { client.BaseAddress = new(conf.Authentication); });
 
-		services.AddHttpClient<IAuthenticationClient, AuthenticationClient>(client => { client.BaseAddress = new Uri(conf.Authentication); });
+		services.AddHttpClient<IAuthenticationClient, AuthenticationClient>(client => { client.BaseAddress = new(conf.Authentication); });
 
 		services.AddHttpClient<BurgerAdapter>();
 

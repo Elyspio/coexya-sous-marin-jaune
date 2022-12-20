@@ -1,9 +1,10 @@
-﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order;
+﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
 
 public enum OrderPaymentType
 {
 	Paypal,
 	LunchVoucher,
 	BankTransfer,
-	Cash
+	Cash,
+	Admin
 }

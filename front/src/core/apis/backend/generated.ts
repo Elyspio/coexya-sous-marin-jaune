@@ -8,542 +8,554 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from "axios";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios';
 
 export class BurgerClient {
-	protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-	private instance: AxiosInstance;
-	private baseUrl: string;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-	constructor(baseUrl?: string, instance?: AxiosInstance) {
-		this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
 
-		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
-	}
+        this.instance = instance ? instance : axios.create();
 
-	getAll(cancelToken?: CancelToken | undefined): Promise<Burger[]> {
-		let url_ = this.baseUrl + "/api/burgers";
-		url_ = url_.replace(/[?&]$/, "");
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
 
-		let options_: AxiosRequestConfig = {
-			method: "GET",
-			url: url_,
-			headers: {
-				Accept: "application/json",
-			},
-			cancelToken,
-		};
+    }
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processGetAll(_response);
-			});
-	}
+    getAll(  cancelToken?: CancelToken | undefined): Promise<Burger[]> {
+        let url_ = this.baseUrl + "/api/burgers";
+        url_ = url_.replace(/[?&]$/, "");
 
-	protected processGetAll(response: AxiosResponse): Promise<Burger[]> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 200) {
-			const _responseText = response.data;
-			let result200: any = null;
-			let resultData200 = _responseText;
-			result200 = JSON.parse(resultData200);
-			return Promise.resolve<Burger[]>(result200);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<Burger[]>(null as any);
-	}
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetAll(_response);
+        });
+    }
+
+    protected processGetAll(response: AxiosResponse): Promise<Burger[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<Burger[]>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Burger[]>(null as any);
+    }
 }
 
 export class OrderClient {
-	protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-	private instance: AxiosInstance;
-	private baseUrl: string;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-	constructor(baseUrl?: string, instance?: AxiosInstance) {
-		this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
 
-		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
-	}
+        this.instance = instance ? instance : axios.create();
 
-	getAll2(cancelToken?: CancelToken | undefined): Promise<Order[]> {
-		let url_ = this.baseUrl + "/api/orders";
-		url_ = url_.replace(/[?&]$/, "");
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
 
-		let options_: AxiosRequestConfig = {
-			method: "GET",
-			url: url_,
-			headers: {
-				Accept: "application/json",
-			},
-			cancelToken,
-		};
+    }
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processGetAll2(_response);
-			});
-	}
+    getAll2(  cancelToken?: CancelToken | undefined): Promise<Order[]> {
+        let url_ = this.baseUrl + "/api/orders";
+        url_ = url_.replace(/[?&]$/, "");
 
-	getForUser(user: string, cancelToken?: CancelToken | undefined): Promise<Order[]> {
-		let url_ = this.baseUrl + "/api/orders/users/{user}";
-		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
-		url_ = url_.replace("{user}", encodeURIComponent("" + user));
-		url_ = url_.replace(/[?&]$/, "");
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
 
-		let options_: AxiosRequestConfig = {
-			method: "GET",
-			url: url_,
-			headers: {
-				Accept: "application/json",
-			},
-			cancelToken,
-		};
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetAll2(_response);
+        });
+    }
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processGetForUser(_response);
-			});
-	}
+    protected processGetAll2(response: AxiosResponse): Promise<Order[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<Order[]>(result200);
 
-	create(user: string, cancelToken?: CancelToken | undefined): Promise<Order> {
-		let url_ = this.baseUrl + "/api/orders/users/{user}";
-		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
-		url_ = url_.replace("{user}", encodeURIComponent("" + user));
-		url_ = url_.replace(/[?&]$/, "");
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Order[]>(null as any);
+    }
 
-		let options_: AxiosRequestConfig = {
-			method: "POST",
-			url: url_,
-			headers: {
-				Accept: "application/json",
-			},
-			cancelToken,
-		};
+    getForUser(user: string , cancelToken?: CancelToken | undefined): Promise<Order[]> {
+        let url_ = this.baseUrl + "/api/orders/users/{user}";
+        if (user === undefined || user === null)
+            throw new Error("The parameter 'user' must be defined.");
+        url_ = url_.replace("{user}", encodeURIComponent("" + user));
+        url_ = url_.replace(/[?&]$/, "");
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processCreate(_response);
-			});
-	}
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
 
-	delete(order: string, cancelToken?: CancelToken | undefined): Promise<void> {
-		let url_ = this.baseUrl + "/api/orders/{order}";
-		if (order === undefined || order === null) throw new Error("The parameter 'order' must be defined.");
-		url_ = url_.replace("{order}", encodeURIComponent("" + order));
-		url_ = url_.replace(/[?&]$/, "");
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetForUser(_response);
+        });
+    }
 
-		let options_: AxiosRequestConfig = {
-			method: "DELETE",
-			url: url_,
-			headers: {},
-			cancelToken,
-		};
+    protected processGetForUser(response: AxiosResponse): Promise<Order[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<Order[]>(result200);
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processDelete(_response);
-			});
-	}
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Order[]>(null as any);
+    }
 
-	updateOrder(orderId: string, order: Order, cancelToken?: CancelToken | undefined): Promise<void> {
-		let url_ = this.baseUrl + "/api/orders/{orderId}";
-		if (orderId === undefined || orderId === null) throw new Error("The parameter 'orderId' must be defined.");
-		url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
-		url_ = url_.replace(/[?&]$/, "");
+    create(user: string , cancelToken?: CancelToken | undefined): Promise<Order> {
+        let url_ = this.baseUrl + "/api/orders/users/{user}";
+        if (user === undefined || user === null)
+            throw new Error("The parameter 'user' must be defined.");
+        url_ = url_.replace("{user}", encodeURIComponent("" + user));
+        url_ = url_.replace(/[?&]$/, "");
 
-		const content_ = JSON.stringify(order);
+        let options_: AxiosRequestConfig = {
+            method: "POST",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
 
-		let options_: AxiosRequestConfig = {
-			data: content_,
-			method: "PUT",
-			url: url_,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			cancelToken,
-		};
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processCreate(_response);
+        });
+    }
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processUpdateOrder(_response);
-			});
-	}
+    protected processCreate(response: AxiosResponse): Promise<Order> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 201) {
+            const _responseText = response.data;
+            let result201: any = null;
+            let resultData201  = _responseText;
+            result201 = JSON.parse(resultData201);
+            return Promise.resolve<Order>(result201);
 
-	protected processGetAll2(response: AxiosResponse): Promise<Order[]> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 200) {
-			const _responseText = response.data;
-			let result200: any = null;
-			let resultData200 = _responseText;
-			result200 = JSON.parse(resultData200);
-			return Promise.resolve<Order[]>(result200);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<Order[]>(null as any);
-	}
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Order>(null as any);
+    }
 
-	protected processGetForUser(response: AxiosResponse): Promise<Order[]> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 200) {
-			const _responseText = response.data;
-			let result200: any = null;
-			let resultData200 = _responseText;
-			result200 = JSON.parse(resultData200);
-			return Promise.resolve<Order[]>(result200);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<Order[]>(null as any);
-	}
+    delete(order: string , cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/orders/{order}";
+        if (order === undefined || order === null)
+            throw new Error("The parameter 'order' must be defined.");
+        url_ = url_.replace("{order}", encodeURIComponent("" + order));
+        url_ = url_.replace(/[?&]$/, "");
 
-	protected processCreate(response: AxiosResponse): Promise<Order> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 201) {
-			const _responseText = response.data;
-			let result201: any = null;
-			let resultData201 = _responseText;
-			result201 = JSON.parse(resultData201);
-			return Promise.resolve<Order>(result201);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<Order>(null as any);
-	}
+        let options_: AxiosRequestConfig = {
+            method: "DELETE",
+            url: url_,
+            headers: {
+            },
+            cancelToken
+        };
 
-	protected processDelete(response: AxiosResponse): Promise<void> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 204) {
-			const _responseText = response.data;
-			return Promise.resolve<void>(null as any);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<void>(null as any);
-	}
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processDelete(_response);
+        });
+    }
 
-	protected processUpdateOrder(response: AxiosResponse): Promise<void> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 204) {
-			const _responseText = response.data;
-			return Promise.resolve<void>(null as any);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<void>(null as any);
-	}
+    protected processDelete(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 204) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    updateOrder(orderId: string, order: Order , cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/orders/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(order);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processUpdateOrder(_response);
+        });
+    }
+
+    protected processUpdateOrder(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 204) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export class UserClient {
-	protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-	private instance: AxiosInstance;
-	private baseUrl: string;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-	constructor(baseUrl?: string, instance?: AxiosInstance) {
-		this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
 
-		this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
-	}
+        this.instance = instance ? instance : axios.create();
 
-	mergeUsers(user: string, users: string[], cancelToken?: CancelToken | undefined): Promise<void> {
-		let url_ = this.baseUrl + "/api/users/{user}/merge";
-		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
-		url_ = url_.replace("{user}", encodeURIComponent("" + user));
-		url_ = url_.replace(/[?&]$/, "");
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "http://localhost:4000";
 
-		const content_ = JSON.stringify(users);
+    }
 
-		let options_: AxiosRequestConfig = {
-			data: content_,
-			method: "PATCH",
-			url: url_,
-			headers: {
-				"Content-Type": "application/json",
-			},
-			cancelToken,
-		};
+    mergeUsers(user: string, users: string[] , cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/users/{user}/merge";
+        if (user === undefined || user === null)
+            throw new Error("The parameter 'user' must be defined.");
+        url_ = url_.replace("{user}", encodeURIComponent("" + user));
+        url_ = url_.replace(/[?&]$/, "");
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processMergeUsers(_response);
-			});
-	}
+        const content_ = JSON.stringify(users);
 
-	getUserBalance(user: string, cancelToken?: CancelToken | undefined): Promise<number> {
-		let url_ = this.baseUrl + "/api/users/{user}/balance";
-		if (user === undefined || user === null) throw new Error("The parameter 'user' must be defined.");
-		url_ = url_.replace("{user}", encodeURIComponent("" + user));
-		url_ = url_.replace(/[?&]$/, "");
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "PATCH",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
 
-		let options_: AxiosRequestConfig = {
-			method: "GET",
-			url: url_,
-			headers: {
-				Accept: "application/json",
-			},
-			cancelToken,
-		};
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processMergeUsers(_response);
+        });
+    }
 
-		return this.instance
-			.request(options_)
-			.catch((_error: any) => {
-				if (isAxiosError(_error) && _error.response) {
-					return _error.response;
-				} else {
-					throw _error;
-				}
-			})
-			.then((_response: AxiosResponse) => {
-				return this.processGetUserBalance(_response);
-			});
-	}
+    protected processMergeUsers(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 204) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
 
-	protected processMergeUsers(response: AxiosResponse): Promise<void> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 204) {
-			const _responseText = response.data;
-			return Promise.resolve<void>(null as any);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<void>(null as any);
-	}
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
 
-	protected processGetUserBalance(response: AxiosResponse): Promise<number> {
-		const status = response.status;
-		let _headers: any = {};
-		if (response.headers && typeof response.headers === "object") {
-			for (let k in response.headers) {
-				if (response.headers.hasOwnProperty(k)) {
-					_headers[k] = response.headers[k];
-				}
-			}
-		}
-		if (status === 200) {
-			const _responseText = response.data;
-			let result200: any = null;
-			let resultData200 = _responseText;
-			result200 = JSON.parse(resultData200);
-			return Promise.resolve<number>(result200);
-		} else if (status !== 200 && status !== 204) {
-			const _responseText = response.data;
-			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-		}
-		return Promise.resolve<number>(null as any);
-	}
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    getUsers(  cancelToken?: CancelToken | undefined): Promise<User[]> {
+        let url_ = this.baseUrl + "/api/users";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetUsers(_response);
+        });
+    }
+
+    protected processGetUsers(response: AxiosResponse): Promise<User[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<User[]>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<User[]>(null as any);
+    }
 }
 
 export interface Burger {
-	ingredients: string[];
-	name: string;
+    ingredients: string[];
+    name: string;
 }
 
 export interface OrderBase {
-	burgers: BurgerRecord[];
-	user: string;
-	date: string;
-	student: boolean;
-	drink?: Drink | undefined;
-	fries?: Fries | undefined;
-	dessert?: Dessert | undefined;
-	price: number;
-	payments: OrderPayment[];
+    burgers: BurgerRecord[];
+    user: string;
+    date: string;
+    student: boolean;
+    drink?: Drink | undefined;
+    fries?: Fries | undefined;
+    dessert?: Dessert | undefined;
+    payments: OrderPayment[];
+    price: number;
 }
 
 export interface Order extends OrderBase {
-	id: string;
+    id: string;
 }
 
 export interface BurgerRecord {
-	name: string;
-	excluded: string[];
-	vegetarian: boolean;
-	xl: boolean;
-	comment?: string | undefined;
+    name: string;
+    excluded: string[];
+    vegetarian: boolean;
+    xl: boolean;
+    comment?: string | undefined;
 }
 
 export enum Drink {
-	Coca = "Coca",
-	CocaZero = "CocaZero",
-	IceTea = "IceTea",
-	Limonade = "Limonade",
+    Coca = "Coca",
+    CocaZero = "CocaZero",
+    IceTea = "IceTea",
+    Limonade = "Limonade",
 }
 
 export interface Fries {
-	sauces: Sauce[];
+    sauces: Sauce[];
 }
 
 export enum Sauce {
-	Ketchup = "Ketchup",
-	Mayo = "Mayo",
+    Ketchup = "Ketchup",
+    Mayo = "Mayo",
 }
 
 export enum Dessert {
-	Cookie = "Cookie",
-	Brookie = "Brookie",
+    Cookie = "Cookie",
+    Brookie = "Brookie",
 }
 
 export interface OrderPayment {
-	type: OrderPaymentType;
-	amount: number;
+    type: OrderPaymentType;
+    amount: number;
+    received?: number | undefined;
 }
 
 export enum OrderPaymentType {
-	Paypal = "Paypal",
-	LunchVoucher = "LunchVoucher",
-	BankTransfer = "BankTransfer",
-	Cash = "Cash",
+    Paypal = "Paypal",
+    LunchVoucher = "LunchVoucher",
+    BankTransfer = "BankTransfer",
+    Cash = "Cash",
+    Admin = "Admin",
+}
+
+export interface User {
+    name: string;
+    sold: number;
 }
 
 export class ApiException extends Error {
-	override message: string;
-	status: number;
-	response: string;
-	headers: { [key: string]: any };
-	result: any;
-	protected isApiException = true;
+    override message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
 
-	constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
-		super();
+    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+        super();
 
-		this.message = message;
-		this.status = status;
-		this.response = response;
-		this.headers = headers;
-		this.result = result;
-	}
+        this.message = message;
+        this.status = status;
+        this.response = response;
+        this.headers = headers;
+        this.result = result;
+    }
 
-	static isApiException(obj: any): obj is ApiException {
-		return obj.isApiException === true;
-	}
+    protected isApiException = true;
+
+    static isApiException(obj: any): obj is ApiException {
+        return obj.isApiException === true;
+    }
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any }, result?: any): any {
-	if (result !== null && result !== undefined) throw result;
-	else throw new ApiException(message, status, response, headers, null);
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
+    if (result !== null && result !== undefined)
+        throw result;
+    else
+        throw new ApiException(message, status, response, headers, null);
 }
 
 function isAxiosError(obj: any | undefined): obj is AxiosError {
-	return obj && obj.isAxiosError === true;
+    return obj && obj.isAxiosError === true;
 }

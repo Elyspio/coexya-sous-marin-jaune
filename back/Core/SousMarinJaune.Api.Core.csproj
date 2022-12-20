@@ -9,17 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Mapster" Version="7.3.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0" />
-        <PackageReference Include="Scrutor" Version="4.2.0" />
-        <PackageReference Include="System.Runtime.Caching" Version="7.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="7.0.0" />
+        <PackageReference Include="Mapster" Version="7.3.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0"/>
+        <PackageReference Include="Scrutor" Version="4.2.0"/>
+        <PackageReference Include="System.Runtime.Caching" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="7.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Abstractions\SousMarinJaune.Api.Abstractions.csproj" />
-        <ProjectReference Include="..\Adapters\SousMarinJaune.Api.Adapters.csproj" />
-        <ProjectReference Include="..\Sockets\SousMarinJaune.Api.Sockets.csproj" />
+        <ProjectReference Include="..\Abstractions\SousMarinJaune.Api.Abstractions.csproj"/>
+        <ProjectReference Include="..\Adapters\SousMarinJaune.Api.Adapters.csproj"/>
+        <ProjectReference Include="..\Sockets\SousMarinJaune.Api.Sockets.csproj"/>
     </ItemGroup>
 
 </Project>

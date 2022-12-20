@@ -11,6 +11,7 @@ import {
 	setUser,
 	updateBurgerRecord,
 	updateOrder,
+	updateOrderPayment,
 } from "./orders.action";
 import { createOrder, getOrders, updateRemoteOrder } from "./orders.async.action";
 
@@ -135,6 +136,20 @@ const slice = createSlice({
 
 		builder.addCase(setOrderTimeRange, (state, action) => {
 			state.timeRange = action.payload;
+		});
+
+		builder.addCase(updateOrderPayment, (state, { payload: { type, value } }) => {
+			let order = state.all[state.altering!.order];
+			if (value === 0) {
+				order.payments = order.payments.filter(p => p.type !== type);
+				return;
+			}
+			const payment = order.payments.find(p => p.type === type);
+			if (payment !== undefined) {
+				payment.amount = value;
+			} else {
+				order.payments.push({ type, amount: value });
+			}
 		});
 	},
 });

@@ -22,7 +22,7 @@ public class RequireAuthAttribute : ActionFilterAttribute
 		if (authenticationService == default)
 		{
 			context.Result = new StatusCodeResult(500);
-			throw new Exception("Dependency injection error, Authentication Service is not available");
+			throw new("Dependency injection error, Authentication Service is not available");
 		}
 
 		var cookie = context.HttpContext.Request.Cookies[AuthenticationTokenField];
@@ -62,39 +62,39 @@ public class RequireAuthAttribute : ActionFilterAttribute
 			if (attributes.All(attribute => attribute.AttributeType != typeof(RequireAuthAttribute))) return true;
 
 
-			context.OperationDescription.Operation.Parameters.Add(new OpenApiParameter
+			context.OperationDescription.Operation.Parameters.Add(new()
 				{
 					Name = AuthenticationTokenField,
 					Kind = OpenApiParameterKind.Header,
 					IsRequired = false,
 					AllowEmptyValue = true,
 					Description = "Authentication Token",
-					Schema = new JsonSchema
+					Schema = new()
 					{
 						Type = JsonObjectType.String
 					}
 				}
 			);
 
-			context.OperationDescription.Operation.Parameters.Add(new OpenApiParameter
+			context.OperationDescription.Operation.Parameters.Add(new()
 				{
 					Name = AuthenticationTokenField,
 					Kind = OpenApiParameterKind.Cookie,
 					IsRequired = false,
 					AllowEmptyValue = true,
 					Description = "Authentication Token",
-					Schema = new JsonSchema
+					Schema = new()
 					{
 						Type = JsonObjectType.String
 					}
 				}
 			);
 
-			context.OperationDescription.Operation.Responses.Add("401", new OpenApiResponse
+			context.OperationDescription.Operation.Responses.Add("401", new()
 			{
 				Description = "Unauthorized"
 			});
-			context.OperationDescription.Operation.Responses.Add("403", new OpenApiResponse
+			context.OperationDescription.Operation.Responses.Add("403", new()
 			{
 				Description = "Forbidden"
 			});

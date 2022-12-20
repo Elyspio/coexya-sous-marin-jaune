@@ -16,7 +16,7 @@ public abstract class BaseRepository<T>
 
 	protected BaseRepository(IConfiguration configuration, ILogger<BaseRepository<T>> logger)
 	{
-		context = new MongoContext(configuration);
+		context = new(configuration);
 		CollectionName = typeof(T).Name[..^"Entity".Length];
 		this.logger = logger;
 		var pack = new ConventionPack

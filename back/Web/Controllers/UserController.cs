@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+using SousMarinJaune.Api.Abstractions.Transports.User;
+using SousMarinJaune.Api.Web.Filters;
 using System.Net;
 
 namespace SousMarinJaune.Api.Web.Controllers;
 
-[Route("api/users/{user}")]
+[Route("api/users/")]
 [ApiController]
 public class UserController : ControllerBase
 {
@@ -21,7 +23,8 @@ public class UserController : ControllerBase
 	/// </summary>
 	/// <param name="users"></param>
 	/// <returns></returns>
-	[HttpPatch("merge")]
+	[HttpPatch("{user}/merge")]
+	[RequireAuth]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	public async Task<IActionResult> MergeUsers(string user, [FromBody] List<string> users)
 	{
@@ -30,10 +33,10 @@ public class UserController : ControllerBase
 	}
 
 
-	[HttpGet("balance")]
-	[SwaggerResponse(HttpStatusCode.OK, typeof(double))]
-	public async Task<IActionResult> GetUserBalance(string user)
+	[HttpGet()]
+	[SwaggerResponse(HttpStatusCode.OK, typeof(List<User>))]
+	public async Task<IActionResult> GetUsers()
 	{
-		return Ok(await _userService.GetUserBalance(user));
+		return Ok(await _userService.GetUsers());
 	}
 }

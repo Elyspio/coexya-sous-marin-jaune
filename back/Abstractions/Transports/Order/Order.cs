@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SousMarinJaune.Api.Abstractions.Transports.Order.Base;
+using System.ComponentModel.DataAnnotations;
 
 namespace SousMarinJaune.Api.Abstractions.Transports.Order;
 

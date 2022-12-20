@@ -2,18 +2,9 @@
 
 namespace SousMarinJaune.Api.Abstractions.Transports.User;
 
-public class User : UserBase
+public class User 
 {
-	[Required]
-	public required Guid Id { get; set; }
-
-
-	public double Sold
-	{
-		get
-		{
-			return 0;
-		}
-	}
+	public required string  Name { get; set; }
+	public required double Sold { get; set; }
 
 }

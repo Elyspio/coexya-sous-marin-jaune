@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tooltip, Typography } from "@mui/material";
+import React, { useCallback, useMemo } from "react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import { OrderFries } from "../../burgers/Record/OrderFries";
-import { OrderDrink } from "../../burgers/Record/OrderDrink";
-import { OrderDessert } from "../../burgers/Record/OrderDessert";
-import { createOrderRecord, setAlteringOrder } from "../../../../store/module/orders/orders.action";
-import { EditBurgerRecord } from "../../burgers/Record/EditBurgerRecord";
 import { deleteOrder, updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
 import { isToday } from "../list/CreateOrder";
-import { OrderStudent } from "../../burgers/Record/OrderStudent";
-import { BurgerItem } from "./BurgerItem";
+import TabContext from "@mui/lab/TabContext";
+import TabList from "@mui/lab/TabList";
+import TabPanel from "@mui/lab/TabPanel";
+import { PayementOrder } from "./payment/PayementOrder";
+import { EditMenuOrder } from "./EditMenuOrder";
+import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
+
+type Workflow = "menu" | "payment";
 
 export function EditOrder() {
 	const { order, recordIndex, creating } = useAppSelector(state => {
@@ -21,13 +22,13 @@ export function EditOrder() {
 		};
 	});
 
+	const [workflow, setWorkflow] = React.useState<Workflow>("menu");
+
 	const dispatch = useAppDispatch();
 
-	const addRecord = React.useCallback(() => {
-		dispatch(createOrderRecord());
+	const close = useCallback(() => {
+		dispatch(setAlteringOrder());
 	}, [dispatch]);
-
-	const close = React.useCallback(() => dispatch(setAlteringOrder()), []);
 
 	const deleteOrderFn = React.useCallback(() => {
 		if (creating) {
@@ -36,30 +37,52 @@ export function EditOrder() {
 		close();
 	}, [creating, order, close]);
 
-	const updateOrderFn = React.useCallback(() => {
-		dispatch(updateRemoteOrder());
-		close();
-	}, [dispatch, close]);
+	const handleChange = (event: React.SyntheticEvent, newValue: Workflow) => {
+		setWorkflow(newValue);
+	};
 
-	const canValidate = useMemo(() => order && (order.burgers?.length === 0 || (order.student && (!order.fries || !order.drink))), [order]);
+	const updateOrderFn = React.useCallback(() => {
+		if (workflow === "menu") {
+			setWorkflow("payment");
+		} else {
+			dispatch(updateRemoteOrder());
+			close();
+		}
+	}, [workflow, dispatch, close]);
+
+	const remainingToPay = useMemo(() => {
+		if (!order) return -1;
+		const amountPaid = order.payments.reduce((acc, current) => acc + current.amount, 0);
+		return order.price - amountPaid;
+	}, [order]);
+
+	useMemo(() => {
+		if (!order) return true;
+		if (order.burgers.length) return true;
+		if (order.student && (!order.fries || !order.drink)) return true;
+		return remainingToPay > 0;
+	}, [order]);
 
 	const validateTooltip = useMemo(() => {
 		if (!order) return "";
 
-		// Burgers
-		if (!order.burgers.length) return "Vous devez prendre au moins un burger";
+		if (workflow === "menu") {
+			// Burgers
+			if (!order.burgers.length) return "Vous devez prendre au moins un burger";
 
-		// Etudiant
-		if (!order.student) return "";
-		if (!order.fries) return "Vous devez prendre des frites";
-		if (!order.drink) return "Vous devez prendre une boisson";
+			// Étudiant
+			if (!order.student) return "";
+			if (!order.fries) return "Vous devez prendre des frites";
+			if (!order.drink) return "Vous devez prendre une boisson";
+		} else {
+			if (remainingToPay > 0) return `Il reste ${remainingToPay}€ à payer`;
+			return "";
+		}
 
 		return "";
-	}, [order]);
+	}, [order, remainingToPay, workflow]);
 
-	useEffect(() => {
-		if (order?.burgers.length === 0) addRecord();
-	}, [order, dispatch, addRecord]);
+	const cantValidate = useMemo(() => workflow === "payment" && validateTooltip !== "", [workflow, validateTooltip]);
 
 	if (!order) return null;
 
@@ -67,32 +90,22 @@ export function EditOrder() {
 		<Dialog open={Boolean(order)} onClose={deleteOrderFn}>
 			<DialogTitle>{isToday(order) ? "Création" : "Modification"} de votre commande</DialogTitle>
 			<DialogContent dividers>
-				<Stack spacing={2} px={2} minWidth={350}>
-					<Box>
-						<Stack direction={"row"} spacing={3}>
-							<Typography variant={"overline"}>Burgers </Typography>
-						</Stack>
-						<Box bgcolor={"background.default"} pl={2} borderRadius={4}>
-							<Stack p={1} m={1} spacing={1} alignItems={"center"}>
-								{order.burgers.map((burger, i) => (
-									<BurgerItem data={burger} key={i} index={i} />
-								))}
-								<Button variant={"outlined"} sx={{ width: 100 }} color={"secondary"} size={"small"} onClick={addRecord}>
-									Ajouter
-								</Button>
-							</Stack>
-						</Box>
+				<TabContext value={workflow}>
+					<Box sx={{ borderBottom: 1, borderColor: "divider", height: "100%" }}>
+						<TabList onChange={handleChange} variant={"fullWidth"} value={workflow}>
+							<Tab label="Contenu" value="menu" />
+							<Tab label="Payement" value="payment" />
+						</TabList>
 					</Box>
-
-					<Typography variant={"overline"}>Menu</Typography>
-
-					<OrderStudent data={order} />
-					<OrderFries data={order} />
-					<OrderDrink data={order} />
-					<OrderDessert data={order} />
-				</Stack>
-
-				{recordIndex !== undefined && <EditBurgerRecord />}
+					<Box height={530}>
+						<TabPanel value="menu" sx={{ height: "100%" }}>
+							<EditMenuOrder />
+						</TabPanel>
+						<TabPanel value="payment" sx={{ height: "100%" }}>
+							<PayementOrder />
+						</TabPanel>
+					</Box>
+				</TabContext>
 			</DialogContent>
 			<DialogActions>
 				<Stack direction={"row"} spacing={2} p={1}>
@@ -101,8 +114,8 @@ export function EditOrder() {
 					</Button>
 					<Tooltip title={validateTooltip}>
 						<span>
-							<Button color={"success"} variant={"contained"} onClick={updateOrderFn} disabled={canValidate}>
-								Valider {order.price}€
+							<Button variant={"contained"} color={"success"} onClick={updateOrderFn} disabled={cantValidate} sx={{ minWidth: 100 }}>
+								{workflow === "menu" ? "Payer" : "Valider"}
 							</Button>
 						</span>
 					</Tooltip>

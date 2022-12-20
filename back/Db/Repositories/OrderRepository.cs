@@ -5,7 +5,6 @@ using MongoDB.Driver.Linq;
 using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Models;
-using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Db.Repositories.Internal;
 
 namespace SousMarinJaune.Api.Db.Repositories;

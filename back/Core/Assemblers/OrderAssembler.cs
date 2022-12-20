@@ -1,6 +1,5 @@
 ﻿using Mapster;
 using SousMarinJaune.Api.Abstractions.Assemblers;
-using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Models;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
 

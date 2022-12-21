@@ -48,3 +48,21 @@ html.light {
 		background-color: #d0d0d0;
 	}
 }
+
+
+.blink {
+	animation: ease-in-out Blink infinite 2s;
+}
+
+@keyframes Blink {
+	0% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+	100% {
+		opacity: 1;
+	}
+}

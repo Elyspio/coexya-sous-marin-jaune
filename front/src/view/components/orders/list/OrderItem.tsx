@@ -1,6 +1,6 @@
 import { BurgerRecord, Order } from "../../../../core/apis/backend/generated";
 import { useAppDispatch, useAppSelector } from "../../../../store";
-import React from "react";
+import React, { useMemo } from "react";
 import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
 import { deleteOrder, duplicateOrder } from "../../../../store/module/orders/orders.async.action";
 import { ButtonGroup, Chip, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
@@ -10,6 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
 import { useBreakpoint } from "../../../hooks/useBreakpoint";
+import { Euro } from "@mui/icons-material";
 
 type OrderItemProps = { data: Order; show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean } };
 
@@ -50,6 +51,12 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const isSmall = useBreakpoint("sm", "down");
 
+	const isWaitingPaymentValidation = useMemo(() => {
+		if (!data || !data.paymentEnabled) return false;
+
+		return data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0) < data.price;
+	}, [data]);
+
 	return (
 		<Stack direction={isSmall ? "column" : "row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>
 			{show.date && <Typography>{dayjs(data.date).format("DD/MM/YYYY")}</Typography>}
@@ -76,7 +83,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 			{data.student && <Typography>Étudiant</Typography>}
 
-			<ButtonGroup variant="outlined">
+			<ButtonGroup variant="outlined" sx={{ alignItems: "center" }}>
 				{((isToday(data) && isSelf) || logged) && (
 					<>
 						<IconButton onClick={edit}>
@@ -93,6 +100,12 @@ export function OrderItem({ data, show }: OrderItemProps) {
 						<IconButton onClick={duplicate}>
 							<ContentCopy color={"inherit"} fontSize={"small"} />
 						</IconButton>
+					</Tooltip>
+				)}
+
+				{isWaitingPaymentValidation && (
+					<Tooltip title={"Payement en attente de validation"} arrow placement={"right"}>
+						<Euro className={"blink"} color={"warning"} />
 					</Tooltip>
 				)}
 			</ButtonGroup>

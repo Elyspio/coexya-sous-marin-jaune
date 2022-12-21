@@ -65,6 +65,7 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 		id: newOrder.id,
 		user: orders.name,
 		payments: [],
+		paymentEnabled: newOrder.paymentEnabled,
 	};
 
 	dispatch(updateOrder(newOrder));

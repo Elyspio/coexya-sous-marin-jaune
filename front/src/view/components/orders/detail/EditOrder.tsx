@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import { deleteOrder, updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
@@ -85,7 +85,7 @@ export function EditOrder() {
 		return "";
 	}, [order, config, remainingToPay, workflow]);
 
-	const cantValidate = useMemo(() => workflow === "payment" && validateTooltip !== "", [workflow, validateTooltip]);
+	const cantValidate = useMemo(() => validateTooltip !== "", [workflow, validateTooltip]);
 
 	const validateBtnLabel = useMemo(() => {
 		if (!order) return "";
@@ -96,6 +96,10 @@ export function EditOrder() {
 
 		return `Valider ${order?.price}€`;
 	}, [workflow, config, order]);
+
+	useEffect(() => {
+		if (!order?.paymentEnabled) setWorkflow("menu");
+	}, [order]);
 
 	if (!order) return null;
 

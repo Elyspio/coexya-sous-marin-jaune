@@ -520,6 +520,57 @@ export class UserClient {
 		return Promise.resolve<void>(null as any);
 	}
 
+	soldAllUsers(cancelToken?: CancelToken | undefined): Promise<void> {
+		let url_ = this.baseUrl + "/api/users/sold";
+		url_ = url_.replace(/[?&]$/, "");
+
+		let options_: AxiosRequestConfig = {
+			method: "PATCH",
+			url: url_,
+			headers: {},
+			cancelToken,
+		};
+
+		return this.instance
+			.request(options_)
+			.catch((_error: any) => {
+				if (isAxiosError(_error) && _error.response) {
+					return _error.response;
+				} else {
+					throw _error;
+				}
+			})
+			.then((_response: AxiosResponse) => {
+				return this.processSoldAllUsers(_response);
+			});
+	}
+
+	protected processSoldAllUsers(response: AxiosResponse): Promise<void> {
+		const status = response.status;
+		let _headers: any = {};
+		if (response.headers && typeof response.headers === "object") {
+			for (let k in response.headers) {
+				if (response.headers.hasOwnProperty(k)) {
+					_headers[k] = response.headers[k];
+				}
+			}
+		}
+		if (status === 204) {
+			const _responseText = response.data;
+			return Promise.resolve<void>(null as any);
+		} else if (status === 401) {
+			const _responseText = response.data;
+			return throwException("Unauthorized", status, _responseText, _headers);
+		} else if (status === 403) {
+			const _responseText = response.data;
+			return throwException("Forbidden", status, _responseText, _headers);
+		} else if (status !== 200 && status !== 204) {
+			const _responseText = response.data;
+			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+		}
+		return Promise.resolve<void>(null as any);
+	}
+
 	getUsers(cancelToken?: CancelToken | undefined): Promise<User[]> {
 		let url_ = this.baseUrl + "/api/users";
 		url_ = url_.replace(/[?&]$/, "");

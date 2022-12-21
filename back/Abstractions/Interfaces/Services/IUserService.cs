@@ -7,4 +7,5 @@ public interface IUserService
 	Task MergeUsers(string newName, List<string> users);
 	Task<List<User>> GetUsers();
 	Task SoldUser(string user);
+	Task SoldAllUsers();
 }

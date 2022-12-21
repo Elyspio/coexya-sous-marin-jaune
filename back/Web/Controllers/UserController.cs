@@ -40,6 +40,17 @@ public class UserController : ControllerBase
 		await _userService.SoldUser(user);
 		return NoContent();
 	}
+	
+	[HttpPatch("sold")]
+	[RequireAuth]
+	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
+	public async Task<IActionResult> SoldAllUsers()
+	{
+		await _userService.SoldAllUsers();
+		return NoContent();
+	}
+
+	
 
 	
 	

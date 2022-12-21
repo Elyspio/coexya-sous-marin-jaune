@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
+using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
@@ -15,25 +17,33 @@ public class UserService : IUserService
 	private readonly IHubContext<UpdateHub, IUpdateHub> _hubContext;
 	private readonly OrderAssembler _orderAssembler;
 	private readonly IOrderRepository _orderRepository;
-
-	public UserService(IOrderRepository orderRepository, IHubContext<UpdateHub, IUpdateHub> hubContext, OrderAssembler orderAssembler)
+	private readonly ILogger<UserService> _logger;
+	public UserService(IOrderRepository orderRepository, IHubContext<UpdateHub, IUpdateHub> hubContext, OrderAssembler orderAssembler, ILogger<UserService> logger)
 	{
 		_orderRepository = orderRepository;
 		_hubContext = hubContext;
 		_orderAssembler = orderAssembler;
+		_logger = logger;
 	}
 
 	public async Task MergeUsers(string newName, List<string> users)
 	{
+
+		var logger = _logger.Enter($"{Log.Format(newName)} {Log.Format(users)}");
+		
 		var entities = await _orderRepository.MergeUsers(newName, users);
 
 		var orders = _orderAssembler.Convert(entities);
 
 		await Task.WhenAll(orders.Select(_hubContext.Clients.All.OrderUpdated));
+		
+		logger.Exit();
 	}
 
 	public async Task<List<User>> GetUsers()
 	{
+		var logger = _logger.Enter();
+		
 		var orders = await _orderRepository.GetAll();
 		var grouped = orders.GroupBy(order => order.User).ToDictionary(pair => pair.Key, pair => pair.ToList());
 		var users = new ConcurrentBag<User>();
@@ -48,12 +58,16 @@ public class UserService : IUserService
 				Sold = payments - prices
 			});
 		});
+		
+		logger.Exit();
 
 		return users.ToList();
 	}
 
 	public async Task SoldUser(string user)
 	{
+		var logger = _logger.Enter(Log.Format(user));
+		
 		var orders = await _orderRepository.GetForUser(user);
 		var prices = orders.Sum(order => order.Price);
 		var payments = orders.Sum(order => order.Payments.Sum(p => p.Amount));
@@ -72,5 +86,18 @@ public class UserService : IUserService
 
 			await _orderRepository.Update(lastOrder);
 		}
+		
+		logger.Exit();
+		
+	}
+
+	public async Task SoldAllUsers()
+	{
+		var logger = _logger.Enter();
+		
+		var users =  (await _orderRepository.GetAll()).Select(order => order.User).Distinct();
+		await Task.WhenAll(users.Select(SoldUser));
+		
+		logger.Exit();
 	}
 }

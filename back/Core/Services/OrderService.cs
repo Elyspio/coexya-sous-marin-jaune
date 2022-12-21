@@ -4,7 +4,6 @@ using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
-using SousMarinJaune.Api.Abstractions.Models;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
 using SousMarinJaune.Api.Core.Assemblers;
@@ -23,7 +22,7 @@ public class OrderService : IOrderService
 	{
 		_orderRepository = orderRepository;
 		_orderAssembler = orderAssembler;
-		this._hubContext = hubContext;
+		_hubContext = hubContext;
 		_logger = logger;
 	}
 

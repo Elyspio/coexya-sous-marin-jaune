@@ -32,8 +32,18 @@ public class UserController : ControllerBase
 		return NoContent();
 	}
 
+	[HttpPut("{user}/sold")]
+	[RequireAuth]
+	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
+	public async Task<IActionResult> SoldUser(string user)
+	{
+		await _userService.SoldUser(user);
+		return NoContent();
+	}
 
-	[HttpGet()]
+	
+	
+	[HttpGet]
 	[SwaggerResponse(HttpStatusCode.OK, typeof(List<User>))]
 	public async Task<IActionResult> GetUsers()
 	{

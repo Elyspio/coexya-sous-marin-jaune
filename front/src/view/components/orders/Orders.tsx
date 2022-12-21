@@ -40,7 +40,7 @@ export function Orders() {
 
 					{user && <CreateOrder />}
 
-					{userBalance && (
+					{userBalance !== undefined && (
 						<Typography variant={"overline"} fontSize={"100%"}>
 							Solde {userBalance.toFixed(2)}€
 						</Typography>

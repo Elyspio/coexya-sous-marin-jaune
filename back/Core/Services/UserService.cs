@@ -1,13 +1,12 @@
-﻿using Mapster;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
 using SousMarinJaune.Api.Abstractions.Transports.User;
 using SousMarinJaune.Api.Core.Assemblers;
 using SousMarinJaune.Api.Sockets.Hubs;
 using System.Collections.Concurrent;
-using System.Text;
 
 namespace SousMarinJaune.Api.Core.Services;
 
@@ -33,7 +32,7 @@ public class UserService : IUserService
 		await Task.WhenAll(orders.Select(_hubContext.Clients.All.OrderUpdated));
 	}
 
-	public async Task<List<User>>  GetUsers()
+	public async Task<List<User>> GetUsers()
 	{
 		var orders = await _orderRepository.GetAll();
 		var grouped = orders.GroupBy(order => order.User).ToDictionary(pair => pair.Key, pair => pair.ToList());
@@ -51,5 +50,27 @@ public class UserService : IUserService
 		});
 
 		return users.ToList();
+	}
+
+	public async Task SoldUser(string user)
+	{
+		var orders = await _orderRepository.GetForUser(user);
+		var prices = orders.Sum(order => order.Price);
+		var payments = orders.Sum(order => order.Payments.Sum(p => p.Amount));
+		var delta = payments - prices;
+
+		// Only if some money is missing
+		if (delta < 0)
+		{
+			var lastOrder = orders.Last();
+			lastOrder.Payments.Add(new OrderPayment
+			{
+				Amount = -delta,
+				Received = -delta,
+				Type = OrderPaymentType.Admin
+			});
+
+			await _orderRepository.Update(lastOrder);
+		}
 	}
 }

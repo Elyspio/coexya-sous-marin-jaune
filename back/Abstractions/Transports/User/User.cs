@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SousMarinJaune.Api.Abstractions.Transports.User;
+﻿namespace SousMarinJaune.Api.Abstractions.Transports.User;
 
 public class User 
 {

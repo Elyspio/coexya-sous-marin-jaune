@@ -65,7 +65,6 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 		const globalEntries = Object.entries(pendingPayments);
 		globalEntries.sort((e1, e2) => e1[0].localeCompare(e2[0]));
 
-
 		return globalEntries.map(([user, elements]) => (
 			<Stack spacing={1} bgcolor={"background.default"} p={1}>
 				<Typography fontSize={"120%"}>{user}</Typography>

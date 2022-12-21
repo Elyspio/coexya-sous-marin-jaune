@@ -8,6 +8,7 @@ import { ReactComponent as PaypalIcon } from "../../../../icons/paypal.svg";
 import TicketRestaurant from "../../../../icons/ticket-restaurant.png";
 import Bank from "../../../../icons/bank.png";
 import Cash from "../../../../icons/cash.png";
+import Picsou from "../../../../icons/picsou.gif";
 import { updateOrderPayment } from "../../../../../store/module/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
 
@@ -20,12 +21,13 @@ export const payementTypeLabel: Record<OrderPaymentType, string> = {
 };
 
 export function PayementOrder() {
-	const { order, recordIndex, creating } = useAppSelector(state => {
+	const { order, recordIndex, creating, logged } = useAppSelector(state => {
 		let orderId = state.orders.altering?.order;
 		return {
 			order: state.orders.all[orderId!],
 			recordIndex: state.orders.altering?.record,
 			creating: state.orders.mode.order === "create",
+			logged: state.authentication.logged,
 		};
 	});
 
@@ -88,6 +90,7 @@ export function PayementOrder() {
 					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
 					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
+					{logged && <Tab label={payementTypeLabel.Admin} value={OrderPaymentType.Admin} />}
 				</TabList>
 				<Box alignItems={"center"} justifyContent={"center"} height={"100%"} width={"100%"}>
 					<PaymentPanel
@@ -129,6 +132,16 @@ export function PayementOrder() {
 						value={amounts.BankTransfer}
 						setValue={updatePayment(OrderPaymentType.BankTransfer)}
 					/>
+
+					{logged && (
+						<PaymentPanel
+							type={OrderPaymentType.Admin}
+							bottom={<Typography>Zone admin</Typography>}
+							top={<img src={Picsou} height={150} alt={"Argent en espèces"} />}
+							value={amounts.Admin}
+							setValue={updatePayment(OrderPaymentType.Admin)}
+						/>
+					)}
 				</Box>
 			</TabContext>
 		</Stack>

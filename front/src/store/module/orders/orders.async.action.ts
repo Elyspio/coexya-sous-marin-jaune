@@ -3,10 +3,8 @@ import { getService } from "../../common/common.actions";
 import { OrderService } from "../../../core/services/order.service";
 import { StoreState } from "../../index";
 import { Order, OrderPaymentType } from "../../../core/apis/backend/generated";
-import { deleteOrderRecord, removeOrder, updateOrder } from "./orders.action";
-import { UpdateSocketService } from "../../../core/services/socket/update.socket.service";
+import { deleteOrderRecord, updateOrder } from "./orders.action";
 import { cloneDeep } from "lodash";
-import { getAllUsers } from "../users/users.async.action";
 
 export const getOrders = createAsyncThunk("orders/getOrders", async (_, { extra }) => {
 	const orderService = getService(OrderService, extra);
@@ -70,20 +68,4 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 	};
 
 	dispatch(updateOrder(newOrder));
-});
-
-export const startOrderUpdateSynchro = createAsyncThunk("orders/startWebSocketSynchro", async (_, { extra, dispatch }) => {
-	const updateSocketService = getService(UpdateSocketService, extra);
-
-	const socket = await updateSocketService.createSocket();
-
-	socket.on("OrderUpdated", order => {
-		dispatch(updateOrder(order));
-		dispatch(getAllUsers());
-	});
-
-	socket.on("OrderDeleted", orderId => {
-		dispatch(removeOrder(orderId));
-		dispatch(getAllUsers());
-	});
 });

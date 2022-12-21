@@ -40,7 +40,7 @@ public class UserController : ControllerBase
 		await _userService.SoldUser(user);
 		return NoContent();
 	}
-	
+
 	[HttpPatch("sold")]
 	[RequireAuth]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
@@ -50,10 +50,7 @@ public class UserController : ControllerBase
 		return NoContent();
 	}
 
-	
 
-	
-	
 	[HttpGet]
 	[SwaggerResponse(HttpStatusCode.OK, typeof(List<User>))]
 	public async Task<IActionResult> GetUsers()

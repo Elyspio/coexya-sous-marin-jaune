@@ -59,7 +59,7 @@ public class OrderController : ControllerBase
 		await _orderService.Update(order);
 		return NoContent();
 	}
-	
+
 	[HttpPut("{idOrder:guid}/payment/{type}/received")]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	[RequireAuth]
@@ -67,4 +67,5 @@ public class OrderController : ControllerBase
 	{
 		await _orderService.UpdateOrderPaymentReceived(idOrder, type, value);
 		return NoContent();
-	}}
+	}
+}

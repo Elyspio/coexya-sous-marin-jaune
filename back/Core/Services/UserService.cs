@@ -15,9 +15,10 @@ namespace SousMarinJaune.Api.Core.Services;
 public class UserService : IUserService
 {
 	private readonly IHubContext<UpdateHub, IUpdateHub> _hubContext;
+	private readonly ILogger<UserService> _logger;
 	private readonly OrderAssembler _orderAssembler;
 	private readonly IOrderRepository _orderRepository;
-	private readonly ILogger<UserService> _logger;
+
 	public UserService(IOrderRepository orderRepository, IHubContext<UpdateHub, IUpdateHub> hubContext, OrderAssembler orderAssembler, ILogger<UserService> logger)
 	{
 		_orderRepository = orderRepository;
@@ -28,37 +29,36 @@ public class UserService : IUserService
 
 	public async Task MergeUsers(string newName, List<string> users)
 	{
-
 		var logger = _logger.Enter($"{Log.Format(newName)} {Log.Format(users)}");
-		
+
 		var entities = await _orderRepository.MergeUsers(newName, users);
 
 		var orders = _orderAssembler.Convert(entities);
 
 		await Task.WhenAll(orders.Select(_hubContext.Clients.All.OrderUpdated));
-		
+
 		logger.Exit();
 	}
 
 	public async Task<List<User>> GetUsers()
 	{
 		var logger = _logger.Enter();
-		
+
 		var orders = await _orderRepository.GetAll();
 		var grouped = orders.GroupBy(order => order.User).ToDictionary(pair => pair.Key, pair => pair.ToList());
 		var users = new ConcurrentBag<User>();
 
 		Parallel.ForEach(grouped, (pair, _) =>
 		{
-			var prices = pair.Value.Sum(order => order.Price);
-			var payments = pair.Value.Sum(order => order.Payments.Sum(p => p.Amount));
+			var prices = pair.Value.Where(order => order.PaymentEnabled).Sum(order => order.Price);
+			var payments = pair.Value.Where(order => order.PaymentEnabled).Sum(order => order.Payments.Sum(p => p.Received ?? 0));
 			users.Add(new()
 			{
 				Name = pair.Key,
 				Sold = payments - prices
 			});
 		});
-		
+
 		logger.Exit();
 
 		return users.ToList();
@@ -67,17 +67,17 @@ public class UserService : IUserService
 	public async Task SoldUser(string user)
 	{
 		var logger = _logger.Enter(Log.Format(user));
-		
+
 		var orders = await _orderRepository.GetForUser(user);
-		var prices = orders.Sum(order => order.Price);
-		var payments = orders.Sum(order => order.Payments.Sum(p => p.Amount));
+		var prices = orders.Where(order => order.PaymentEnabled).Sum(order => order.Price);
+		var payments = orders.Where(order => order.PaymentEnabled).Sum(order => order.Payments.Sum(p => p.Amount));
 		var delta = payments - prices;
 
 		// Only if some money is missing
 		if (delta < 0)
 		{
 			var lastOrder = orders.Last();
-			lastOrder.Payments.Add(new OrderPayment
+			lastOrder.Payments.Add(new()
 			{
 				Amount = -delta,
 				Received = -delta,
@@ -86,18 +86,17 @@ public class UserService : IUserService
 
 			await _orderRepository.Update(lastOrder);
 		}
-		
+
 		logger.Exit();
-		
 	}
 
 	public async Task SoldAllUsers()
 	{
 		var logger = _logger.Enter();
-		
-		var users =  (await _orderRepository.GetAll()).Select(order => order.User).Distinct();
+
+		var users = (await _orderRepository.GetAll()).Select(order => order.User).Distinct();
 		await Task.WhenAll(users.Select(SoldUser));
-		
+
 		logger.Exit();
 	}
 }

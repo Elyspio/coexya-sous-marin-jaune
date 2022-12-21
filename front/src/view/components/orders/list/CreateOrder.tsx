@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Button, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import dayjs from "dayjs";
@@ -11,7 +11,7 @@ export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(ord
 export function CreateOrder() {
 	const { created } = useAppSelector(s => {
 		return {
-			created: !canCreateSelector(s),
+			created: canCreateSelector(s),
 		};
 	});
 
@@ -21,10 +21,17 @@ export function CreateOrder() {
 		dispatch(createOrder());
 	}, [dispatch]);
 
+	const tooltip = useMemo(() => {
+		if (created === false) return "Vous avez déjà créé une commande aujourd'hui";
+		if (created === "closed") return "Le restaurant est fermé aujourd'hui";
+
+		return "";
+	}, [created]);
+
 	return (
-		<Tooltip title={created ? "Vous avez déjà créé une commande aujourd'hui" : ""} arrow placement={"right"}>
+		<Tooltip title={tooltip} arrow placement={"right"}>
 			<div>
-				<Button variant={"outlined"} color={created ? "inherit" : "success"} disabled={created} onClick={createOrderOnClick}>
+				<Button variant={"outlined"} color={tooltip === "" ? "inherit" : "success"} disabled={!!tooltip} onClick={createOrderOnClick}>
 					Nouvelle commande
 				</Button>
 			</div>

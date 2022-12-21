@@ -7,6 +7,7 @@ import { Container } from "inversify";
 import { OrderService } from "../../services/order.service";
 import { UpdateSocketService } from "../../services/socket/update.socket.service";
 import { UserService } from "../../services/user.service";
+import { ConfigService } from "../../services/config.service";
 
 export const addServices = (container: Container) => {
 	container.bind(AuthenticationService).toSelf();
@@ -17,4 +18,5 @@ export const addServices = (container: Container) => {
 	container.bind(OrderService).toSelf();
 	container.bind(UpdateSocketService).toSelf();
 	container.bind(UserService).toSelf();
+	container.bind(ConfigService).toSelf();
 };

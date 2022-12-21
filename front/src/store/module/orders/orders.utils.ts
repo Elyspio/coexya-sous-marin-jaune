@@ -4,8 +4,9 @@ import dayjs from "dayjs";
 
 export const dateTemplate = "DD/MM/YYYY";
 
-export const canCreateSelector = (state: StoreState) => {
-	if (!state.orders.name) return false;
+export const canCreateSelector = (state: StoreState): boolean | "no-name" | "closed" => {
+	if (!state.orders.name) return "no-name";
+	if (!state.config.kitchenOpened) return "closed";
 
 	const orders = Object.values(state.orders.all);
 

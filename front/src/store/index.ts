@@ -7,6 +7,7 @@ import { burgersReducer } from "./module/burgers/burgers.reducer";
 import { ordersReducer } from "./module/orders/orders.reducer";
 import { workflowReducer } from "./module/workflow/workflow.reducer";
 import { userReducer } from "./module/users/users.reducer";
+import { configReducer } from "./module/config/config.reducer";
 
 const store = configureStore({
 	reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
 		orders: ordersReducer,
 		workflow: workflowReducer,
 		users: userReducer,
+		config: configReducer,
 	},
 	devTools: process.env.NODE_ENV !== "production",
 	middleware: getDefaultMiddleware => getDefaultMiddleware({ thunk: { extraArgument: { container } } }),

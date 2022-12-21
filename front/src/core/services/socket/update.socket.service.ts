@@ -1,12 +1,14 @@
 import * as signalR from "@microsoft/signalr";
 import { HubConnection, LogLevel } from "@microsoft/signalr";
-import { Order } from "../../apis/backend/generated";
+import { Config, Order } from "../../apis/backend/generated";
 import { injectable } from "inversify";
 
 interface UpdateHub extends HubConnection {
 	on(event: "OrderUpdated", callback: (order: Order) => void);
 
 	on(event: "OrderDeleted", callback: (orderId: Order["id"]) => void);
+
+	on(event: "ConfigUpdated", callback: (config: Config) => void);
 }
 
 @injectable()

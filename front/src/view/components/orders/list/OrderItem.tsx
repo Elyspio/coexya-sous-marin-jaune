@@ -18,7 +18,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 		let name = s.orders.name;
 		let userOrders = Object.values(s.orders.all).filter(order => order.user === name);
 		return {
-			canCreate: canCreateSelector(s),
+			canCreate: canCreateSelector(s) === true,
 			user: name,
 			logged: s.authentication.logged,
 		};

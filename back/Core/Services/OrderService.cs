@@ -13,17 +13,19 @@ namespace SousMarinJaune.Api.Core.Services;
 
 public class OrderService : IOrderService
 {
+	private readonly IConfigService _configService;
+	private readonly IHubContext<UpdateHub, IUpdateHub> _hubContext;
 	private readonly ILogger<OrderService> _logger;
 	private readonly OrderAssembler _orderAssembler;
 	private readonly IOrderRepository _orderRepository;
-	private readonly IHubContext<UpdateHub, IUpdateHub> _hubContext;
 
-	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext, ILogger<OrderService> logger)
+	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext, ILogger<OrderService> logger, IConfigService configService)
 	{
 		_orderRepository = orderRepository;
 		_orderAssembler = orderAssembler;
 		_hubContext = hubContext;
 		_logger = logger;
+		_configService = configService;
 	}
 
 	public async Task<List<Order>> GetAll()
@@ -51,7 +53,11 @@ public class OrderService : IOrderService
 	{
 		var logger = _logger.Enter(Log.Format(user));
 
-		var data = _orderAssembler.Convert(await _orderRepository.Create(user));
+		var config = await _configService.Get();
+
+		var entity = await _orderRepository.Create(user, config.PaymentEnabled);
+
+		var data = _orderAssembler.Convert(entity);
 		await _hubContext.Clients.All.OrderUpdated(data);
 
 		logger.Exit();

@@ -42,7 +42,7 @@ export function EditMenuOrder() {
 
 	return (
 		<>
-			<Stack spacing={2} px={2}>
+			<Stack spacing={2} px={2} minWidth={450}>
 				<Box>
 					<Stack direction={"row"} spacing={3}>
 						<Typography variant={"overline"}>Burgers </Typography>

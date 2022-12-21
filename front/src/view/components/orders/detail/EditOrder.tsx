@@ -13,12 +13,13 @@ import { setAlteringOrder } from "../../../../store/module/orders/orders.action"
 type Workflow = "menu" | "payment";
 
 export function EditOrder() {
-	const { order, recordIndex, creating } = useAppSelector(state => {
+	const { order, recordIndex, creating, config } = useAppSelector(state => {
 		let orderId = state.orders.altering?.order;
 		return {
 			order: state.orders.all[orderId!],
 			recordIndex: state.orders.altering?.record,
 			creating: state.orders.mode.order === "create",
+			config: state.config,
 		};
 	});
 
@@ -42,13 +43,13 @@ export function EditOrder() {
 	};
 
 	const updateOrderFn = React.useCallback(() => {
-		if (workflow === "menu") {
+		if (workflow === "menu" && order?.paymentEnabled) {
 			setWorkflow("payment");
 		} else {
 			dispatch(updateRemoteOrder());
 			close();
 		}
-	}, [workflow, dispatch, close]);
+	}, [workflow, dispatch, close, config, order]);
 
 	const remainingToPay = useMemo(() => {
 		if (!order) return -1;
@@ -74,15 +75,27 @@ export function EditOrder() {
 			if (!order.student) return "";
 			if (!order.fries) return "Vous devez prendre des frites";
 			if (!order.drink) return "Vous devez prendre une boisson";
-		} else {
+		}
+
+		if (workflow === "payment" && order.paymentEnabled) {
 			if (remainingToPay > 0) return `Il reste ${remainingToPay}€ à payer`;
 			return "";
 		}
 
 		return "";
-	}, [order, remainingToPay, workflow]);
+	}, [order, config, remainingToPay, workflow]);
 
 	const cantValidate = useMemo(() => workflow === "payment" && validateTooltip !== "", [workflow, validateTooltip]);
+
+	const validateBtnLabel = useMemo(() => {
+		if (!order) return "";
+
+		if (workflow === "payment") return "Valider";
+
+		if (order.paymentEnabled) return "Payer";
+
+		return `Valider ${order?.price}€`;
+	}, [workflow, config, order]);
 
 	if (!order) return null;
 
@@ -94,7 +107,7 @@ export function EditOrder() {
 					<Box sx={{ borderBottom: 1, borderColor: "divider", height: "100%" }}>
 						<TabList onChange={handleChange} variant={"fullWidth"} value={workflow}>
 							<Tab label="Contenu" value="menu" />
-							<Tab label="Payement" value="payment" />
+							{order.paymentEnabled && <Tab label="Payement" value="payment" />}
 						</TabList>
 					</Box>
 					<Box height={530}>
@@ -115,7 +128,7 @@ export function EditOrder() {
 					<Tooltip title={validateTooltip}>
 						<span>
 							<Button variant={"contained"} color={"success"} onClick={updateOrderFn} disabled={cantValidate} sx={{ minWidth: 100 }}>
-								{workflow === "menu" ? "Payer" : "Valider"}
+								{validateBtnLabel}
 							</Button>
 						</span>
 					</Tooltip>

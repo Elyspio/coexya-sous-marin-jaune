@@ -38,6 +38,7 @@ public static class Log
 		private readonly LogLevel _level;
 		private readonly ILogger<T> _logger;
 		private readonly string _method;
+		private readonly DateTime _startedAt;
 
 		public LoggerInstance(ILogger<T> logger, string method, string arguments, LogLevel level)
 		{
@@ -45,6 +46,7 @@ public static class Log
 			_level = level;
 			_method = method;
 			_logger = logger;
+			_startedAt = DateTime.Now;
 		}
 
 		public void Enter()
@@ -63,8 +65,8 @@ public static class Log
 
 			var sb = new StringBuilder($"Exiting method {_method}");
 			if (_arguments?.Length > 0) sb.Append($": {_arguments}");
+			sb.Append($" ({(DateTime.Now - _startedAt).Milliseconds}ms)");
 			_logger.Log(_level, sb.ToString());
-			_logger.Log(_level, _arguments);
 		}
 	}
 }

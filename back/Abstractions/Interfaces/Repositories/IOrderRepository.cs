@@ -5,7 +5,7 @@ namespace SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 
 public interface IOrderRepository
 {
-	Task<OrderEntity> Create(string userName);
+	Task<OrderEntity> Create(string userName, bool paymentEnabled);
 	Task<List<OrderEntity>> GetAll();
 	Task<List<OrderEntity>> GetForUser(string user);
 	Task Delete(Guid order);

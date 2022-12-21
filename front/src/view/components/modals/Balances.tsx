@@ -62,21 +62,23 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 	}, [allOrders]);
 
 	const rows = useMemo(() => {
+		if (!open) return null;
+
 		const globalEntries = Object.entries(pendingPayments);
 		globalEntries.sort((e1, e2) => e1[0].localeCompare(e2[0]));
 
 		return globalEntries.map(([user, elements]) => (
-			<Stack spacing={1} bgcolor={"background.default"} p={1}>
+			<Stack spacing={1} bgcolor={"background.default"} p={1} key={user}>
 				<Typography fontSize={"120%"}>{user}</Typography>
 				<Stack pl={2} spacing={2} bgcolor={"background.paper"} p={2}>
 					{Object.entries(elements).map(([date, payments]) => (
-						<Stack spacing={2}>
+						<Stack spacing={2} key={date}>
 							<Typography variant={"subtitle1"} fontSize={"90%"}>
 								{date}
 							</Typography>
 							<Stack bgcolor={"background.default"} pl={2} borderRadius={2} spacing={1}>
 								{payments.map(p => (
-									<Stack direction={"row"} spacing={4} alignItems={"center"}>
+									<Stack direction={"row"} spacing={4} alignItems={"center"} key={p.type}>
 										<Typography width={130} variant={"body1"}>
 											{payementTypeLabel[p.type]}
 										</Typography>
@@ -110,7 +112,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				</Stack>
 			</Stack>
 		));
-	}, [pendingPayments]);
+	}, [pendingPayments, open]);
 
 	return (
 		<Dialog open={open} onClose={setClose} TransitionComponent={Transition} fullWidth maxWidth={"sm"}>

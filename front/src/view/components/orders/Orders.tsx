@@ -28,6 +28,7 @@ export function Orders() {
 				<Stack spacing={4} direction={"row"} alignItems={"center"}>
 					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
+							autoCapitalize={"on"}
 							fullWidth
 							id="select-user"
 							value={user ?? ""}
@@ -41,9 +42,15 @@ export function Orders() {
 					{user && <CreateOrder />}
 
 					{userBalance !== undefined && (
-						<Typography variant={"overline"} fontSize={"100%"}>
-							Solde {userBalance.toFixed(2)}€
-						</Typography>
+						<Stack direction={"row"} spacing={2} alignItems={"center"}>
+							<Typography variant={"overline"} fontSize={"100%"}>
+								Solde
+							</Typography>
+							<Typography>
+								{userBalance > 0 ? "+ " : ""}
+								{userBalance.toFixed(2)}€
+							</Typography>
+						</Stack>
 					)}
 				</Stack>
 

@@ -17,7 +17,7 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 	}
 
 
-	public async Task<OrderEntity> Create(string userName)
+	public async Task<OrderEntity> Create(string userName, bool paymentEnabled)
 	{
 		var order = new OrderEntity
 		{
@@ -25,7 +25,8 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 			Date = DateTime.Now,
 			User = userName,
 			Student = false,
-			Payments = new()
+			Payments = new(),
+			PaymentEnabled = paymentEnabled
 		};
 		await EntityCollection.InsertOneAsync(order);
 		return order;
@@ -66,14 +67,13 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 
 	public async Task<OrderEntity> UpdateOrderPaymentReceived(Guid idOrder, OrderPaymentType type, double value)
 	{
-		var order = await  EntityCollection.AsQueryable().FirstOrDefaultAsync(order => order.Id == idOrder.AsObjectId());
+		var order = await EntityCollection.AsQueryable().FirstOrDefaultAsync(order => order.Id == idOrder.AsObjectId());
 
 		var payment = order.Payments.Find(p => p.Type == type);
 		payment.Received = value;
 
 		await Update(order);
-		
-		return order;
 
+		return order;
 	}
 }

@@ -7,15 +7,13 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box, Container } from "@mui/material";
-import { login, logout, silentLogin } from "../../store/module/authentication/authentication.action";
+import { login, logout } from "../../store/module/authentication/authentication.action";
 import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
-import { getOrders, startOrderUpdateSynchro } from "../../store/module/orders/orders.async.action";
-import { getBurgers } from "../../store/module/burgers/burgers.async.action";
-import { AccountBalance, DarkMode, LightMode, Merge, Message } from "@mui/icons-material";
+import { AccountBalance, DarkMode, LightMode, Merge, Message, Settings } from "@mui/icons-material";
 import { toggleModal } from "../../store/module/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
-import { getAllUsers } from "../../store/module/users/users.async.action";
+import { initApp } from "../../store/common/common.actions";
 
 function Application() {
 	const dispatch = useAppDispatch();
@@ -83,16 +81,16 @@ function Application() {
 			createDrawerAction("Balances", {
 				icon: <AccountBalance />,
 				onClick: () => storeActions.toggleModal("balances"),
+			}),
+			createDrawerAction("Config", {
+				icon: <Settings />,
+				onClick: () => storeActions.toggleModal("updateConfig"),
 			})
 		);
 	}
 
 	React.useEffect(() => {
-		dispatch(startOrderUpdateSynchro());
-		dispatch(getBurgers());
-		dispatch(getOrders());
-		dispatch(silentLogin());
-		dispatch(getAllUsers());
+		dispatch(initApp());
 	}, [dispatch]);
 
 	const drawer = withDrawer({

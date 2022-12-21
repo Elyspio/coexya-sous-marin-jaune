@@ -14,6 +14,8 @@ public class OrderBase
 
 	public required List<OrderPayment> Payments { get; init; }
 
+	public bool PaymentEnabled { get; set; }
+
 
 	public double Price
 	{

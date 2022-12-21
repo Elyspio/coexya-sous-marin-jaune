@@ -2,10 +2,11 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getService } from "../../common/common.actions";
 import { OrderService } from "../../../core/services/order.service";
 import { StoreState } from "../../index";
-import { Order } from "../../../core/apis/backend/generated";
+import { Order, OrderPaymentType } from "../../../core/apis/backend/generated";
 import { deleteOrderRecord, removeOrder, updateOrder } from "./orders.action";
 import { UpdateSocketService } from "../../../core/services/socket/update.socket.service";
 import { cloneDeep } from "lodash";
+import { getAllUsers } from "../users/users.async.action";
 
 export const getOrders = createAsyncThunk("orders/getOrders", async (_, { extra }) => {
 	const orderService = getService(OrderService, extra);
@@ -33,6 +34,16 @@ export const updateRemoteOrder = createAsyncThunk("orders/updateRemoteOrder", as
 	await orderService.updateOrder(order);
 });
 
+type UpdatePaymentReceivedParams = {
+	idOrder: Order["id"];
+	type: OrderPaymentType;
+	value: number;
+};
+export const updatePaymentReceived = createAsyncThunk("orders/updatePaymentReceived", async ({ idOrder, value, type }: UpdatePaymentReceivedParams, { extra }) => {
+	const orderService = getService(OrderService, extra);
+	await orderService.updatePaymentReceived(idOrder, type, value);
+});
+
 export const deleteOrder = createAsyncThunk("orders/deleteOrder", async (id: Order["id"], { extra, getState }) => {
 	const orderService = getService(OrderService, extra);
 	await orderService.deleteOrder(id);
@@ -55,6 +66,7 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 		date: new Date().toISOString(),
 		id: newOrder.id,
 		user: orders.name,
+		payments: [],
 	};
 
 	dispatch(updateOrder(newOrder));
@@ -67,9 +79,11 @@ export const startOrderUpdateSynchro = createAsyncThunk("orders/startWebSocketSy
 
 	socket.on("OrderUpdated", order => {
 		dispatch(updateOrder(order));
+		dispatch(getAllUsers());
 	});
 
 	socket.on("OrderDeleted", orderId => {
 		dispatch(removeOrder(orderId));
+		dispatch(getAllUsers());
 	});
 });

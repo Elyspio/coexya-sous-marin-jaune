@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import { BackendApi } from "../apis/backend";
 import { BaseService } from "./technical/base.service";
-import { Order } from "../apis/backend/generated";
+import { Order, OrderPaymentType } from "../apis/backend/generated";
 
 @injectable()
 export class OrderService extends BaseService {
@@ -20,7 +20,11 @@ export class OrderService extends BaseService {
 		return this.backendApiClient.orders.delete(id);
 	}
 
-	async updateOrder(order: Order) {
+	public updateOrder(order: Order) {
 		return this.backendApiClient.orders.updateOrder(order.id, order);
+	}
+
+	public updatePaymentReceived(idOrder: string, type: OrderPaymentType, value: number) {
+		return this.backendApiClient.orders.updateOrderPaymentReceived(idOrder, type, value);
 	}
 }

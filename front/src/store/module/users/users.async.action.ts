@@ -12,9 +12,12 @@ export const mergeUsers = createAsyncThunk("users/mergeUsers", async ({ users, n
 
 	const promise = userService.merge(nextName, users);
 
-	toast.promise(promise, {
+	await toast.promise(promise, {
 		success: "Merge terminé",
 	});
+});
 
-	await promise;
+export const getAllUsers = createAsyncThunk("users/getAllUsers", (_, { extra }) => {
+	const userService = getService(UserService, extra);
+	return userService.getAll();
 });

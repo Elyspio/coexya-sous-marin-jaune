@@ -2,6 +2,8 @@
 using NSwag.Annotations;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
+using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
+using SousMarinJaune.Api.Web.Filters;
 using System.Net;
 
 namespace SousMarinJaune.Api.Web.Controllers;
@@ -57,4 +59,12 @@ public class OrderController : ControllerBase
 		await _orderService.Update(order);
 		return NoContent();
 	}
-}
+	
+	[HttpPut("{idOrder:guid}/payment/{type}/received")]
+	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
+	[RequireAuth]
+	public async Task<IActionResult> UpdateOrderPaymentReceived(Guid idOrder, OrderPaymentType type, [FromBody] double value)
+	{
+		await _orderService.UpdateOrderPaymentReceived(idOrder, type, value);
+		return NoContent();
+	}}

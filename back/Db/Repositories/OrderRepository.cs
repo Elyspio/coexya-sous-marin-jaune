@@ -5,6 +5,7 @@ using MongoDB.Driver.Linq;
 using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Models;
+using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
 using SousMarinJaune.Api.Db.Repositories.Internal;
 
 namespace SousMarinJaune.Api.Db.Repositories;
@@ -61,5 +62,18 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 		}));
 
 		return orders;
+	}
+
+	public async Task<OrderEntity> UpdateOrderPaymentReceived(Guid idOrder, OrderPaymentType type, double value)
+	{
+		var order = await  EntityCollection.AsQueryable().FirstOrDefaultAsync(order => order.Id == idOrder.AsObjectId());
+
+		var payment = order.Payments.Find(p => p.Type == type);
+		payment.Received = value;
+
+		await Update(order);
+		
+		return order;
+
 	}
 }

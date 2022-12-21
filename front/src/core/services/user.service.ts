@@ -10,4 +10,8 @@ export class UserService extends BaseService {
 	public merge(nextName: string, users: string[]) {
 		return this.backendApiClient.users.mergeUsers(nextName, users);
 	}
+
+	public getAll() {
+		return this.backendApiClient.users.getUsers();
+	}
 }

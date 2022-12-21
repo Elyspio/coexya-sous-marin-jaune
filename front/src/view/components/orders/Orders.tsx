@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { Autocomplete, debounce, FormControl, Paper, Stack, TextField } from "@mui/material";
+import { Autocomplete, debounce, FormControl, Paper, Stack, TextField, Typography } from "@mui/material";
 import { setUser } from "../../../store/module/orders/orders.action";
 import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
 
 export function Orders() {
-	const { orders, user } = useAppSelector(s => ({
+	const { orders, user, allUsers } = useAppSelector(s => ({
 		user: s.orders.name,
 		orders: s.orders.all,
+		allUsers: s.users.all,
 	}));
 
 	const dispatch = useAppDispatch();
@@ -18,6 +19,8 @@ export function Orders() {
 	const setUserDebounced = React.useMemo(() => debounce((usr: string | null) => dispatch(setUser(usr ?? undefined)), 50), [dispatch]);
 
 	const onChange = React.useCallback((_, str: string) => setUserDebounced(str), [setUserDebounced]);
+
+	const userBalance = useMemo(() => allUsers.find(u => u.name === user)?.sold, [allUsers, user]);
 
 	return (
 		<Paper className={"maxHeightWidth"}>
@@ -36,6 +39,12 @@ export function Orders() {
 					</FormControl>
 
 					{user && <CreateOrder />}
+
+					{userBalance && (
+						<Typography variant={"overline"} fontSize={"100%"}>
+							Solde {userBalance.toFixed(2)}€
+						</Typography>
+					)}
 				</Stack>
 
 				<AllOrders />

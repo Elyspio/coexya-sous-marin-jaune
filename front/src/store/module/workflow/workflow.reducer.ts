@@ -19,7 +19,7 @@ const initialState: WorkflowState = {
 };
 
 const slice = createSlice({
-	name: "burgers",
+	name: "workflows",
 	initialState,
 	reducers: {},
 	extraReducers: builder => {

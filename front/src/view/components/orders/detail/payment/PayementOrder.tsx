@@ -11,7 +11,7 @@ import Cash from "../../../../icons/cash.png";
 import { updateOrderPayment } from "../../../../../store/module/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
 
-const payementType: Record<OrderPaymentType, string> = {
+export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",
 	[OrderPaymentType.Cash]: "Liquide",
 	[OrderPaymentType.Paypal]: "PayPal",
@@ -84,10 +84,10 @@ export function PayementOrder() {
 
 			<TabContext value={value}>
 				<TabList onChange={handleChange} aria-label="lab API tabs example" variant={"fullWidth"} orientation={"horizontal"}>
-					<Tab label={payementType.LunchVoucher} value={OrderPaymentType.LunchVoucher} />
-					<Tab label={payementType.Paypal} value={OrderPaymentType.Paypal} />
-					<Tab label={payementType.BankTransfer} value={OrderPaymentType.BankTransfer} />
-					<Tab label={payementType.Cash} value={OrderPaymentType.Cash} />
+					<Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />
+					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
+					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
+					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
 				</TabList>
 				<Box alignItems={"center"} justifyContent={"center"} height={"100%"} width={"100%"}>
 					<PaymentPanel

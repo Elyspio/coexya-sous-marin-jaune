@@ -15,6 +15,7 @@ import { getBurgers } from "../../store/module/burgers/burgers.async.action";
 import { AccountBalance, DarkMode, LightMode, Merge, Message } from "@mui/icons-material";
 import { toggleModal } from "../../store/module/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
+import { getAllUsers } from "../../store/module/users/users.async.action";
 
 function Application() {
 	const dispatch = useAppDispatch();
@@ -91,6 +92,7 @@ function Application() {
 		dispatch(getBurgers());
 		dispatch(getOrders());
 		dispatch(silentLogin());
+		dispatch(getAllUsers());
 	}, [dispatch]);
 
 	const drawer = withDrawer({

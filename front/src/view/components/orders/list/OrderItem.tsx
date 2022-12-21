@@ -9,6 +9,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
+import { useBreakpoint } from "../../../hooks/useBreakpoint";
 
 type OrderItemProps = { data: Order; show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean } };
 
@@ -46,8 +47,11 @@ export function OrderItem({ data, show }: OrderItemProps) {
 	const { palette } = useTheme();
 
 	let isSelf = data.user === user;
+
+	const isSmall = useBreakpoint("sm", "down");
+
 	return (
-		<Stack direction={"row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>
+		<Stack direction={isSmall ? "column" : "row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>
 			{show.date && <Typography>{dayjs(data.date).format("DD/MM/YYYY")}</Typography>}
 
 			{show.name && <Typography minWidth={80}>{data.user}</Typography>}

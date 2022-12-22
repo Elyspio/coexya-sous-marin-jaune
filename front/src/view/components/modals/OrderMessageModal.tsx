@@ -22,7 +22,8 @@ import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import dayjs from "dayjs";
-import { ModalComponentProps } from "./MergeUsers";
+import { Transition } from "./common/Transition";
+import { ModalComponentProps } from "./common/ModalProps";
 
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
@@ -109,7 +110,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 	}, [textRef.current, setClose]);
 
 	return (
-		<Dialog open={open} onClose={setClose}>
+		<Dialog open={open} onClose={setClose} TransitionComponent={Transition}>
 			<DialogTitle>
 				<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
 					<Typography>Message à envoyer</Typography>

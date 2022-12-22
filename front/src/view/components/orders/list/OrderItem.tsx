@@ -3,14 +3,14 @@ import { useAppDispatch, useAppSelector } from "../../../../store";
 import React, { useMemo } from "react";
 import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
 import { deleteOrder, duplicateOrder } from "../../../../store/module/orders/orders.async.action";
-import { ButtonGroup, Chip, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { Chip, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
-import { useBreakpoint } from "../../../hooks/useBreakpoint";
 import { Euro } from "@mui/icons-material";
+import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
 
 type OrderItemProps = { data: Order; show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean } };
 
@@ -49,7 +49,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	let isSelf = data.user === user;
 
-	const isSmall = useBreakpoint("sm", "down");
+	const isSmall = useIsSmallScreen();
 
 	const isWaitingPaymentValidation = useMemo(() => {
 		if (!data || !data.paymentEnabled) return false;
@@ -57,11 +57,20 @@ export function OrderItem({ data, show }: OrderItemProps) {
 		return data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0) < data.price;
 	}, [data]);
 
+	const isMissingPayment = useMemo(() => {
+		if (!data || !data.paymentEnabled) return false;
+		return data.payments.reduce((acc, current) => acc + current.amount, 0) < data.price;
+	}, [data]);
+
 	return (
 		<Stack direction={isSmall ? "column" : "row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>
 			{show.date && <Typography>{dayjs(data.date).format("DD/MM/YYYY")}</Typography>}
 
-			{show.name && <Typography minWidth={80}>{data.user}</Typography>}
+			{show.name && (
+				<Typography minWidth={80} color={isSmall ? "secondary" : "inherit"}>
+					{data.user}
+				</Typography>
+			)}
 
 			{data.burgers.length > 0 ? (
 				<Stack direction={"row"} spacing={2}>
@@ -83,7 +92,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 			{data.student && <Typography>Étudiant</Typography>}
 
-			<ButtonGroup variant="outlined" sx={{ alignItems: "center" }}>
+			<Stack alignItems={"center"} direction={"row"} spacing={0.5}>
 				{((isToday(data) && isSelf) || logged) && (
 					<>
 						<IconButton onClick={edit}>
@@ -104,11 +113,17 @@ export function OrderItem({ data, show }: OrderItemProps) {
 				)}
 
 				{isWaitingPaymentValidation && (
-					<Tooltip title={"Payement en attente de validation"} arrow placement={"right"}>
+					<Tooltip title={"Payement en attente de validation"} arrow placement={isSmall ? "bottom" : "right"}>
 						<Euro className={"blink"} color={"warning"} />
 					</Tooltip>
 				)}
-			</ButtonGroup>
+
+				{isMissingPayment && (
+					<Tooltip title={"Payement insuffisant"} arrow placement={isSmall ? "bottom" : "right"}>
+						<Euro className={"blink"} color={"error"} />
+					</Tooltip>
+				)}
+			</Stack>
 		</Stack>
 	);
 }

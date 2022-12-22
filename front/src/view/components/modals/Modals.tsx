@@ -6,7 +6,7 @@ import { ModalType } from "../../../store/module/workflow/workflow.reducer";
 import { toggleModal } from "../../../store/module/workflow/workflow.action";
 import { EditOrder } from "../orders/detail/EditOrder";
 import { OrderMessageModal } from "./OrderMessageModal";
-import { Balances } from "./Balances";
+import { Balances } from "./balance/Balances";
 import { UpdateConfig } from "./UpdateConfig";
 
 export function Modals() {

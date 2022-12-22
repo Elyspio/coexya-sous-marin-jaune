@@ -1,22 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Stack, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { mergeUsers } from "../../../store/module/users/users.async.action";
-import { TransitionProps } from "@mui/material/transitions";
-
-export type ModalComponentProps = {
-	setClose: () => void;
-	open: boolean;
-};
-
-const Transition = React.forwardRef(function Transition(
-	props: TransitionProps & {
-		children: React.ReactElement<any, any>;
-	},
-	ref: React.Ref<unknown>
-) {
-	return <Slide direction="left" ref={ref} {...props} />;
-});
+import { Transition } from "./common/Transition";
+import { ModalComponentProps } from "./common/ModalProps";
 
 export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	const allUsers = useAppSelector(s => s.orders.all);

@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { Order } from "../../../../core/apis/backend/generated";
 import { createOrder } from "../../../../store/module/orders/orders.async.action";
 import { canCreateSelector } from "../../../../store/module/orders/orders.utils";
+import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
 
 export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 
@@ -28,8 +29,10 @@ export function CreateOrder() {
 		return "";
 	}, [created]);
 
+	const isSmall = useIsSmallScreen();
+
 	return (
-		<Tooltip title={tooltip} arrow placement={"right"}>
+		<Tooltip title={tooltip} arrow placement={isSmall ? "bottom" : "right"}>
 			<div>
 				<Button variant={"outlined"} color={tooltip === "" ? "inherit" : "success"} disabled={!!tooltip} onClick={createOrderOnClick}>
 					Nouvelle commande

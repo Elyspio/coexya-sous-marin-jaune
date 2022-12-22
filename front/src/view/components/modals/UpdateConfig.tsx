@@ -1,24 +1,11 @@
 import React, { useCallback, useMemo } from "react";
-import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Slide, Stack, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { TransitionProps } from "@mui/material/transitions";
 import { updateConfig } from "../../../store/module/config/config.async.action";
 import { Config } from "../../../core/apis/backend/generated";
 import { setConfig } from "../../../store/module/config/config.actions";
-
-export type ModalComponentProps = {
-	setClose: () => void;
-	open: boolean;
-};
-
-const Transition = React.forwardRef(function Transition(
-	props: TransitionProps & {
-		children: React.ReactElement<any, any>;
-	},
-	ref: React.Ref<unknown>
-) {
-	return <Slide direction="left" ref={ref} {...props} />;
-});
+import { Transition } from "./common/Transition";
+import { ModalComponentProps } from "./common/ModalProps";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const { allUsers, config } = useAppSelector(s => ({ allUsers: s.orders.all, config: s.config }));

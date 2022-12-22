@@ -32,7 +32,7 @@ export const updateRemoteOrder = createAsyncThunk("orders/updateRemoteOrder", as
 	await orderService.updateOrder(order);
 });
 
-type UpdatePaymentReceivedParams = {
+export type UpdatePaymentReceivedParams = {
 	idOrder: Order["id"];
 	type: OrderPaymentType;
 	value: number;

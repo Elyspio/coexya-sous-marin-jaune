@@ -5,3 +5,7 @@ export function useBreakpoint(breakpoint: Breakpoint, mode: "up" | "down" = "up"
 
 	return useMediaQuery(theme.breakpoints[mode](breakpoint));
 }
+
+export function useIsSmallScreen() {
+	return useBreakpoint("sm", "down");
+}

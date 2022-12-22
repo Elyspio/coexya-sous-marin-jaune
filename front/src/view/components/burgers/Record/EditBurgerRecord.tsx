@@ -22,7 +22,7 @@ import {
 	deleteOrder,
 	updateRemoteOrder,
 } from "../../../../store/module/orders/orders.async.action";
-import { useBreakpoint } from "../../../hooks/useBreakpoint";
+import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
 
 /**
  * Add or edit a burger record
@@ -79,7 +79,7 @@ export function EditBurgerRecord() {
 		[dispatch, data]
 	);
 
-	const isSmall = useBreakpoint("sm", "down");
+	const isSmall = useIsSmallScreen();
 
 	if (!data) return null;
 

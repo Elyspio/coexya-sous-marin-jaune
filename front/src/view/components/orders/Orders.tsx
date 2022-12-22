@@ -4,6 +4,7 @@ import { Autocomplete, debounce, FormControl, Paper, Stack, TextField, Typograph
 import { setUser } from "../../../store/module/orders/orders.action";
 import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
+import { useIsSmallScreen } from "../../hooks/useBreakpoint";
 
 export function Orders() {
 	const { orders, user, allUsers } = useAppSelector(s => ({
@@ -22,9 +23,11 @@ export function Orders() {
 
 	const userBalance = useMemo(() => allUsers.find(u => u.name === user)?.sold, [allUsers, user]);
 
+	const isSmall = useIsSmallScreen();
+
 	return (
 		<Paper className={"maxHeightWidth"}>
-			<Stack m={2} spacing={4} p={2} className={"maxHeightWidth"}>
+			<Stack m={isSmall ? 1 : 2} spacing={4} p={isSmall ? 0 : 2} className={"maxHeightWidth"}>
 				<Stack spacing={4} direction={"row"} alignItems={"center"}>
 					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete

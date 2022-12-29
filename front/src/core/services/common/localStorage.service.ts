@@ -4,13 +4,13 @@ import { injectable } from "inversify";
 export class LocalStorageService {
 	constructor(private base: string) {}
 
-	store(key: string | undefined, value: number | string | object) {
+	set(value: number | string | object, key?: string) {
 		let name = this.base;
 		if (key !== undefined) name += " " + key;
 		window.localStorage.setItem(name, JSON.stringify(value));
 	}
 
-	retrieve<T>(key?: string): T | undefined {
+	get<T>(key?: string): T | undefined {
 		let name = this.base;
 		if (key !== undefined) name += " " + key;
 		const baseObj = window.localStorage.getItem(name);

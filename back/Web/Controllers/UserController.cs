@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
-using SousMarinJaune.Api.Abstractions.Transports.User;
+using SousMarinJaune.Api.Adapters.AuthenticationApi;
 using SousMarinJaune.Api.Web.Filters;
 using System.Net;
+using User = SousMarinJaune.Api.Abstractions.Transports.User.User;
 
 namespace SousMarinJaune.Api.Web.Controllers;
 
@@ -24,7 +25,7 @@ public class UserController : ControllerBase
 	/// <param name="users"></param>
 	/// <returns></returns>
 	[HttpPatch("{user}/merge")]
-	[RequireAuth]
+	[Authorize(SousMarinJauneRole.Admin)]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	public async Task<IActionResult> MergeUsers(string user, [FromBody] List<string> users)
 	{
@@ -33,7 +34,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPut("{user}/sold")]
-	[RequireAuth]
+	[Authorize(SousMarinJauneRole.Admin)]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	public async Task<IActionResult> SoldUser(string user)
 	{
@@ -42,7 +43,7 @@ public class UserController : ControllerBase
 	}
 
 	[HttpPatch("sold")]
-	[RequireAuth]
+	[Authorize(SousMarinJauneRole.Admin)]
 	[SwaggerResponse(HttpStatusCode.NoContent, typeof(void))]
 	public async Task<IActionResult> SoldAllUsers()
 	{

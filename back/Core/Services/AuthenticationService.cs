@@ -1,26 +1,62 @@
-﻿using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+﻿using Microsoft.IdentityModel.Tokens;
+using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Adapters.AuthenticationApi;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 
 namespace SousMarinJaune.Api.Core.Services;
 
 internal class AuthenticationService : IAuthenticationService
 {
-	private readonly IAuthenticationClient authenticationApi;
-	private readonly IUsersClient usersApi;
+	private readonly IAuthenticationClient _authenticationApi;
+	private readonly SecurityKey _publicKey;
 
-	public AuthenticationService(IAuthenticationClient authenticationApi, IUsersClient usersApi)
+	public AuthenticationService(IAuthenticationClient authenticationApi)
 	{
-		this.authenticationApi = authenticationApi;
-		this.usersApi = usersApi;
+		_authenticationApi = authenticationApi;
+		_publicKey = GetPublicKey().Result;
 	}
 
-	public async Task<bool> IsLogged(string token)
+	public bool ValidateJwt(string? token, out JwtSecurityToken? validatedToken)
 	{
-		return await authenticationApi.ValidToken2Async(token);
+		validatedToken = null;
+
+		if (string.IsNullOrWhiteSpace(token))
+			return false;
+
+
+		token = token[("Bearer".Length + 1)..];
+
+		var tokenHandler = new JwtSecurityTokenHandler();
+
+		try
+		{
+			tokenHandler.ValidateToken(token, new()
+			{
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = _publicKey,
+				ValidateIssuer = false,
+				ValidateAudience = false,
+				ClockSkew = TimeSpan.Zero
+			}, out var securityToken);
+
+			validatedToken = (JwtSecurityToken?) securityToken;
+
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
 	}
 
-	public async Task<string> GetUsername(string token)
+	private async Task<SecurityKey> GetPublicKey()
 	{
-		return await usersApi.GetUserInfoAsync(Kind.Username, token);
+		var key = (await _authenticationApi.GetValidationKeyAsync()).Data;
+		var rsa = RSA.Create();
+
+		rsa.ImportFromPem(key);
+
+		return new RsaSecurityKey(rsa);
 	}
 }

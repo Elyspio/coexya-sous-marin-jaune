@@ -28,4 +28,10 @@ if (require.main === module) {
 		file: path.resolve(__dirname, "nswag-api-rest.nswag"),
 		outputFile: path.resolve(__dirname, "..", "src", "core", "apis", "backend", "generated.ts"),
 	});
+
+	generateFromNswag({
+		input: "http://localhost:4001/swagger/Authentication.Api/swagger.json",
+		file: path.resolve(__dirname, "nswag-api-rest.nswag"),
+		outputFile: path.resolve(__dirname, "..", "src", "core", "apis", "authentication", "generated.ts"),
+	});
 }

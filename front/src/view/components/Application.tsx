@@ -7,22 +7,23 @@ import { useAppDispatch, useAppSelector } from "../../store";
 import { toggleTheme } from "../../store/module/theme/theme.action";
 import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box, Container } from "@mui/material";
-import { login, logout } from "../../store/module/authentication/authentication.action";
+import { login, logout } from "../../store/module/authentication/authentication.async.action";
 import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
 import { AccountBalance, DarkMode, LightMode, Merge, Message, Settings } from "@mui/icons-material";
 import { toggleModal } from "../../store/module/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
 import { initApp } from "../../store/common/common.actions";
+import { SousMarinJauneRole } from "../../core/apis/authentication/generated";
 
 function Application() {
 	const dispatch = useAppDispatch();
 
-	const { theme, themeIcon, logged, modals } = useAppSelector(s => ({
+	const { theme, themeIcon, logged, loggedUser } = useAppSelector(s => ({
 		theme: s.theme.current,
 		themeIcon: s.theme.current === "light" ? <DarkMode /> : <LightMode />,
 		logged: s.authentication.logged,
-		modals: s.workflow.modals,
+		loggedUser: s.authentication.user,
 	}));
 
 	const storeActions = React.useMemo(
@@ -71,7 +72,7 @@ function Application() {
 		})
 	);
 
-	if (logged) {
+	if (loggedUser?.authorizations?.sousMarinJaune?.roles.includes(SousMarinJauneRole.Admin)) {
 		actions.push(
 			createDrawerDivider("Admin"),
 			createDrawerAction("Merge Users", {

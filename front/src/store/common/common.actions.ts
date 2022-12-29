@@ -2,7 +2,7 @@ import { ExtraArgument } from "../index";
 import { createAction, createAsyncThunk } from "@reduxjs/toolkit";
 import { getOrders } from "../module/orders/orders.async.action";
 import { getBurgers } from "../module/burgers/burgers.async.action";
-import { silentLogin } from "../module/authentication/authentication.action";
+import { silentLogin } from "../module/authentication/authentication.async.action";
 import { getAllUsers } from "../module/users/users.async.action";
 import { getConfig } from "../module/config/config.async.action";
 import { UpdateSocketService } from "../../core/services/socket/update.socket.service";

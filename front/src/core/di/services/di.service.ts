@@ -8,12 +8,13 @@ import { OrderService } from "../../services/order.service";
 import { UpdateSocketService } from "../../services/socket/update.socket.service";
 import { UserService } from "../../services/user.service";
 import { ConfigService } from "../../services/config.service";
+import { TokenService } from "../../services/common/token.service";
 
 export const addServices = (container: Container) => {
 	container.bind(AuthenticationService).toSelf();
+	container.bind(TokenService).toSelf();
 	container.bind(ThemeService).toSelf();
-	container.bind<LocalStorageService>(DiKeysService.localStorage.settings).toConstantValue(new LocalStorageService("elyspio-authentication-settings"));
-	container.bind<LocalStorageService>(DiKeysService.localStorage.validation).toConstantValue(new LocalStorageService("elyspio-authentication-validation"));
+	container.bind<LocalStorageService>(DiKeysService.localStorage.jwt).toConstantValue(new LocalStorageService("authentication:jwt"));
 	container.bind(BurgerService).toSelf();
 	container.bind(OrderService).toSelf();
 	container.bind(UpdateSocketService).toSelf();

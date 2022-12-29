@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using MongoDB.Bson;
 using Newtonsoft.Json.Converters;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -76,6 +78,7 @@ public class ServerBuilder
 				{
 					o.Conventions.Add(new ControllerDocumentationConvention());
 					o.OutputFormatters.RemoveType<StringOutputFormatter>();
+					o.Filters.Add<HttpExceptionFilter>();
 				}
 			)
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
@@ -89,7 +92,14 @@ public class ServerBuilder
 			document.Title = "SousMarinJaune.Api";
 			document.SchemaProcessors.Add(new NullableSchemaProcessor());
 			document.OperationProcessors.Add(new NullableOperationProcessor());
-			document.OperationProcessors.Add(new RequireAuthAttribute.Swagger());
+			document.AddSecurity("bearer", new()
+			{
+				In = OpenApiSecurityApiKeyLocation.Header,
+				Description = "Please insert JWT with Bearer into field",
+				Name = "Authorization",
+				Type = OpenApiSecuritySchemeType.ApiKey
+			});
+			document.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
 		});
 		// Setup SPA Serving
 		if (builder.Environment.IsProduction()) Console.WriteLine($"Server in production, serving SPA from {_frontPath} folder");

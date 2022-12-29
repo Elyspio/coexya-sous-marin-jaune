@@ -1,14 +1,16 @@
 import { openPage } from "../../utils/web";
 import { inject, injectable } from "inversify";
-import { ThemeService } from "./theme.service";
 import { AuthenticationApiClient } from "../../apis/authentication";
 import { EventManager } from "../../utils/event";
 import { BaseService } from "../technical/base.service";
+import { User } from "../../apis/authentication/generated";
+import { DiKeysService } from "../../di/services/di.keys.service";
+import { LocalStorageService } from "./localStorage.service";
 
 @injectable()
 export class AuthenticationService extends BaseService {
-	@inject(ThemeService)
-	private themeService!: ThemeService;
+	@inject(DiKeysService.localStorage.jwt)
+	private localStorage!: LocalStorageService;
 
 	@inject(AuthenticationApiClient)
 	private authenticationApi!: AuthenticationApiClient;
@@ -17,37 +19,17 @@ export class AuthenticationService extends BaseService {
 		return openPage(`${window.config.endpoints.authentication}/login`);
 	}
 
-	public getUsername() {
-		return this.authenticationApi.clients.user.getUserInfo("username").then(super.unWrapAxios);
-	}
-
-	public getToken() {
-		return this.authenticationApi.clients.user.getUserInfo("token").then(super.unWrapAxios);
-	}
-
-	public getCredentials(username: string) {
-		return this.authenticationApi.clients.user.getUserInfo("username").then(super.unWrapAxios);
-	}
-
-	public getSettings(username: string) {
-		return this.authenticationApi.clients.settings.get(username).then(super.unWrapAxios);
-	}
-
-	public async getUserTheme(username: string) {
-		let theme = await this.themeService.getThemeFromSystem();
-		return this.authenticationApi.clients.settings.getTheme(username, theme).then(super.unWrapAxios);
-	}
-
-	public isLogged() {
-		return this.authenticationApi.clients.login.validToken().then(super.unWrapAxios);
-	}
-
 	public async logout() {
-		await this.authenticationApi.clients.login.logout();
+		await this.localStorage.remove();
+		AuthenticationEvents.emit("logout");
+	}
+
+	public isValid() {
+		return this.authenticationApi.auth.verify();
 	}
 }
 
 export const AuthenticationEvents = new EventManager<{
-	login: (username: string) => void;
+	login: (user: User) => void;
 	logout: () => void;
 }>();

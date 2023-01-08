@@ -5,6 +5,7 @@ import { StoreState } from "../../index";
 import { Order, OrderPaymentType } from "../../../core/apis/backend/generated";
 import { deleteOrderRecord, updateOrder } from "./orders.action";
 import { cloneDeep } from "lodash";
+import { toast } from "react-toastify";
 
 export const getOrders = createAsyncThunk("orders/getOrders", async (_, { extra }) => {
 	const orderService = getService(OrderService, extra);
@@ -55,7 +56,7 @@ export const deleteCurrentOrderRecord = createAsyncThunk<void>("orders/deleteCur
 });
 
 export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (id: Order["id"], { getState, dispatch }) => {
-	const { orders } = getState() as StoreState;
+	const { orders, burgers } = getState() as StoreState;
 	const oldOrder = orders.all[id];
 
 	let newOrder = (await dispatch(createOrder())).payload as Order;
@@ -67,6 +68,13 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 		payments: [],
 		paymentEnabled: newOrder.paymentEnabled,
 	};
+
+	const burgersToRemove = newOrder.burgers.filter(b => !burgers.all.some(b2 => b.name === b2.name));
+	burgersToRemove.forEach(burger => {
+		toast.warning(`Le burger "${burger.name}" n'est plus disponible`);
+		newOrder.burgers = newOrder.burgers.filter(b => b.name !== burger.name);
+	})
+
 
 	dispatch(updateOrder(newOrder));
 });

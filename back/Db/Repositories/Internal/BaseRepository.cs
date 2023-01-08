@@ -59,7 +59,7 @@ public class EnumAsStringSerializationProvider : BsonSerializationProviderBase
 		{
 			typeof(BsonType)
 		});
-		var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[]
+		var enumSerializer = (IBsonSerializer)enumSerializerConstructor.Invoke(new object[]
 		{
 			BsonType.String
 		});

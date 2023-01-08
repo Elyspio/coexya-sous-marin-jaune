@@ -19,7 +19,8 @@ public class OrderService : IOrderService
 	private readonly OrderAssembler _orderAssembler;
 	private readonly IOrderRepository _orderRepository;
 
-	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext, ILogger<OrderService> logger, IConfigService configService)
+	public OrderService(IOrderRepository orderRepository, OrderAssembler orderAssembler, IHubContext<UpdateHub, IUpdateHub> hubContext, ILogger<OrderService> logger,
+		IConfigService configService)
 	{
 		_orderRepository = orderRepository;
 		_orderAssembler = orderAssembler;

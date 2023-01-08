@@ -11,7 +11,7 @@ public class HttpExceptionFilter : ExceptionFilterAttribute
 		if (context.Exception is HttpException ex)
 			context.Result = new ObjectResult(ex.ToString())
 			{
-				StatusCode = (int) ex.Code
+				StatusCode = (int)ex.Code
 			};
 
 		base.OnException(context);

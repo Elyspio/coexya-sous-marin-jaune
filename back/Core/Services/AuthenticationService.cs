@@ -40,7 +40,7 @@ internal class AuthenticationService : IAuthenticationService
 				ClockSkew = TimeSpan.Zero
 			}, out var securityToken);
 
-			validatedToken = (JwtSecurityToken?) securityToken;
+			validatedToken = (JwtSecurityToken?)securityToken;
 
 			return true;
 		}

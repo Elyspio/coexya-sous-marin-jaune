@@ -41,7 +41,7 @@ public class BurgerAdapter
 
 			return new Burger
 			{
-				Name = name,
+				Name = HttpUtility.HtmlDecode(name).Trim(),
 				Ingredients = HttpUtility.HtmlDecode(allIngredients)
 					.Split('-', '–', '–')
 					.Select(i => i.Trim())

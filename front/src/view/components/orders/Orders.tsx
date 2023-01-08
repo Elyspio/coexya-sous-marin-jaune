@@ -17,9 +17,21 @@ export function Orders() {
 
 	const users = React.useMemo(() => [...new Set(Object.values(orders).map(order => order.user))].sort(), [orders]);
 
-	const setUserDebounced = React.useMemo(() => debounce((usr: string | null) => dispatch(setUser(usr ?? undefined)), 50), [dispatch]);
+	const setUserDebounced = React.useMemo(
+		() =>
+			debounce((str: string | null) => {
+				const usr = str ? str[0].toUpperCase() + str.slice(1) : undefined;
+				return dispatch(setUser(usr));
+			}, 50),
+		[dispatch]
+	);
 
-	const onChange = React.useCallback((_, str: string) => setUserDebounced(str), [setUserDebounced]);
+	const onChange = React.useCallback(
+		(_, str: string) => {
+			return setUserDebounced(str);
+		},
+		[setUserDebounced]
+	);
 
 	const userBalance = useMemo(() => allUsers.find(u => u.name === user)?.sold, [allUsers, user]);
 
@@ -31,7 +43,6 @@ export function Orders() {
 				<Stack spacing={4} direction={"row"} alignItems={"center"}>
 					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
-							autoCapitalize={"on"}
 							fullWidth
 							id="select-user"
 							value={user ?? ""}

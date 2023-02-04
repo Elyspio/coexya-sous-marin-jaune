@@ -1,11 +1,12 @@
 import { inject, injectable } from "inversify";
-import { AuthenticationClient } from "./generated";
+import { AuthenticationClient, JwtClient } from "./generated";
 import axios from "axios";
 import { TokenService } from "../../services/common/token.service";
 
 @injectable()
 export class AuthenticationApiClient {
-	public readonly auth: AuthenticationClient;
+	public readonly auth: AuthenticationClient
+	public readonly jwt: JwtClient
 
 	constructor(@inject(TokenService) tokenService: TokenService) {
 		const instance = axios.create({ withCredentials: true, transformResponse: [] });
@@ -16,5 +17,6 @@ export class AuthenticationApiClient {
 		});
 
 		this.auth = new AuthenticationClient(window.config.endpoints.authentication, instance);
+		this.jwt = new JwtClient(window.config.endpoints.authentication, instance);
 	}
 }

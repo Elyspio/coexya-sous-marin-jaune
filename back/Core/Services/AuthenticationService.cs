@@ -8,13 +8,13 @@ namespace SousMarinJaune.Api.Core.Services;
 
 internal class AuthenticationService : IAuthenticationService
 {
-	private readonly IAuthenticationClient _authenticationApi;
+    private readonly IJwtClient _jwtClient;
 	private readonly SecurityKey _publicKey;
 
-	public AuthenticationService(IAuthenticationClient authenticationApi)
+	public AuthenticationService(IJwtClient jwtClient)
 	{
-		_authenticationApi = authenticationApi;
-		_publicKey = GetPublicKey().Result;
+        _jwtClient = jwtClient;
+        _publicKey = GetPublicKey().Result;
 	}
 
 	public bool ValidateJwt(string? token, out JwtSecurityToken? validatedToken)
@@ -52,7 +52,7 @@ internal class AuthenticationService : IAuthenticationService
 
 	private async Task<SecurityKey> GetPublicKey()
 	{
-		var key = (await _authenticationApi.GetValidationKeyAsync()).Data;
+		var key = (await _jwtClient.GetValidationKeyAsync()).Data;
 		var rsa = RSA.Create();
 
 		rsa.ImportFromPem(key);

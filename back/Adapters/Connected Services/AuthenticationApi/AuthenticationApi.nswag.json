@@ -239,10 +239,10 @@
         }
       }
     },
-    "/api/auth/jwt/verify": {
+    "/api/jwt/verify": {
       "get": {
         "tags": [
-          "Authentication"
+          "Jwt"
         ],
         "summary": "Verify if Jwt is still valid",
         "operationId": "Verify",
@@ -260,13 +260,34 @@
         }
       }
     },
-    "/api/auth/jwt/validation-key": {
+    "/api/jwt/validation-key": {
       "get": {
         "tags": [
-          "Authentication"
+          "Jwt"
         ],
         "summary": "Get public RSA key used for Jwt validation",
         "operationId": "GetValidationKey",
+        "responses": {
+          "200": {
+            "description": "a JWT for this user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jwt/refresh": {
+      "post": {
+        "tags": [
+          "Jwt"
+        ],
+        "summary": "Refresh a JWT",
+        "operationId": "RefreshJwt",
         "responses": {
           "200": {
             "description": "a JWT for this user",

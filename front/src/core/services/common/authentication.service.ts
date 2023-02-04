@@ -25,7 +25,7 @@ export class AuthenticationService extends BaseService {
 	}
 
 	public isValid() {
-		return this.authenticationApi.auth.verify();
+		return this.authenticationApi.jwt.verify();
 	}
 }
 

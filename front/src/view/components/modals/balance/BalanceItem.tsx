@@ -13,22 +13,26 @@ export function BalanceItem(props: BalanceItemProps) {
 
 	const dispatch = useAppDispatch();
 
-	const updateRemote = useMemo(() => debounce((arg: UpdatePaymentReceivedParams) => dispatch(updatePaymentReceived(arg)), 500), [dispatch]);
+	const updateRemote = useMemo(() => debounce((value: number) => dispatch(updatePaymentReceived({
+		idOrder: props.idOrder,
+		type: props.type,
+		value: value
+	})), 500), [dispatch]);
 
 	const fullReceived = useCallback(() => {
 		setReceived(props.amount);
+		updateRemote(props.amount);
 	}, [dispatch]);
 
 	const onReceivedChanged = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setReceived(Number.parseFloat(e.target.value));
+			let value = Number.parseFloat(e.target.value);
+			setReceived(value);
+			updateRemote(value);
 		},
 		[props]
 	);
 
-	useEffect(() => {
-		updateRemote({ idOrder: props.idOrder, type: props.type, value: received });
-	}, [received]);
 
 	useEffect(() => setReceived(props.received ?? 0), [props.received]);
 

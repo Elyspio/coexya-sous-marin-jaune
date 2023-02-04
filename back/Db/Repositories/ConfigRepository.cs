@@ -10,7 +10,7 @@ namespace SousMarinJaune.Api.Db.Repositories;
 
 public class ConfigRepository : BaseRepository<ConfigEntity>, IConfigRepository
 {
-	public ConfigRepository(IConfiguration configuration, ILogger<BaseRepository<ConfigEntity>> logger) : base(configuration, logger)
+	public ConfigRepository(IConfiguration configuration, ILogger<BaseRepository<ConfigEntity>> baseLogger) : base(configuration, baseLogger)
 	{
 	}
 

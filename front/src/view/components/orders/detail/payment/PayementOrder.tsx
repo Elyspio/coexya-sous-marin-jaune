@@ -1,13 +1,14 @@
 import { useAppDispatch, useAppSelector } from "../../../../../store";
 import React, { useCallback, useMemo } from "react";
 import TabContext from "@mui/lab/TabContext";
-import { Box, Stack, Tab, Typography, useTheme } from "@mui/material";
+import { Box, Divider, Stack, Tab, Typography, useTheme } from "@mui/material";
 import TabList from "@mui/lab/TabList";
 import { OrderPaymentType } from "../../../../../core/apis/backend/generated";
 import { ReactComponent as PaypalIcon } from "../../../../icons/paypal.svg";
 import TicketRestaurant from "../../../../icons/ticket-restaurant.png";
 import Bank from "../../../../icons/bank.png";
 import Cash from "../../../../icons/cash.png";
+import Wallet from "../../../../icons/wallet.png";
 import Picsou from "../../../../icons/picsou.gif";
 import { updateOrderPayment } from "../../../../../store/module/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
@@ -18,22 +19,25 @@ export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.Paypal]: "PayPal",
 	[OrderPaymentType.LunchVoucher]: "Ticket restaurant",
 	[OrderPaymentType.Admin]: "Admin",
+	[OrderPaymentType.Wallet]: "Solde",
 };
 
 export function PayementOrder() {
-	const { order, recordIndex, creating, logged } = useAppSelector(state => {
+	const { order, recordIndex, creating, logged, accountWallet } = useAppSelector(state => {
 		let orderId = state.orders.altering?.order;
+		let selectedOrder = state.orders.all[orderId!];
 		return {
-			order: state.orders.all[orderId!],
+			order: selectedOrder,
 			recordIndex: state.orders.altering?.record,
 			creating: state.orders.mode.order === "create",
 			logged: state.authentication.logged,
+			accountWallet: state.users.all.find(user => user.name === selectedOrder.user)!.sold,
 		};
 	});
 
 	const dispatch = useAppDispatch();
 
-	const [value, setValue] = React.useState(OrderPaymentType.LunchVoucher);
+	const [value, setValue] = React.useState(OrderPaymentType.Wallet);
 
 	const { palette } = useTheme();
 
@@ -85,19 +89,32 @@ export function PayementOrder() {
 			</Typography>
 
 			<TabContext value={value}>
-				<TabList onChange={handleChange} aria-label="lab API tabs example" variant={"fullWidth"} orientation={"horizontal"}>
+				<Divider flexItem />
+				<TabList
+					indicatorColor={value === "Wallet" ? "secondary" : "primary"}
+					textColor={value === "Wallet" ? "secondary" : "primary"}
+					onChange={handleChange}
+					aria-label="lab API tabs example"
+					variant={"scrollable"}
+					orientation={"horizontal"}
+				>
+					{accountWallet > 0 && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
 					<Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />
-					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
+					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
 					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
+
 					{logged && <Tab label={payementTypeLabel.Admin} value={OrderPaymentType.Admin} />}
 				</TabList>
+				<Divider flexItem />
 				<Box alignItems={"center"} justifyContent={"center"} height={"100%"} width={"100%"}>
 					<PaymentPanel
-						type={OrderPaymentType.Paypal}
-						top={<PaypalIcon width={190} height={190} />}
-						value={amounts.Paypal}
-						setValue={updatePayment(OrderPaymentType.Paypal)}
+						type={OrderPaymentType.Wallet}
+						top={<img src={Wallet} width={120} alt={"Porte-feuille"} />}
+						bottom={<Typography>Argent restant sur votre compte {accountWallet}€</Typography>}
+						value={amounts.Wallet}
+						setValue={updatePayment(OrderPaymentType.Wallet)}
+						maxValue={Math.min(Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0)), accountWallet)}
 					/>
 
 					<PaymentPanel
@@ -109,18 +126,10 @@ export function PayementOrder() {
 					/>
 
 					<PaymentPanel
-						type={OrderPaymentType.Cash}
-						bottom={<Typography>Merci de déposer l'argent avant le départ ~ 11h50</Typography>}
-						top={<img src={Cash} height={150} alt={"Argent en espèces"} />}
-						value={amounts.Cash}
-						setValue={updatePayment(OrderPaymentType.Cash)}
-					/>
-
-					<PaymentPanel
 						type={OrderPaymentType.BankTransfer}
 						top={
 							<Stack spacing={2} alignItems={"center"}>
-								<img src={Bank} width={150} alt={"Virement bancaire"} />
+								<img src={Bank} width={120} alt={"Virement bancaire"} />
 								<Stack direction={"row"} alignItems={"center"} spacing={3}>
 									<Typography variant={"overline"} fontSize={"larger"}>
 										IBAN:
@@ -131,6 +140,21 @@ export function PayementOrder() {
 						}
 						value={amounts.BankTransfer}
 						setValue={updatePayment(OrderPaymentType.BankTransfer)}
+					/>
+
+					<PaymentPanel
+						type={OrderPaymentType.Paypal}
+						top={<PaypalIcon width={190} height={190} />}
+						value={amounts.Paypal}
+						setValue={updatePayment(OrderPaymentType.Paypal)}
+					/>
+
+					<PaymentPanel
+						type={OrderPaymentType.Cash}
+						bottom={<Typography>Merci de déposer l'argent avant le départ ~ 11h50</Typography>}
+						top={<img src={Cash} height={150} alt={"Argent en espèces"} />}
+						value={amounts.Cash}
+						setValue={updatePayment(OrderPaymentType.Cash)}
 					/>
 
 					{logged && (

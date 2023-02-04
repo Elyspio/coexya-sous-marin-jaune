@@ -40,22 +40,22 @@ public class UserService : IUserService
 		logger.Exit();
 	}
 
-	public async Task<List<User>> GetUsers()
+	public async Task<List<UserSold>> GetUsers()
 	{
 		var logger = _logger.Enter();
 
 		var orders = await _orderRepository.GetAll();
 		var grouped = orders.GroupBy(order => order.User).ToDictionary(pair => pair.Key, pair => pair.ToList());
-		var users = new ConcurrentBag<User>();
+		var users = new ConcurrentBag<UserSold>();
 
 		Parallel.ForEach(grouped, (pair, _) =>
 		{
-			var prices = pair.Value.Where(order => order.PaymentEnabled).Sum(order => order.Price);
+			var total = pair.Value.Where(order => order.PaymentEnabled).Sum(order => order.Price);
 			var payments = pair.Value.Where(order => order.PaymentEnabled).Sum(order => order.Payments.Sum(p => p.Received ?? 0));
 			users.Add(new()
 			{
 				Name = pair.Key,
-				Sold = payments - prices
+				Sold = payments - total
 			});
 		});
 

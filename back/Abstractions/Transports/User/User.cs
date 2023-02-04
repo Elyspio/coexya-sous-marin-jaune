@@ -1,7 +1,8 @@
 ﻿namespace SousMarinJaune.Api.Abstractions.Transports.User;
 
-public class User
+public class User : UserBase
 {
-	public required string Name { get; set; }
-	public required double Sold { get; set; }
+	public Guid Id { get; set; }
+
+	public double Sold => this.Bills.Sum(bill => bill.Amount);
 }

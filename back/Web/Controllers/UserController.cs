@@ -4,7 +4,7 @@ using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Adapters.AuthenticationApi;
 using SousMarinJaune.Api.Web.Filters;
 using System.Net;
-using User = SousMarinJaune.Api.Abstractions.Transports.User.User;
+using UserBase = SousMarinJaune.Api.Abstractions.Transports.User.UserBase;
 
 namespace SousMarinJaune.Api.Web.Controllers;
 
@@ -53,7 +53,7 @@ public class UserController : ControllerBase
 
 
 	[HttpGet]
-	[SwaggerResponse(HttpStatusCode.OK, typeof(List<User>))]
+	[SwaggerResponse(HttpStatusCode.OK, typeof(List<UserBase>))]
 	public async Task<IActionResult> GetUsers()
 	{
 		return Ok(await _userService.GetUsers());

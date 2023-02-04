@@ -383,7 +383,7 @@ export class JwtClient {
      * @return a JWT for this user
      */
     verify(  cancelToken?: CancelToken | undefined): Promise<boolean> {
-        let url_ = this.baseUrl + "/api/Jwt/verify";
+        let url_ = this.baseUrl + "/api/jwt/verify";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: AxiosRequestConfig = {
@@ -435,7 +435,7 @@ export class JwtClient {
      * @return a JWT for this user
      */
     getValidationKey(  cancelToken?: CancelToken | undefined): Promise<StringResponse> {
-        let url_ = this.baseUrl + "/api/Jwt/validation-key";
+        let url_ = this.baseUrl + "/api/jwt/validation-key";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: AxiosRequestConfig = {
@@ -483,11 +483,11 @@ export class JwtClient {
     }
 
     /**
-     * Verify if Jwt is still valid
+     * Refresh a JWT
      * @return a JWT for this user
      */
     refreshJwt(  cancelToken?: CancelToken | undefined): Promise<StringResponse> {
-        let url_ = this.baseUrl + "/api/Jwt/refresh";
+        let url_ = this.baseUrl + "/api/jwt/refresh";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: AxiosRequestConfig = {

@@ -7,7 +7,6 @@ import { BurgerItem } from "./BurgerItem";
 import { OrderStudent } from "../../burgers/Record/OrderStudent";
 import { OrderFries } from "../../burgers/Record/OrderFries";
 import { OrderDrink } from "../../burgers/Record/OrderDrink";
-import { OrderDessert } from "../../burgers/Record/OrderDessert";
 import { EditBurgerRecord } from "../../burgers/Record/EditBurgerRecord";
 
 export function EditMenuOrder() {
@@ -42,7 +41,7 @@ export function EditMenuOrder() {
 
 	return (
 		<>
-			<Stack spacing={2} px={2} minWidth={450}>
+			<Stack height={"100%"} px={2} minWidth={450} direction={"column"} justifyContent={"space-around"}>
 				<Box>
 					<Stack direction={"row"} spacing={3}>
 						<Typography variant={"overline"}>Burgers </Typography>
@@ -59,12 +58,13 @@ export function EditMenuOrder() {
 					</Box>
 				</Box>
 
-				<Typography variant={"overline"}>Menu</Typography>
+				<Stack spacing={1}>
+					<Typography variant={"overline"}>Menu</Typography>
 
-				<OrderStudent data={order} />
-				<OrderFries data={order} />
-				<OrderDrink data={order} />
-				<OrderDessert data={order} />
+					<OrderStudent data={order} />
+					<OrderFries data={order} />
+					<OrderDrink data={order} />
+				</Stack>
 			</Stack>
 
 			{recordIndex !== undefined && <EditBurgerRecord />}

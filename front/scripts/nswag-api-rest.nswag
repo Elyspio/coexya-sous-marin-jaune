@@ -13,7 +13,7 @@
 			"className": "{controller}Client",
 			"moduleName": "",
 			"namespace": "",
-			"typeScriptVersion": 4.8,
+			"typeScriptVersion": 4.9,
 			"template": "Axios",
 			"promiseType": "Promise",
 			"httpClass": "HttpClient",

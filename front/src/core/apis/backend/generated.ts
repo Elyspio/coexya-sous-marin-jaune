@@ -776,6 +776,7 @@ export enum OrderPaymentType {
     BankTransfer = "BankTransfer",
     Cash = "Cash",
     Admin = "Admin",
+    Wallet = "Wallet",
 }
 
 export interface User {

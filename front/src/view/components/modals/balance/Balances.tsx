@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { BalanceItem } from "./BalanceItem";
 import { Transition } from "../common/Transition";
 import { ModalComponentProps } from "../common/ModalProps";
+import { OrderPaymentType } from "../../../../core/apis/backend/generated";
 
 export function Balances({ setClose, open }: ModalComponentProps) {
 	const allOrders = useAppSelector(s => s.orders.all);
@@ -13,12 +14,14 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 	const pendingPayments = useMemo(() => {
 		const orders = Object.values(allOrders)
 			.map(order =>
-				order.payments.map(p => ({
-					...p,
-					date: dayjs(order.date).format("DD/MM/YYYY"),
-					user: order.user,
-					idOrder: order.id,
-				}))
+				order.payments
+					.filter(p => p.type !== OrderPaymentType.Wallet)
+					.map(p => ({
+						...p,
+						date: dayjs(order.date).format("DD/MM/YYYY"),
+						user: order.user,
+						idOrder: order.id,
+					}))
 			)
 			.flat();
 		const userGrouped = groupBy(orders, "user");

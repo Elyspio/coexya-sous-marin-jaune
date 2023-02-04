@@ -12,9 +12,11 @@ type PanelProps = {
 	bottom?: ReactNode;
 	value: number;
 	setValue: (val: number) => void;
+
+	maxValue?: number;
 };
 
-export function PaymentPanel({ type, top, bottom, value, setValue }: PanelProps) {
+export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: PanelProps) {
 	const dispatch = useAppDispatch();
 
 	const handleChange = useCallback(
@@ -40,8 +42,16 @@ export function PaymentPanel({ type, top, bottom, value, setValue }: PanelProps)
 				<Stack direction={"column"} spacing={3} pt={2} alignItems={"center"} mt={"auto"}>
 					<Divider sx={{ border: "1 solid white", width: "100%" }} />
 					{bottom}
-					<Stack direction={"row"} spacing={1} alignItems={"center"}>
-						<TextField inputProps={{ step: 0.5, min: 0 }} label={"Montant"} value={value} type={"number"} onBlur={updateRemote} onChange={handleChange} />
+					<Stack direction={"row"} spacing={1} alignItems={"center"} width={"100%"}>
+						<TextField
+							fullWidth
+							inputProps={{ step: 0.5, min: 0, max: maxValue }}
+							label={"Montant"}
+							value={value}
+							type={"number"}
+							onBlur={updateRemote}
+							onChange={handleChange}
+						/>
 
 						<div>
 							<Tooltip title={isUsed ? "" : "Ne plus utiliser ce moyen de payement"}>

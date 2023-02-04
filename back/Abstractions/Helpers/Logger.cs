@@ -26,8 +26,6 @@ public static class Log
 	{
 		var loggerInstance = new LoggerInstance<T>(logger, method, arguments, level);
 
-		loggerInstance.Enter();
-
 		return loggerInstance;
 	}
 
@@ -47,9 +45,11 @@ public static class Log
 			_method = method;
 			_logger = logger;
 			_startedAt = DateTime.Now;
+
+			Enter();
 		}
 
-		public void Enter()
+		private void Enter()
 		{
 			if (!_logger.IsEnabled(_level)) return;
 

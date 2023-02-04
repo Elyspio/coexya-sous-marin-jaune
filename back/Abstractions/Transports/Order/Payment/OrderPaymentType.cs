@@ -6,5 +6,6 @@ public enum OrderPaymentType
 	LunchVoucher,
 	BankTransfer,
 	Cash,
-	Admin
+	Admin,
+    Wallet
 }

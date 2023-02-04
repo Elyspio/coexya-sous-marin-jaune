@@ -1,4 +1,4 @@
-import { BurgerRecord, Order } from "../../../../core/apis/backend/generated";
+import { BurgerRecord, Order, OrderPaymentType } from "../../../../core/apis/backend/generated";
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import React, { useMemo } from "react";
 import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
@@ -12,7 +12,10 @@ import { canCreateSelector, isToday } from "../../../../store/module/orders/orde
 import { Euro } from "@mui/icons-material";
 import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
 
-type OrderItemProps = { data: Order; show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean } };
+type OrderItemProps = {
+	data: Order;
+	show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean };
+};
 
 export function OrderItem({ data, show }: OrderItemProps) {
 	const { canCreate, user, logged } = useAppSelector(s => {
@@ -51,16 +54,21 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const isSmall = useIsSmallScreen();
 
-	const isWaitingPaymentValidation = useMemo(() => {
-		if (!data || !data.paymentEnabled) return false;
+	const walletAmount = useMemo(() => data.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data.payments]);
 
-		return data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0) < data.price;
-	}, [data]);
+	const isWaitingPaymentValidation = useMemo(() => {
+		if (!data.paymentEnabled) return false;
+
+		let received = data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0);
+		return received < data.price - walletAmount;
+	}, [data.paymentEnabled, walletAmount]);
 
 	const isMissingPayment = useMemo(() => {
-		if (!data || !data.paymentEnabled) return false;
-		return data.payments.reduce((acc, current) => acc + current.amount, 0) < data.price;
-	}, [data]);
+		if (!data.paymentEnabled) return false;
+
+		const payments = data.payments.reduce((acc, current) => acc + current.amount, 0);
+		return payments < data.price - walletAmount;
+	}, [data, walletAmount]);
 
 	return (
 		<Stack direction={isSmall ? "column" : "row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>

@@ -12,7 +12,7 @@ namespace SousMarinJaune.Api.Db.Repositories;
 
 internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 {
-	public OrderRepository(IConfiguration configuration, ILogger<BaseRepository<OrderEntity>> logger) : base(configuration, logger)
+	public OrderRepository(IConfiguration configuration, ILogger<BaseRepository<OrderEntity>> baseLogger) : base(configuration, baseLogger)
 	{
 	}
 

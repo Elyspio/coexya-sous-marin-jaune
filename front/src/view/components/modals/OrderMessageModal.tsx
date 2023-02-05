@@ -24,7 +24,8 @@ import List from "@mui/material/List";
 import dayjs from "dayjs";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
-import { useMounted } from "../../hooks/useMounted";
+import { useMounted } from "../../hooks/common/useMounted";
+import { useOrderDates } from "../../hooks/orders/useOrderDates";
 
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
@@ -59,15 +60,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const [time, setTime] = useState("12h15");
 
-	const availableDates = useMemo(() => {
-		let dates = Object.values(orders).map(order => dayjs(order.date).startOf("day").toISOString());
-		const distinctDates = [...new Set(dates)];
-		const dayjsDates = distinctDates.map(dayjs);
-
-		dayjsDates.sort((d1, d2) => (d1.isAfter(d2) ? -1 : 1));
-
-		return dayjsDates;
-	}, [orders]);
+	const availableDates = useOrderDates();
 
 	const [selectedDay, setSelectedDay] = useState(availableDates[0]);
 
@@ -166,7 +159,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 						</List>
 						<Fade in={header}>
 							<Typography>
-								Nous viendrons récupérer la commande sur place à Limonest. Si ça fait trop juste pour {time}, pour quelle heure ça serait ? Merci{" "}
+								Nous viendrons récupérer la commande sur place à Limonest. Si ça fait trop juste pour {time}, pour quelle heure ça serait ? Merci
 							</Typography>
 						</Fade>
 					</Stack>

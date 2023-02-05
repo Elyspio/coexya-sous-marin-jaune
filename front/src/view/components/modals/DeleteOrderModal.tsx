@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useMounted } from "../../hooks/useMounted";
+import { useMounted } from "../../hooks/common/useMounted";
 import { ModalComponentProps } from "./common/ModalProps";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../../store";

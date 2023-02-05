@@ -10,7 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
-import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
+import { useIsSmallScreen } from "../../../hooks/common/useBreakpoint";
 import { toggleModalWithOptionsFn } from "../../../../store/module/workflow/workflow.action";
 
 type OrderItemProps = {

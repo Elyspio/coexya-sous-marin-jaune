@@ -6,7 +6,7 @@ import { Config } from "../../../core/apis/backend/generated";
 import { setConfig } from "../../../store/module/config/config.actions";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
-import { useMounted } from "../../hooks/useMounted";
+import { useMounted } from "../../hooks/common/useMounted";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const { allUsers, config } = useAppSelector(s => ({ allUsers: s.orders.all, config: s.config }));

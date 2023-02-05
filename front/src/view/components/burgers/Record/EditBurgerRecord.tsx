@@ -22,7 +22,7 @@ import {
 	deleteOrder,
 	updateRemoteOrder,
 } from "../../../../store/module/orders/orders.async.action";
-import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
+import { useIsSmallScreen } from "../../../hooks/common/useBreakpoint";
 
 /**
  * Add or edit a burger record

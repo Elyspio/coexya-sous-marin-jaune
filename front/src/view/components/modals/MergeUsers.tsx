@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { mergeUsers } from "../../../store/module/users/users.async.action";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
-import { useMounted } from "../../hooks/useMounted";
+import { useMounted } from "../../hooks/common/useMounted";
 
 export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	const allUsers = useAppSelector(s => s.orders.all);

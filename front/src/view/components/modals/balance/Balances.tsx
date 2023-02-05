@@ -1,19 +1,33 @@
-import React, { useMemo } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from "@mui/material";
 import { useAppSelector } from "../../../../store";
 import { groupBy } from "../../../../core/utils/array";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { BalanceItem } from "./BalanceItem";
 import { Transition } from "../common/Transition";
 import { ModalComponentProps } from "../common/ModalProps";
 import { OrderPaymentType } from "../../../../core/apis/backend/generated";
-import { useMounted } from "../../../hooks/useMounted";
+import { useMounted } from "../../../hooks/common/useMounted";
+import { useOrderDates } from "../../../hooks/orders/useOrderDates";
 
 export function Balances({ setClose, open }: ModalComponentProps) {
 	const allOrders = useAppSelector(s => s.orders.all);
 
+	const availableDates = useOrderDates();
+
+	const [selectedDate, setSelectedDate] = useState(availableDates[0]);
+
+	const onSelectedDateChanged = useCallback((_, date: Dayjs | null) => {
+		date && setSelectedDate(date);
+	}, []);
+
+	useEffect(() => {
+		setSelectedDate(availableDates[0]);
+	}, [availableDates]);
+
 	const pendingPayments = useMemo(() => {
 		const orders = Object.values(allOrders)
+			.filter(order => selectedDate.isSame(order.date, "day"))
 			.map(order =>
 				order.payments
 					.filter(p => p.type !== OrderPaymentType.Wallet)
@@ -31,7 +45,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 			acc[user] = groupBy(payments, "date");
 			return acc;
 		}, {} as Record<string, Record<string, typeof userGrouped[string]>>);
-	}, [allOrders]);
+	}, [allOrders, selectedDate]);
 
 	const rows = useMemo(() => {
 		if (!open) return null;
@@ -73,7 +87,19 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	return (
 		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition} fullWidth maxWidth={"sm"}>
-			<DialogTitle>Payements en attentes</DialogTitle>
+			<DialogTitle>
+				<Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+					<Typography>Payements en attentes</Typography>
+					<Autocomplete
+						getOptionLabel={option => option.format("DD/MM/YYYY")}
+						onChange={onSelectedDateChanged}
+						options={availableDates}
+						value={selectedDate}
+						clearIcon={null}
+						renderInput={params => <TextField {...params} sx={{ minWidth: 180 }} label={"Date"} />}
+					/>
+				</Stack>
+			</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3}>
 					{rows}

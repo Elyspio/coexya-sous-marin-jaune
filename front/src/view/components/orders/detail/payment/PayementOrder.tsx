@@ -23,13 +23,11 @@ export const payementTypeLabel: Record<OrderPaymentType, string> = {
 };
 
 export function PayementOrder() {
-	const { order, recordIndex, creating, logged, accountWallet } = useAppSelector(state => {
+	const { order, logged, accountWallet } = useAppSelector(state => {
 		let orderId = state.orders.altering?.order;
 		let selectedOrder = state.orders.all[orderId!];
 		return {
 			order: selectedOrder,
-			recordIndex: state.orders.altering?.record,
-			creating: state.orders.mode.order === "create",
 			logged: state.authentication.logged,
 			accountWallet: state.users.all.find(user => user.name === selectedOrder.user)!.sold,
 		};

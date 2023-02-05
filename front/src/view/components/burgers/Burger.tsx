@@ -13,7 +13,7 @@ export function BurgerItem({ data }: BurgerProps) {
 
 	const onClick = React.useCallback(() => {
 		dispatch(setOrderRecordBurger(data.name));
-	}, [data]);
+	}, [data.name, dispatch]);
 
 	return (
 		<Button onClick={onClick}>

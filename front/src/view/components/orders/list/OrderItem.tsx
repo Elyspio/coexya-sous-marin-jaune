@@ -21,7 +21,6 @@ type OrderItemProps = {
 export function OrderItem({ data, show }: OrderItemProps) {
 	const { canCreate, user, logged } = useAppSelector(s => {
 		let name = s.orders.name;
-		let userOrders = Object.values(s.orders.all).filter(order => order.user === name);
 		return {
 			canCreate: canCreateSelector(s) === true,
 			user: name,
@@ -33,15 +32,15 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const edit = React.useCallback(() => {
 		dispatch(setAlteringOrder(data.id));
-	}, [data]);
+	}, [data.id, dispatch]);
 
 	const del = React.useCallback(() => {
 		dispatch(toggleModalWithOptionsFn("deleteOrder", { orderId: data.id }));
-	}, [data]);
+	}, [data.id, dispatch]);
 
 	const duplicate = React.useCallback(() => {
 		dispatch(duplicateOrder(data.id));
-	}, [data]);
+	}, [data.id, dispatch]);
 
 	const fritesElem = React.useMemo(() => {
 		if (!data.fries) return null;
@@ -62,7 +61,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 		let received = data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0);
 		return received < data.price - walletAmount;
-	}, [data.paymentEnabled, walletAmount]);
+	}, [data.paymentEnabled, data.payments, data.price, walletAmount]);
 
 	const isMissingPayment = useMemo(() => {
 		if (!data.paymentEnabled) return false;

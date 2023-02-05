@@ -54,8 +54,10 @@ export const login = createAsyncThunk("authentication/login", async (_, { getSta
 			page.close();
 			const user = tokenService.parseJwt(localStorages.get()!);
 			AuthenticationEvents.emit("login", user);
+			toast.update(toastId, { type: "success", render: "Logged", autoClose: 3000 });
 			dispatch(setUserFromToken(user));
 		} else {
+			toast.update(toastId, { type: "error", render: "Could not login", autoClose: 3000 });
 			throw new Error("An error occurred while opening the login page");
 		}
 	}

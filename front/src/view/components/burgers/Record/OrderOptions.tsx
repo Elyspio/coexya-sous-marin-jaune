@@ -17,7 +17,7 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 					})
 				);
 			}, 100),
-		[data]
+		[data, dispatch]
 	);
 
 	const onCommentChange = React.useCallback(
@@ -36,7 +36,7 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 				})
 			);
 		},
-		[data]
+		[data, dispatch]
 	);
 
 	return (

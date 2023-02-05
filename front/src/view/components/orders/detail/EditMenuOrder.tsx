@@ -25,13 +25,14 @@ export function EditMenuOrder() {
 		dispatch(createOrderRecord());
 	}, [dispatch]);
 
-	const close = React.useCallback(() => dispatch(setAlteringOrder()), []);
+	const close = React.useCallback(() => dispatch(setAlteringOrder()), [dispatch]);
+	
 	React.useCallback(() => {
 		if (creating) {
 			dispatch(deleteOrder(order.id));
 		}
 		close();
-	}, [creating, order, close]);
+	}, [creating, close, dispatch, order.id]);
 
 	useEffect(() => {
 		if (order?.burgers.length === 0) addRecord();

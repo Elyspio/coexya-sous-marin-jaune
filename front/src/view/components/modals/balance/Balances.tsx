@@ -15,14 +15,14 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const availableDates = useOrderDates();
 
-	const [selectedDate, setSelectedDate] = useState(availableDates[0]);
+	const [selectedDate, setSelectedDate] = useState(availableDates[0] ?? dayjs());
 
 	const onSelectedDateChanged = useCallback((_, date: Dayjs | null) => {
 		date && setSelectedDate(date);
 	}, []);
 
 	useEffect(() => {
-		setSelectedDate(availableDates[0]);
+		availableDates.length && setSelectedDate(availableDates[0]);
 	}, [availableDates]);
 
 	const pendingPayments = useMemo(() => {

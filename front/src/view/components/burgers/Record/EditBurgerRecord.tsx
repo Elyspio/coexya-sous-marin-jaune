@@ -54,7 +54,7 @@ export function EditBurgerRecord() {
 			}
 			// Delete remote order or unset altering order
 			if (mode === "cancel") {
-				if (creating.order == "create") {
+				if (creating.order === "create") {
 					dispatch(deleteOrder(orderId));
 				} else if (creating.record === "create") {
 					dispatch(deleteCurrentOrderRecord());
@@ -63,7 +63,7 @@ export function EditBurgerRecord() {
 				dispatch(setAlteringRecord());
 			}
 		},
-		[dispatch, orderId]
+		[creating.order, creating.record, dispatch, orderId]
 	);
 
 	const updateExcluded = React.useCallback(
@@ -72,7 +72,7 @@ export function EditBurgerRecord() {
 			dispatch(
 				updateBurgerRecord({
 					...data,
-					excluded: included ? data.excluded.filter(i => i != ingredient) : [...data.excluded, ingredient],
+					excluded: included ? data.excluded.filter(i => i !== ingredient) : [...data.excluded, ingredient],
 				})
 			);
 		},

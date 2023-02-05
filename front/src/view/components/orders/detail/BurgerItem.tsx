@@ -12,14 +12,15 @@ export function BurgerItem({ data, index }: { data: BurgerRecord; index: number 
 
 	const edit = React.useCallback(() => {
 		dispatch(setAlteringRecord(index));
-	}, [data]);
+	}, [dispatch, index]);
 
 	const del = React.useCallback(() => {
 		dispatch(deleteOrderRecord(index));
 		dispatch(updateRemoteOrder());
-	}, [data]);
+	}, [dispatch, index]);
 
 	const exclusion = React.useMemo(() => <>(sans {data.excluded.join(", ")})</>, [data.excluded]);
+
 	return (
 		<Stack direction={"row"} spacing={2} justifyContent={"flex-start"} alignItems={"center"} width={"100%"}>
 			<Tooltip title={data.name}>

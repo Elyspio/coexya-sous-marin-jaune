@@ -12,11 +12,15 @@ import { DeleteOrderModal } from "./DeleteOrderModal";
 
 export function Modals() {
 	const {
+		selectedOrder,
+		logged,
 		modals: { message, mergeUsers, balances, updateConfig, deleteOrder },
 		orders,
 	} = useAppSelector(s => ({
 		modals: s.workflow.modals,
 		orders: s.orders.all,
+		selectedOrder: s.orders.altering?.order,
+		logged: s.authentication.logged,
 	}));
 
 	const dispatch = useAppDispatch();
@@ -27,12 +31,16 @@ export function Modals() {
 
 	return (
 		<>
-			<EditOrder />
-			{allOrders.length > 0 && <OrderMessageModal setClose={closeModal("message")} open={message} />}
-			<MergeUsers setClose={closeModal("mergeUsers")} open={mergeUsers} />
-			<Balances setClose={closeModal("balances")} open={balances} />
-			<UpdateConfig setClose={closeModal("updateConfig")} open={updateConfig} />
 			<DeleteOrderModal setClose={closeModal("deleteOrder")} open={deleteOrder} />
+			{selectedOrder && <EditOrder />}
+			{allOrders.length > 0 && <OrderMessageModal setClose={closeModal("message")} open={message} />}
+			{logged && (
+				<>
+					<MergeUsers setClose={closeModal("mergeUsers")} open={mergeUsers} />
+					<Balances setClose={closeModal("balances")} open={balances} />
+					<UpdateConfig setClose={closeModal("updateConfig")} open={updateConfig} />
+				</>
+			)}
 		</>
 	);
 }

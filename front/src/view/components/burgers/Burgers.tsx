@@ -4,8 +4,7 @@ import { useAppSelector } from "../../../store";
 import { BurgerItem } from "./Burger";
 
 export const Burgers = () => {
-	const { burgers, altering } = useAppSelector(state => ({
-		altering: state.orders.altering,
+	const { burgers } = useAppSelector(state => ({
 		burgers: state.burgers.all,
 	}));
 

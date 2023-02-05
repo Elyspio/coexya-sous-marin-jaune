@@ -10,6 +10,7 @@ import { useMounted } from "../../hooks/common/useMounted";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const { allUsers, config } = useAppSelector(s => ({ allUsers: s.orders.all, config: s.config }));
+
 	const dispatch = useAppDispatch();
 
 	const users = useMemo(() => [...new Set(Object.values(allUsers).map(order => order.user))].sort((o1, o2) => o1.localeCompare(o2)), [allUsers]);
@@ -17,7 +18,7 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const updateRemote = useCallback(() => {
 		dispatch(updateConfig());
 		setClose();
-	}, [dispatch, setClose, config]);
+	}, [dispatch, setClose]);
 
 	const onFieldChanged = useCallback(
 		(field: keyof Config) => (e: React.ChangeEvent<HTMLInputElement>) => {

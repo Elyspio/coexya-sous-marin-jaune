@@ -15,7 +15,6 @@ dayjs.extend(customParseFormat);
 
 export function AllOrders() {
 	const { orders, timeRange } = useAppSelector(s => {
-		let name = s.orders.name;
 		return {
 			orders: s.orders.all,
 			timeRange: s.orders.timeRange,
@@ -23,23 +22,26 @@ export function AllOrders() {
 	});
 
 	const grouped = React.useMemo(() => {
-		let allOrders = Object.values(orders).filter(order => {
-			switch (timeRange) {
-				case OrderTime.all:
-					return true;
-				case OrderTime.year:
-					return dayjs(order.date).isAfter(dayjs().add(-1, "year"));
-				case OrderTime.months6:
-					return dayjs(order.date).isAfter(dayjs().add(-6, "month"));
-				case OrderTime.months3:
-					return dayjs(order.date).isAfter(dayjs().add(-3, "month"));
-				case OrderTime.month:
-					return dayjs(order.date).isAfter(dayjs().add(-1, "month"));
-				case OrderTime.today:
-					return isToday(order);
-			}
-			if (timeRange === OrderTime.today) return isToday(order);
-		});
+		let allOrders = Object.values(orders)
+			.filter(order => {
+				switch (timeRange) {
+					case OrderTime.all:
+						return true;
+					case OrderTime.year:
+						return dayjs(order.date).isAfter(dayjs().add(-1, "year"));
+					case OrderTime.months6:
+						return dayjs(order.date).isAfter(dayjs().add(-6, "month"));
+					case OrderTime.months3:
+						return dayjs(order.date).isAfter(dayjs().add(-3, "month"));
+					case OrderTime.month:
+						return dayjs(order.date).isAfter(dayjs().add(-1, "month"));
+					case OrderTime.today:
+						return isToday(order);
+				}
+				if (timeRange === OrderTime.today) return isToday(order);
+				return null;
+			})
+			.filter(Boolean);
 		allOrders.sort((o1, o2) => o1.user.localeCompare(o2.user));
 
 		const smallDate = (order: Order) => dayjs(order.date).format(dateTemplate);
@@ -79,7 +81,7 @@ export function AllOrders() {
 				))}
 			</Stack>
 		);
-	}, [grouped]);
+	}, [grouped, palette.background.paper, palette.text.disabled]);
 
 	return (
 		<Stack display={"flex"} height={"100%"}>

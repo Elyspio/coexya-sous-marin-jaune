@@ -16,7 +16,7 @@ import {
 	Typography,
 } from "@mui/material";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppSelector } from "../../../store";
 import { BurgerRecord, Drink, Fries } from "../../../core/apis/backend/generated";
 import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
@@ -48,8 +48,6 @@ while (t < 14 * 3600 + 5) {
 }
 
 export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
-	const dispatch = useAppDispatch();
-
 	const { orders } = useAppSelector(s => ({
 		orders: s.orders.all,
 	}));
@@ -101,7 +99,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 			toast.success("Texte copié dans le presse papier");
 			setClose();
 		}
-	}, [textRef.current, setClose]);
+	}, [setClose]);
 
 	const [mounted, ref] = useMounted();
 

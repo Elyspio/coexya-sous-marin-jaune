@@ -13,13 +13,11 @@ import { setAlteringOrder } from "../../../../store/module/orders/orders.action"
 type Workflow = "menu" | "payment";
 
 export function EditOrder() {
-	const { order, recordIndex, creating, config } = useAppSelector(state => {
+	const { order, creating } = useAppSelector(state => {
 		let orderId = state.orders.altering?.order;
 		return {
 			order: state.orders.all[orderId!],
-			recordIndex: state.orders.altering?.record,
 			creating: state.orders.mode.order === "create",
-			config: state.config,
 		};
 	});
 
@@ -36,7 +34,7 @@ export function EditOrder() {
 			dispatch(deleteOrder(order.id));
 		}
 		close();
-	}, [creating, order, close]);
+	}, [creating, close, dispatch, order.id]);
 
 	const handleChange = (event: React.SyntheticEvent, newValue: Workflow) => {
 		setWorkflow(newValue);
@@ -49,7 +47,7 @@ export function EditOrder() {
 			dispatch(updateRemoteOrder());
 			close();
 		}
-	}, [workflow, dispatch, close, config, order]);
+	}, [workflow, dispatch, close, order]);
 
 	const remainingToPay = useMemo(() => {
 		if (!order) return -1;
@@ -62,7 +60,7 @@ export function EditOrder() {
 		if (order.burgers.length) return true;
 		if (order.student && (!order.fries || !order.drink)) return true;
 		return remainingToPay > 0;
-	}, [order]);
+	}, [order, remainingToPay]);
 
 	const validateTooltip = useMemo(() => {
 		if (!order) return "";
@@ -83,9 +81,9 @@ export function EditOrder() {
 		}
 
 		return "";
-	}, [order, config, remainingToPay, workflow]);
+	}, [order, remainingToPay, workflow]);
 
-	const cantValidate = useMemo(() => validateTooltip !== "", [workflow, validateTooltip]);
+	const cantValidate = useMemo(() => validateTooltip !== "", [validateTooltip]);
 
 	const validateBtnLabel = useMemo(() => {
 		if (!order) return "";
@@ -95,7 +93,7 @@ export function EditOrder() {
 		if (order.paymentEnabled) return "Payer";
 
 		return `Valider ${order?.price}€`;
-	}, [workflow, config, order]);
+	}, [workflow, order]);
 
 	useEffect(() => {
 		if (!order?.paymentEnabled) setWorkflow("menu");

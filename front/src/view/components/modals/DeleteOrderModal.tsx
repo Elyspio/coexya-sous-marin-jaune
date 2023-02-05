@@ -6,8 +6,6 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import dayjs from "dayjs";
 import { deleteOrder } from "../../../store/module/orders/orders.async.action";
 
-type DeleteOrderModalProps = {};
-
 export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
 	const order = useAppSelector(s => {
 		const options = s.workflow.options.deleteOrder;

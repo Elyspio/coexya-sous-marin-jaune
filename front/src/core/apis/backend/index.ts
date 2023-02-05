@@ -3,11 +3,6 @@ import axios from "axios";
 import { BurgerClient, ConfigClient, OrderClient, UserClient } from "./generated";
 import { TokenService } from "../../services/common/token.service";
 
-const instance = axios.create({
-	withCredentials: true,
-	transformResponse: [],
-});
-
 @injectable()
 export class BackendApi {
 	public readonly burgers: BurgerClient;

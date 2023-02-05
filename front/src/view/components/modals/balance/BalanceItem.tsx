@@ -33,13 +33,13 @@ export function BalanceItem(props: BalanceItemProps) {
 					),
 				500
 			),
-		[dispatch]
+		[dispatch, props.idOrder, props.type]
 	);
 
 	const fullReceived = useCallback(() => {
 		setReceived(props.amount);
 		updateRemote(props.amount);
-	}, [dispatch]);
+	}, [props.amount, updateRemote]);
 
 	const onReceivedChanged = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +47,7 @@ export function BalanceItem(props: BalanceItemProps) {
 			setReceived(value);
 			updateRemote(value);
 		},
-		[props]
+		[updateRemote]
 	);
 
 	useEffect(() => setReceived(props.received ?? 0), [props.received]);

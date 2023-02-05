@@ -15,8 +15,6 @@ import {
 } from "./orders.action";
 import { createOrder, getOrders, updateRemoteOrder } from "./orders.async.action";
 
-type RecordId = `${Order["id"]}_${number}`;
-
 export enum OrderTime {
 	"today" = "Aujourd'hui",
 	"month" = "1 mois",

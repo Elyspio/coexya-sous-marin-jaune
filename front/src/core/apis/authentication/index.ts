@@ -5,8 +5,8 @@ import { TokenService } from "../../services/common/token.service";
 
 @injectable()
 export class AuthenticationApiClient {
-	public readonly auth: AuthenticationClient
-	public readonly jwt: JwtClient
+	public readonly auth: AuthenticationClient;
+	public readonly jwt: JwtClient;
 
 	constructor(@inject(TokenService) tokenService: TokenService) {
 		const instance = axios.create({ withCredentials: true, transformResponse: [] });

@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../store";
 import { mergeUsers } from "../../../store/module/users/users.async.action";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
+import { useMounted } from "../../hooks/useMounted";
 
 export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	const allUsers = useAppSelector(s => s.orders.all);
@@ -33,8 +34,12 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 		setClose();
 	}, [setClose, dispatch, nextName, usersToMerge]);
 
+	const [mounted, ref] = useMounted();
+
+	if (!mounted && !open) return null;
+
 	return (
-		<Dialog open={open} onClose={setClose} TransitionComponent={Transition}>
+		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
 			<DialogTitle>Merge Users</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3} minWidth={400}>

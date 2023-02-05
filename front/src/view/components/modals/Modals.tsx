@@ -2,16 +2,17 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { MergeUsers } from "./MergeUsers";
 import { useAppDispatch, useAppSelector } from "../../../store";
-import { ModalType } from "../../../store/module/workflow/workflow.reducer";
 import { toggleModal } from "../../../store/module/workflow/workflow.action";
 import { EditOrder } from "../orders/detail/EditOrder";
 import { OrderMessageModal } from "./OrderMessageModal";
 import { Balances } from "./balance/Balances";
 import { UpdateConfig } from "./UpdateConfig";
+import { ModalType } from "../../../store/module/workflow/workflow.types";
+import { DeleteOrderModal } from "./DeleteOrderModal";
 
 export function Modals() {
 	const {
-		modals: { message, mergeUsers, balances, updateConfig },
+		modals: { message, mergeUsers, balances, updateConfig, deleteOrder },
 		orders,
 	} = useAppSelector(s => ({
 		modals: s.workflow.modals,
@@ -31,6 +32,7 @@ export function Modals() {
 			<MergeUsers setClose={closeModal("mergeUsers")} open={mergeUsers} />
 			<Balances setClose={closeModal("balances")} open={balances} />
 			<UpdateConfig setClose={closeModal("updateConfig")} open={updateConfig} />
+			<DeleteOrderModal setClose={closeModal("deleteOrder")} open={deleteOrder} />
 		</>
 	);
 }

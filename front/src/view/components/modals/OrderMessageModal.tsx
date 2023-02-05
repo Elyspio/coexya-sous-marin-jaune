@@ -24,6 +24,7 @@ import List from "@mui/material/List";
 import dayjs from "dayjs";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
+import { useMounted } from "../../hooks/useMounted";
 
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
@@ -109,8 +110,12 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 		}
 	}, [textRef.current, setClose]);
 
+	const [mounted, ref] = useMounted();
+
+	if (!mounted && !open) return null;
+
 	return (
-		<Dialog open={open} onClose={setClose} TransitionComponent={Transition}>
+		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
 			<DialogTitle>
 				<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
 					<Typography>Message à envoyer</Typography>

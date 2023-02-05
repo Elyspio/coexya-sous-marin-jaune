@@ -6,6 +6,7 @@ import { Config } from "../../../core/apis/backend/generated";
 import { setConfig } from "../../../store/module/config/config.actions";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
+import { useMounted } from "../../hooks/useMounted";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const { allUsers, config } = useAppSelector(s => ({ allUsers: s.orders.all, config: s.config }));
@@ -42,8 +43,12 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 		[dispatch, config]
 	);
 
+	const [mounted, ref] = useMounted();
+
+	if (!mounted && !open) return null;
+
 	return (
-		<Dialog open={open} onClose={setClose} TransitionComponent={Transition}>
+		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
 			<DialogTitle>Modifier la configuration</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3} minWidth={400}>

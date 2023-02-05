@@ -73,8 +73,7 @@ export const duplicateOrder = createAsyncThunk("orders/duplicateOrder", async (i
 	burgersToRemove.forEach(burger => {
 		toast.warning(`Le burger "${burger.name}" n'est plus disponible`);
 		newOrder.burgers = newOrder.burgers.filter(b => b.name !== burger.name);
-	})
-
+	});
 
 	dispatch(updateOrder(newOrder));
 });

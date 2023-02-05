@@ -2,7 +2,7 @@ import { BurgerRecord, Order, OrderPaymentType } from "../../../../core/apis/bac
 import { useAppDispatch, useAppSelector } from "../../../../store";
 import React, { useMemo } from "react";
 import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
-import { deleteOrder, duplicateOrder } from "../../../../store/module/orders/orders.async.action";
+import { duplicateOrder } from "../../../../store/module/orders/orders.async.action";
 import { Chip, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,6 +11,7 @@ import ContentCopy from "@mui/icons-material/ContentCopy";
 import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
 import { useIsSmallScreen } from "../../../hooks/useBreakpoint";
+import { toggleModalWithOptionsFn } from "../../../../store/module/workflow/workflow.action";
 
 type OrderItemProps = {
 	data: Order;
@@ -35,7 +36,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 	}, [data]);
 
 	const del = React.useCallback(() => {
-		dispatch(deleteOrder(data.id));
+		dispatch(toggleModalWithOptionsFn("deleteOrder", { orderId: data.id }));
 	}, [data]);
 
 	const duplicate = React.useCallback(() => {
@@ -54,7 +55,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const isSmall = useIsSmallScreen();
 
-	const walletAmount = useMemo(() => data.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data.payments]);
+	const walletAmount = useMemo(() => data.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data]);
 
 	const isWaitingPaymentValidation = useMemo(() => {
 		if (!data.paymentEnabled) return false;

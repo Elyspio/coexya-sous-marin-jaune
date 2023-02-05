@@ -7,6 +7,7 @@ import { BalanceItem } from "./BalanceItem";
 import { Transition } from "../common/Transition";
 import { ModalComponentProps } from "../common/ModalProps";
 import { OrderPaymentType } from "../../../../core/apis/backend/generated";
+import { useMounted } from "../../../hooks/useMounted";
 
 export function Balances({ setClose, open }: ModalComponentProps) {
 	const allOrders = useAppSelector(s => s.orders.all);
@@ -66,8 +67,12 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 		));
 	}, [pendingPayments, open]);
 
+	const [mounted, ref] = useMounted();
+
+	if (!mounted && !open) return null;
+
 	return (
-		<Dialog open={open} onClose={setClose} TransitionComponent={Transition} fullWidth maxWidth={"sm"}>
+		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition} fullWidth maxWidth={"sm"}>
 			<DialogTitle>Payements en attentes</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3}>

@@ -4,7 +4,6 @@ using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Adapters.AuthenticationApi;
 using SousMarinJaune.Api.Web.Filters;
 using System.Net;
-using UserBase = SousMarinJaune.Api.Abstractions.Transports.User.UserBase;
 
 namespace SousMarinJaune.Api.Web.Controllers;
 

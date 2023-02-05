@@ -1,17 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField, Typography } from "@mui/material";
-import { useAppSelector } from "../../../../store";
-import { groupBy } from "../../../../core/utils/array";
+import { useAppDispatch, useAppSelector } from "../../../../store";
 import dayjs, { Dayjs } from "dayjs";
-import { BalanceItem } from "./BalanceItem";
 import { Transition } from "../common/Transition";
 import { ModalComponentProps } from "../common/ModalProps";
 import { OrderPaymentType } from "../../../../core/apis/backend/generated";
 import { useMounted } from "../../../hooks/common/useMounted";
 import { useOrderDates } from "../../../hooks/orders/useOrderDates";
+import { DataGrid, GridColDef, GridRowModel } from "@mui/x-data-grid";
+import { payementTypeLabel } from "../../orders/detail/payment/PayementOrder";
+import { updatePaymentReceived } from "../../../../store/module/orders/orders.async.action";
 
 export function Balances({ setClose, open }: ModalComponentProps) {
+	const dispatch = useAppDispatch();
+
 	const allOrders = useAppSelector(s => s.orders.all);
+
+	// region selectedDate
 
 	const availableDates = useOrderDates();
 
@@ -25,8 +30,10 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 		availableDates.length && setSelectedDate(availableDates[0]);
 	}, [availableDates]);
 
-	const pendingPayments = useMemo(() => {
-		const orders = Object.values(allOrders)
+	// endregion selectedDate
+
+	const rows = useMemo(() => {
+		return Object.values(allOrders)
 			.filter(order => selectedDate.isSame(order.date, "day"))
 			.map(order =>
 				order.payments
@@ -39,47 +46,21 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 					}))
 			)
 			.flat();
-		const userGrouped = groupBy(orders, "user");
-
-		return Object.entries(userGrouped).reduce((acc, [user, payments]) => {
-			acc[user] = groupBy(payments, "date");
-			return acc;
-		}, {} as Record<string, Record<string, typeof userGrouped[string]>>);
 	}, [allOrders, selectedDate]);
 
-	const rows = useMemo(() => {
-		if (!open) return null;
-
-		const globalEntries = Object.entries(pendingPayments);
-
-		globalEntries.sort((e1, e2) => {
-			return e1[0].localeCompare(e2[0]);
-		});
-
-		return globalEntries.map(([user, elements]) => (
-			<Stack spacing={1} bgcolor={"background.default"} p={1} key={user}>
-				<Typography pl={1} fontSize={"120%"}>
-					{user}
-				</Typography>
-				<Stack spacing={2} bgcolor={"background.paper"} p={2}>
-					{Object.entries(elements)
-						.reverse()
-						.map(([date, payments]) => (
-							<Stack spacing={2} key={date}>
-								<Typography variant={"subtitle1"} fontSize={"90%"}>
-									{date}
-								</Typography>
-								<Stack bgcolor={"background.default"} pl={2} borderRadius={2} spacing={1}>
-									{payments.map(p => (
-										<BalanceItem key={p.type} {...p} />
-									))}
-								</Stack>
-							</Stack>
-						))}
-				</Stack>
-			</Stack>
-		));
-	}, [pendingPayments, open]);
+	let onCellEditStop = useCallback(
+		(row: GridRowModel<typeof rows[number]>) => {
+			dispatch(
+				updatePaymentReceived({
+					idOrder: row.idOrder,
+					type: row.type,
+					value: Number.parseFloat(row.received!.toString()),
+				})
+			);
+			return row;
+		},
+		[dispatch]
+	);
 
 	const [mounted, ref] = useMounted();
 
@@ -102,7 +83,15 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 			</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3}>
-					{rows}
+					<DataGrid
+						experimentalFeatures={{ newEditingApi: true }}
+						getRowId={row => row.idOrder}
+						columns={columns}
+						rows={rows}
+						autoHeight
+						processRowUpdate={onCellEditStop}
+						rowsPerPageOptions={[20]}
+					/>
 				</Stack>
 			</DialogContent>
 			<DialogActions>
@@ -115,3 +104,24 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 		</Dialog>
 	);
 }
+
+const columns: GridColDef[] = [
+	{
+		field: "user",
+		headerName: "User",
+		width: 150,
+		editable: false,
+		align: "center",
+		headerAlign: "center",
+	},
+	{
+		field: "type",
+		headerName: "Type",
+		width: 150,
+		renderCell: params => payementTypeLabel[params.value],
+		align: "center",
+		headerAlign: "center",
+	},
+	{ field: "amount", headerName: "Amount", width: 100, editable: false, align: "right", headerAlign: "right" },
+	{ field: "received", headerName: "Received", width: 100, editable: true, align: "right", headerAlign: "right" },
+];

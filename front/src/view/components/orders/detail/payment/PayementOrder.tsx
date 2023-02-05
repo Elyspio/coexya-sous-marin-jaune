@@ -47,7 +47,7 @@ export function PayementOrder() {
 		return order.price - order.payments.reduce((acc, current) => acc + current.amount, 0);
 	}, [order]);
 
-	const remainingToPayStr = useMemo(() => (Number.isNaN(remainingToPay) ? order.price : Math.round(remainingToPay * 100) / 100), [remainingToPay, order]);
+	const remainingToPayStr = useMemo(() => (Number.isNaN(remainingToPay) ? order.price : remainingToPay.toFixed(2)), [remainingToPay, order]);
 
 	const amounts = useMemo(() => {
 		const data: Record<OrderPaymentType, number> = {} as any;
@@ -109,10 +109,10 @@ export function PayementOrder() {
 					<PaymentPanel
 						type={OrderPaymentType.Wallet}
 						top={<img src={Wallet} width={120} alt={"Porte-feuille"} />}
-						bottom={<Typography>Argent restant sur votre compte {accountWallet}€</Typography>}
+						bottom={<Typography>Argent restant sur votre compte {(accountWallet + order.price - amounts.Wallet).toFixed(2)}€</Typography>}
 						value={amounts.Wallet}
 						setValue={updatePayment(OrderPaymentType.Wallet)}
-						maxValue={Math.min(Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0)), accountWallet)}
+						maxValue={Math.min(Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0)), accountWallet + order.price)}
 					/>
 
 					<PaymentPanel

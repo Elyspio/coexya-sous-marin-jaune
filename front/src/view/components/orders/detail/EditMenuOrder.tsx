@@ -26,7 +26,7 @@ export function EditMenuOrder() {
 	}, [dispatch]);
 
 	const close = React.useCallback(() => dispatch(setAlteringOrder()), [dispatch]);
-	
+
 	React.useCallback(() => {
 		if (creating) {
 			dispatch(deleteOrder(order.id));

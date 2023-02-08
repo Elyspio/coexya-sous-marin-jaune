@@ -13,7 +13,7 @@ import {
 	updateOrder,
 	updateOrderPayment,
 } from "./orders.action";
-import { createOrder, getOrders, updateRemoteOrder } from "./orders.async.action";
+import { createOrder, deleteOrderPayement, getOrders, updateRemoteOrder } from "./orders.async.action";
 
 export enum OrderTime {
 	"today" = "Aujourd'hui",
@@ -148,6 +148,11 @@ const slice = createSlice({
 			} else {
 				order.payments.push({ type, amount: value });
 			}
+		});
+
+		builder.addCase(deleteOrderPayement.fulfilled, (state, action) => {
+			const order = state.all[action.meta.arg.idOrder];
+			order.payments = order.payments.filter(payment => payment.type !== action.meta.arg.payementType);
 		});
 	},
 });

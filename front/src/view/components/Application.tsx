@@ -96,10 +96,12 @@ function Application() {
 
 	const drawer = withDrawer({
 		component: (
-			<Container maxWidth={"xl"} className={"Container"}>
-				<Orders />
+			<>
+				<Container maxWidth={"xl"} className={"Container"}>
+					<Orders />
+				</Container>
 				<Modals />
-			</Container>
+			</>
 		),
 		actions,
 		title: "Sous-marin Jaune V2",

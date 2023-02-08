@@ -55,7 +55,7 @@ public class UserService : IUserService
 			users.Add(new()
 			{
 				Name = pair.Key,
-				Sold = payments - total
+				Sold = Math.Round(payments - total, 3)
 			});
 		});
 

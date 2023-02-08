@@ -82,8 +82,8 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 			{data.burgers.length > 0 ? (
 				<Stack direction={"row"} spacing={2}>
-					{data.burgers.map(burger => (
-						<BurgerItem key={burger.name} data={burger} />
+					{data.burgers.map((burger, i) => (
+						<BurgerItem key={burger.name + "-" + i} data={burger} />
 					))}
 				</Stack>
 			) : (

@@ -4,7 +4,6 @@ import TabContext from "@mui/lab/TabContext";
 import { Box, Divider, Stack, Tab, Typography, useTheme } from "@mui/material";
 import TabList from "@mui/lab/TabList";
 import { OrderPaymentType } from "../../../../../core/apis/backend/generated";
-import { ReactComponent as PaypalIcon } from "../../../../icons/paypal.svg";
 import TicketRestaurant from "../../../../icons/ticket-restaurant.png";
 import Bank from "../../../../icons/bank.png";
 import Cash from "../../../../icons/cash.png";
@@ -35,7 +34,7 @@ export function PayementOrder() {
 
 	const dispatch = useAppDispatch();
 
-	const [value, setValue] = React.useState(OrderPaymentType.Wallet);
+	const [value, setValue] = React.useState(OrderPaymentType.LunchVoucher);
 
 	const { palette } = useTheme();
 
@@ -75,6 +74,12 @@ export function PayementOrder() {
 	);
 	// endregion
 
+	const maxWalletValue = useMemo(() => {
+		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
+
+		return Math.min(accountWallet, remainingToPayWithWallet);
+	}, [order, accountWallet]);
+
 	if (!order) return null;
 
 	return (
@@ -96,12 +101,11 @@ export function PayementOrder() {
 					variant={"scrollable"}
 					orientation={"horizontal"}
 				>
-					{accountWallet > 0 && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
 					<Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
 					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
 					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
-
+					{(accountWallet > 0 || order.payments.some(payment => payment.type === "Wallet")) && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
 					{logged && <Tab label={payementTypeLabel.Admin} value={OrderPaymentType.Admin} />}
 				</TabList>
 				<Divider flexItem />
@@ -112,7 +116,7 @@ export function PayementOrder() {
 						bottom={<Typography>Argent restant sur votre compte {(accountWallet + order.price - amounts.Wallet).toFixed(2)}€</Typography>}
 						value={amounts.Wallet}
 						setValue={updatePayment(OrderPaymentType.Wallet)}
-						maxValue={Math.min(Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0)), accountWallet + order.price)}
+						maxValue={maxWalletValue}
 					/>
 
 					<PaymentPanel
@@ -142,7 +146,7 @@ export function PayementOrder() {
 
 					<PaymentPanel
 						type={OrderPaymentType.Paypal}
-						top={<PaypalIcon width={190} height={190} />}
+						top={"https://paypal.me/elyspio?country.x=FR"}
 						value={amounts.Paypal}
 						setValue={updatePayment(OrderPaymentType.Paypal)}
 					/>

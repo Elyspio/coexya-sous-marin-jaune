@@ -599,7 +599,7 @@ export class UserClient {
 			});
 	}
 
-	getUsers(cancelToken?: CancelToken | undefined): Promise<User[]> {
+	getUsers(cancelToken?: CancelToken | undefined): Promise<UserSold[]> {
 		let url_ = this.baseUrl + "/api/users";
 		url_ = url_.replace(/[?&]$/, "");
 
@@ -686,7 +686,7 @@ export class UserClient {
 		return Promise.resolve<void>(null as any);
 	}
 
-	protected processGetUsers(response: AxiosResponse): Promise<User[]> {
+	protected processGetUsers(response: AxiosResponse): Promise<UserSold[]> {
 		const status = response.status;
 		let _headers: any = {};
 		if (response.headers && typeof response.headers === "object") {
@@ -701,12 +701,12 @@ export class UserClient {
 			let result200: any = null;
 			let resultData200 = _responseText;
 			result200 = JSON.parse(resultData200);
-			return Promise.resolve<User[]>(result200);
+			return Promise.resolve<UserSold[]>(result200);
 		} else if (status !== 200 && status !== 204) {
 			const _responseText = response.data;
 			return throwException("An unexpected server error occurred.", status, _responseText, _headers);
 		}
-		return Promise.resolve<User[]>(null as any);
+		return Promise.resolve<UserSold[]>(null as any);
 	}
 }
 
@@ -758,7 +758,12 @@ export enum Drink {
 }
 
 export interface Fries {
-	sauces: Sauce[];
+	sauces: SauceWithQuantity[];
+}
+
+export interface SauceWithQuantity {
+	sauce: Sauce;
+	amount: number;
 }
 
 export enum Sauce {
@@ -786,7 +791,7 @@ export enum OrderPaymentType {
 	Wallet = "Wallet",
 }
 
-export interface User {
+export interface UserSold {
 	name: string;
 	sold: number;
 }

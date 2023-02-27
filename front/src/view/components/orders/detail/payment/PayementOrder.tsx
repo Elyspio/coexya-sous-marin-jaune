@@ -78,7 +78,7 @@ export function PayementOrder() {
 		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
 
 		return Math.min(accountWallet, remainingToPayWithWallet);
-	}, [order, accountWallet]);
+	}, [remainingToPay, order.payments, accountWallet]);
 
 	if (!order) return null;
 

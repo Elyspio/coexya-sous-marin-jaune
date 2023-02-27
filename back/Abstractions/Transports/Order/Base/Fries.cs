@@ -2,5 +2,5 @@
 
 public class Fries
 {
-	public required List<Sauce> Sauces { get; init; }
+	public required List<SauceWithQuantity> Sauces { get; init; }
 }

@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { User } from "../../../core/apis/backend/generated";
 import { getAllUsers } from "./users.async.action";
+import { UserSold } from "../../../core/apis/backend/generated";
 
 export type UserState = {
-	all: User[];
+	all: UserSold[];
 };
 
 const initialState: UserState = {

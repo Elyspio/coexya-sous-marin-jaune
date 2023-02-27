@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NSwag.Annotations;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
+using SousMarinJaune.Api.Abstractions.Transports.User;
 using SousMarinJaune.Api.Adapters.AuthenticationApi;
 using SousMarinJaune.Api.Web.Filters;
 using System.Net;
@@ -52,7 +53,7 @@ public class UserController : ControllerBase
 
 
 	[HttpGet]
-	[SwaggerResponse(HttpStatusCode.OK, typeof(List<UserBase>))]
+	[SwaggerResponse(HttpStatusCode.OK, typeof(List<UserSold>))]
 	public async Task<IActionResult> GetUsers()
 	{
 		return Ok(await _userService.GetUsers());

@@ -10,15 +10,15 @@ namespace SousMarinJaune.Api.Db.Repositories.Internal;
 
 public abstract class BaseRepository<T>
 {
+	private readonly ILogger<BaseRepository<T>> _baseLogger;
 	protected readonly string CollectionName;
 	protected readonly MongoContext context;
-	private readonly ILogger<BaseRepository<T>> _baseLogger;
 
 	protected BaseRepository(IConfiguration configuration, ILogger<BaseRepository<T>> baseLogger)
 	{
 		context = new(configuration);
 		CollectionName = typeof(T).Name[..^"Entity".Length];
-		this._baseLogger = baseLogger;
+		_baseLogger = baseLogger;
 		var pack = new ConventionPack
 		{
 			new EnumRepresentationConvention(BsonType.String)
@@ -59,7 +59,7 @@ public class EnumAsStringSerializationProvider : BsonSerializationProviderBase
 		{
 			typeof(BsonType)
 		});
-		var enumSerializer = (IBsonSerializer)enumSerializerConstructor.Invoke(new object[]
+		var enumSerializer = (IBsonSerializer) enumSerializerConstructor.Invoke(new object[]
 		{
 			BsonType.String
 		});

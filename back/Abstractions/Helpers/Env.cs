@@ -10,7 +10,7 @@ public class Env
 		if (env != null)
 		{
 			var converter = TypeDescriptor.GetConverter(typeof(T));
-			return (T)converter.ConvertFromString(env)!;
+			return (T) converter.ConvertFromString(env)!;
 		}
 
 		return falback;

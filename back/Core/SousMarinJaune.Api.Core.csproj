@@ -11,10 +11,10 @@
     <ItemGroup>
         <PackageReference Include="Mapster" Version="7.3.0"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="7.0.0"/>
-        <PackageReference Include="Scrutor" Version="4.2.0"/>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1"/>
+        <PackageReference Include="Scrutor" Version="4.2.1"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.27.0"/>
         <PackageReference Include="System.Runtime.Caching" Version="7.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="7.0.3"/>
     </ItemGroup>
 
     <ItemGroup>

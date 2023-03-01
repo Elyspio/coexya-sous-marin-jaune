@@ -15,7 +15,7 @@ public class AdapterModule : IDotnetModule
 
 		services.AddHttpClient<IUsersClient, UsersClient>(client => { client.BaseAddress = new(conf.Authentication); });
 		services.AddHttpClient<IAuthenticationClient, AuthenticationClient>(client => { client.BaseAddress = new(conf.Authentication); });
-        services.AddHttpClient<IJwtClient, JwtClient>(client => { client.BaseAddress = new(conf.Authentication); });
+		services.AddHttpClient<IJwtClient, JwtClient>(client => { client.BaseAddress = new(conf.Authentication); });
 
 		services.AddHttpClient<BurgerAdapter>();
 

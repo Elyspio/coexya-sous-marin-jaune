@@ -7,5 +7,5 @@ public enum OrderPaymentType
 	BankTransfer,
 	Cash,
 	Admin,
-    Wallet
+	Wallet
 }

@@ -8,13 +8,13 @@ namespace SousMarinJaune.Api.Core.Services;
 
 internal class AuthenticationService : IAuthenticationService
 {
-    private readonly IJwtClient _jwtClient;
+	private readonly IJwtClient _jwtClient;
 	private readonly SecurityKey _publicKey;
 
 	public AuthenticationService(IJwtClient jwtClient)
 	{
-        _jwtClient = jwtClient;
-        _publicKey = GetPublicKey().Result;
+		_jwtClient = jwtClient;
+		_publicKey = GetPublicKey().Result;
 	}
 
 	public bool ValidateJwt(string? token, out JwtSecurityToken? validatedToken)
@@ -40,7 +40,7 @@ internal class AuthenticationService : IAuthenticationService
 				ClockSkew = TimeSpan.Zero
 			}, out var securityToken);
 
-			validatedToken = (JwtSecurityToken?)securityToken;
+			validatedToken = (JwtSecurityToken?) securityToken;
 
 			return true;
 		}

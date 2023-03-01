@@ -11,6 +11,7 @@ import Wallet from "../../../../icons/wallet.png";
 import Picsou from "../../../../icons/picsou.gif";
 import { updateOrderPayment } from "../../../../../store/module/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
+import dayjs from "dayjs";
 
 export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",
@@ -34,7 +35,7 @@ export function PayementOrder() {
 
 	const dispatch = useAppDispatch();
 
-	const [value, setValue] = React.useState(OrderPaymentType.LunchVoucher);
+	const [value, setValue] = React.useState(OrderPaymentType.Cash);
 
 	const { palette } = useTheme();
 
@@ -83,7 +84,7 @@ export function PayementOrder() {
 	if (!order) return null;
 
 	return (
-		<Stack spacing={2} mt={1} alignItems={"center"} height={"100%"}>
+		<Stack spacing={2} mt={1} alignItems={"center"} height={"100%"} minWidth={450}>
 			<Typography variant={"overline"}>
 				Montant restant à payer
 				<Typography component={"span"} pl={2} color={palette.warning.main}>
@@ -101,7 +102,7 @@ export function PayementOrder() {
 					variant={"scrollable"}
 					orientation={"horizontal"}
 				>
-					<Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />
+					{dayjs(order.date).isBefore("2023-03-01") && <Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />}
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
 					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
 					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getService } from "../../common/common.actions";
 import { OrderService } from "../../../core/services/order.service";
 import { StoreState } from "../../index";
-import { Order, OrderPaymentType } from "../../../core/apis/backend/generated";
+import { Order, OrderPaymentType, Sauce } from "../../../core/apis/backend/generated";
 import { deleteOrderRecord, updateOrder } from "./orders.action";
 import { cloneDeep } from "lodash";
 import { toast } from "react-toastify";
@@ -83,9 +83,39 @@ export const deleteOrderPayement = createAsyncThunk("orders/deleteOrderPayement"
 	const {
 		orders: { all },
 	} = getState() as StoreState;
-	const order = cloneDeep(all[idOrder]);
+	const order: Order = cloneDeep(all[idOrder]);
 
 	order.payments = order.payments.filter(payement => payement.type !== payementType);
+
+	const orderService = getService(OrderService, extra);
+
+	await orderService.updateOrder(order);
+});
+
+type UpdateOrderSauceQuantity = {
+	idOrder: Order["id"];
+	quantity: number;
+	sauce: Sauce;
+};
+export const updateOrderSauceQuantity = createAsyncThunk("orders/updateOrderSauceQuantity", async ({ sauce, quantity, idOrder }: UpdateOrderSauceQuantity, { extra, getState }) => {
+	const {
+		orders: { all },
+	} = getState() as StoreState;
+	const order: Order = cloneDeep(all[idOrder]);
+
+	if (!order.fries) return order;
+
+	let sauceQuantity = order.fries.sauces.find(sq => sq.sauce === sauce);
+
+	if (!sauceQuantity) {
+		sauceQuantity = {
+			sauce,
+			amount: quantity,
+		};
+		order.fries?.sauces.push(sauceQuantity);
+	}
+
+	sauceQuantity.amount = quantity;
 
 	const orderService = getService(OrderService, extra);
 

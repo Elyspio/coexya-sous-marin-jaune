@@ -44,7 +44,10 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const fritesElem = React.useMemo(() => {
 		if (!data.fries) return null;
-		let sauces = data.fries.sauces.join(", ");
+		let sauces = data.fries.sauces
+			.filter(sq => sq.amount)
+			.map(sq => sq.sauce + (sq.amount > 1 ? ` x${sq.amount}` : ""))
+			.join(", ");
 		return <Typography>Frites {sauces.length ? `(${sauces})` : ""}</Typography>;
 	}, [data.fries]);
 

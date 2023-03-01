@@ -1,7 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Nodes;
-
-namespace SousMarinJaune.Api.Abstractions.Transports.Order.Base;
+﻿namespace SousMarinJaune.Api.Abstractions.Transports.Order.Base;
 
 public class SauceWithQuantity
 {

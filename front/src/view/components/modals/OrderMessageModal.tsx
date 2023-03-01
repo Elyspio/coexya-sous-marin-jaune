@@ -70,7 +70,14 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const todayOrders = useMemo(() => Object.values(orders).filter(order => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
 
-	const getFriteLabel = useCallback((frites: Fries | undefined) => (frites ? `Frites${frites.sauces.length ? ` (${frites.sauces.join(", ")})` : ""}` : ""), []);
+	const getFriteLabel = useCallback((frites: Fries | undefined) => {
+		let sauces = frites?.sauces
+			.filter(sq => sq.amount)
+			.map(sq => sq.sauce + (sq.amount > 1 ? ` x${sq.amount}` : ""))
+			.join(", ");
+
+		return `Frites ${sauces ? `(${sauces})` : ""}`;
+	}, []);
 
 	const getBurgerLabel = useCallback((burgers: BurgerRecord[]) => {
 		let str = "";

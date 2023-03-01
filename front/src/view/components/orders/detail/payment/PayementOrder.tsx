@@ -102,10 +102,10 @@ export function PayementOrder() {
 					variant={"scrollable"}
 					orientation={"horizontal"}
 				>
-					{dayjs(order.date).isBefore("2023-03-01") && <Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />}
+					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
 					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
-					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
+					{dayjs(order.date).isBefore("2023-03-01") && <Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />}
 					{(accountWallet > 0 || order.payments.some(payment => payment.type === "Wallet")) && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
 					{logged && <Tab label={payementTypeLabel.Admin} value={OrderPaymentType.Admin} />}
 				</TabList>

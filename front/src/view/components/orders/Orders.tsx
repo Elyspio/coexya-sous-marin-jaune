@@ -1,10 +1,18 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store";
 import { Autocomplete, debounce, FormControl, Paper, Stack, TextField, Typography } from "@mui/material";
 import { setUser } from "../../../store/module/orders/orders.action";
 import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
 import { useIsSmallScreen } from "../../hooks/common/useBreakpoint";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import "dayjs/locale/fr";
+
+dayjs.locale("fr"); // use locale globally
+dayjs.extend(relativeTime);
+
+let lastTime = dayjs("11", "h");
 
 export function Orders() {
 	const { orders, user, allUsers } = useAppSelector(s => ({
@@ -37,9 +45,27 @@ export function Orders() {
 
 	const isSmall = useIsSmallScreen();
 
+	const [now, setNow] = useState(dayjs());
+
+	useEffect(() => {
+		setInterval(() => {
+			setNow(dayjs());
+		}, 1000);
+	}, []);
+
+	const remainingTimeToOrder = lastTime.from(now, false);
+
+	let tooLate = now.isAfter(lastTime);
+
 	return (
 		<Paper className={"maxHeightWidth"}>
-			<Stack m={isSmall ? 1 : 2} spacing={4} p={isSmall ? 0 : 2} className={"maxHeightWidth"}>
+			<Stack m={isSmall ? 1 : 2} spacing={2} p={isSmall ? 0 : 2} className={"maxHeightWidth"}>
+				<Stack direction={"row"} spacing={1} width={"100%"}>
+					<Typography textAlign={"right"}>Fin des commandes</Typography>
+					<Typography textAlign={"right"} color={tooLate ? "error" : "yellow"}>
+						{remainingTimeToOrder.toString()}
+					</Typography>
+				</Stack>
 				<Stack spacing={4} direction={"row"} alignItems={"center"}>
 					<FormControl sx={{ maxWidth: 150 }} fullWidth>
 						<Autocomplete
@@ -53,7 +79,7 @@ export function Orders() {
 						/>
 					</FormControl>
 
-					{user && <CreateOrder />}
+					{user && !tooLate && <CreateOrder />}
 
 					{userBalance !== undefined && (
 						<Stack direction={"row"} spacing={2} alignItems={"center"}>

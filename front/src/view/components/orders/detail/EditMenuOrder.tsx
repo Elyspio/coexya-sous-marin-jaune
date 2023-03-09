@@ -32,7 +32,7 @@ export function EditMenuOrder() {
 			dispatch(deleteOrder(order.id));
 		}
 		close();
-	}, [creating, close, dispatch, order.id]);
+	}, [creating, close, dispatch, order?.id]);
 
 	useEffect(() => {
 		if (order?.burgers.length === 0) addRecord();

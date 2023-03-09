@@ -34,7 +34,7 @@ export function EditOrder() {
 			dispatch(deleteOrder(order.id));
 		}
 		close();
-	}, [creating, close, dispatch, order.id]);
+	}, [creating, close, dispatch, order?.id]);
 
 	const handleChange = (event: React.SyntheticEvent, newValue: Workflow) => {
 		setWorkflow(newValue);

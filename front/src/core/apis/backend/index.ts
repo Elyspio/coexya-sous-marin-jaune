@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import axios from "axios";
 import { BurgerClient, ConfigClient, OrderClient, UserClient } from "./generated";
-import { TokenService } from "../../services/common/token.service";
+import { TokenService } from "@services/common/token.service";
 
 @injectable()
 export class BackendApi {
@@ -13,7 +13,7 @@ export class BackendApi {
 	constructor(@inject(TokenService) tokenService: TokenService) {
 		const instance = axios.create({ withCredentials: true, transformResponse: [] });
 
-		instance.interceptors.request.use(value => {
+		instance.interceptors.request.use((value) => {
 			value.headers!["Authorization"] = `Bearer ${tokenService.getToken()}`;
 			return value;
 		});

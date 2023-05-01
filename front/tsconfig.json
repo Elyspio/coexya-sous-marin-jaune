@@ -1,34 +1,12 @@
 {
+	"extends": "@elyspio/vite-eslint-config/tsconfig.json",
 	"compilerOptions": {
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"target": "es2016",
-		"lib": [
-			"dom",
-			"dom.iterable",
-			"esnext"
-		],
-		"allowJs": true,
-		"skipLibCheck": true,
-		"esModuleInterop": true,
-		"allowSyntheticDefaultImports": true,
-		"strict": true,
-		"noImplicitAny": false,
-		"module": "esnext",
-		"moduleResolution": "node",
-		"resolveJsonModule": true,
-		"isolatedModules": false,
-		"noEmit": true,
-		"jsx": "react-jsx",
-		"noFallthroughCasesInSwitch": true
+		"baseUrl": ".",
+		"noEmit": true
 	},
 	"include": [
-		"src",
-		"scripts"
-	],
-	"ts-node": {
-		"compilerOptions": {
-			"module": "CommonJS"
-		}
-	}
+		"vite.config.ts",
+		".eslintrc.js",
+		"src"
+	]
 }

@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppDispatch, useAppSelector } from "@store";
 import dayjs, { Dayjs } from "dayjs";
 import { ModalComponentProps } from "../common/ModalProps";
-import { OrderPaymentType } from "../../../../core/apis/backend/generated";
-import { useMounted } from "../../../hooks/common/useMounted";
-import { useOrderDates } from "../../../hooks/orders/useOrderDates";
+import { OrderPaymentType } from "@apis/backend/generated";
+import { useMounted } from "@hooks/utils/useMounted";
+import { useOrderDates } from "@hooks/orders/useOrderDates";
 import { DataGrid, GridColDef, GridRowModel } from "@mui/x-data-grid";
 import { payementTypeLabel } from "../../orders/detail/payment/PayementOrder";
-import { deleteOrderPayement, updatePaymentReceived } from "../../../../store/module/orders/orders.async.action";
+import { deleteOrderPayement, updatePaymentReceived } from "@modules/orders/orders.async.action";
 import { Clear, PriceCheck } from "@mui/icons-material";
 import { createConfirmModal } from "../../utils/popup/ConfirmPopup";
 
 export function Balances({ setClose, open }: ModalComponentProps) {
 	const dispatch = useAppDispatch();
 
-	const allOrders = useAppSelector(s => s.orders.all);
+	const allOrders = useAppSelector((s) => s.orders.all);
 
 	// region selectedDate
 
@@ -23,7 +23,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const [selectedDate, setSelectedDate] = useState(availableDates[0] ?? dayjs());
 
-	const onSelectedDateChanged = useCallback((_, date: Dayjs | null) => {
+	const onSelectedDateChanged = useCallback((_: React.SyntheticEvent, date: Dayjs | null) => {
 		date && setSelectedDate(date);
 	}, []);
 
@@ -35,11 +35,11 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const rows = useMemo(() => {
 		return Object.values(allOrders)
-			.filter(order => selectedDate.isSame(order.date, "day"))
-			.map(order =>
+			.filter((order) => selectedDate.isSame(order.date, "day"))
+			.map((order) =>
 				order.payments
-					.filter(p => p.type !== OrderPaymentType.Wallet)
-					.map(p => ({
+					.filter((p) => p.type !== OrderPaymentType.Wallet)
+					.map((p) => ({
 						...p,
 						date: dayjs(order.date).format("DD/MM/YYYY"),
 						user: order.user,
@@ -52,7 +52,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 	// region edit row
 
 	const updateRemote = useCallback(
-		(row: typeof rows[number], value: number) => {
+		(row: (typeof rows)[number], value: number) => {
 			dispatch(
 				updatePaymentReceived({
 					idOrder: row.idOrder,
@@ -64,8 +64,8 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 		[dispatch]
 	);
 
-	let onCellEditStop = useCallback(
-		(row: GridRowModel<typeof rows[number]>) => {
+	const onCellEditStop = useCallback(
+		(row: GridRowModel<(typeof rows)[number]>) => {
 			updateRemote(row, Number.parseFloat(row.received!.toString()));
 			return row;
 		},
@@ -73,14 +73,14 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 	);
 
 	const fullReceived = useCallback(
-		(row: typeof rows[number]) => () => {
+		(row: (typeof rows)[number]) => () => {
 			updateRemote(row, row.amount);
 		},
 		[updateRemote]
 	);
 
 	const deletePayement = useCallback(
-		(row: typeof rows[number]) => async () => {
+		(row: (typeof rows)[number]) => async () => {
 			const confirm = await createConfirmModal({
 				title: "Supprimer le moyen de payement ?",
 				content: (
@@ -122,7 +122,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 					sortable: false,
 					disableColumnMenu: true,
 					width: 150,
-					renderCell: params => payementTypeLabel[params.value],
+					renderCell: (params) => payementTypeLabel[params.value as OrderPaymentType],
 					align: "center",
 					headerAlign: "center",
 				},
@@ -152,7 +152,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 					headerName: "Actions",
 					editable: false,
 					width: 200,
-					renderCell: params => (
+					renderCell: (params) => (
 						<Stack spacing={2} justifyContent={"center"} width={"100%"} direction={"row"}>
 							<Tooltip title={"La totalité du payement a été perçue"}>
 								<IconButton color={"success"} onClick={fullReceived(params.row)}>
@@ -174,8 +174,6 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const [mounted, ref] = useMounted();
 
-	const pageSize = useMemo(() => Math.floor(window.outerHeight / 100), []);
-
 	if (!mounted && !open) return null;
 
 	return (
@@ -184,27 +182,18 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				<Stack direction={"row"} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
 					<Typography>Payements en attentes</Typography>
 					<Autocomplete
-						getOptionLabel={option => option.format("DD/MM/YYYY")}
+						getOptionLabel={(option) => option.format("DD/MM/YYYY")}
 						onChange={onSelectedDateChanged}
 						options={availableDates}
 						value={selectedDate}
 						clearIcon={null}
-						renderInput={params => <TextField {...params} sx={{ minWidth: 180 }} label={"Date"} />}
+						renderInput={(params) => <TextField {...params} sx={{ minWidth: 180 }} label={"Date"} />}
 					/>
 				</Stack>
 			</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3}>
-					<DataGrid
-						experimentalFeatures={{ newEditingApi: true }}
-						getRowId={row => `${row.user}-${row.type}`}
-						columns={columns}
-						rows={rows}
-						autoHeight
-						processRowUpdate={onCellEditStop}
-						pageSize={pageSize}
-						rowsPerPageOptions={[pageSize]}
-					/>
+					<DataGrid getRowId={(row) => `${row.user}-${row.type}`} columns={columns} rows={rows} autoHeight processRowUpdate={onCellEditStop} />
 				</Stack>
 			</DialogContent>
 			<DialogActions>

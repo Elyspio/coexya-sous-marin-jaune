@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { BaseService } from "../technical/base.service";
 import { DiKeysService } from "../../di/services/di.keys.service";
 import { LocalStorageService } from "./localStorage.service";
-import { User } from "../../apis/authentication/generated";
+import { User } from "@apis/authentication/generated";
 
 @injectable()
 export class TokenService extends BaseService {
@@ -16,7 +16,7 @@ export class TokenService extends BaseService {
 			window
 				.atob(base64)
 				.split("")
-				.map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+				.map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
 				.join("")
 		);
 

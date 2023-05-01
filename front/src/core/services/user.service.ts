@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { BackendApi } from "../apis/backend";
+import { BackendApi } from "@apis/backend";
 import { BaseService } from "./technical/base.service";
 
 @injectable()

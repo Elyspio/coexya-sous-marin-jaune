@@ -1,5 +1,5 @@
-import { BackendApi } from "../../apis/backend";
-import { AuthenticationApiClient } from "../../apis/authentication";
+import { BackendApi } from "@apis/backend";
+import { AuthenticationApiClient } from "@apis/authentication";
 import { Container } from "inversify";
 
 export const addApis = (container: Container) => {

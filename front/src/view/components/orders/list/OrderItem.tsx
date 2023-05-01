@@ -1,17 +1,18 @@
-import { BurgerRecord, Order, OrderPaymentType } from "../../../../core/apis/backend/generated";
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { BurgerRecord, Order, OrderPaymentType } from "@apis/backend/generated";
+import { useAppDispatch, useAppSelector } from "@store";
 import React, { useMemo } from "react";
-import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
-import { duplicateOrder } from "../../../../store/module/orders/orders.async.action";
-import { Chip, IconButton, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { setAlteringOrder } from "@modules/orders/orders.action";
+import { duplicateOrder } from "@modules/orders/orders.async.action";
+import { Chip, IconButton, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
-import { canCreateSelector, isToday } from "../../../../store/module/orders/orders.utils";
+import { canCreateSelector, isToday } from "@modules/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
-import { useIsSmallScreen } from "../../../hooks/common/useBreakpoint";
-import { toggleModalWithOptionsFn } from "../../../../store/module/workflow/workflow.action";
+import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
+import { toggleModalWithOptionsFn } from "@modules/workflow/workflow.action";
 
 type OrderItemProps = {
 	data: Order;
@@ -19,8 +20,8 @@ type OrderItemProps = {
 };
 
 export function OrderItem({ data, show }: OrderItemProps) {
-	const { canCreate, user, logged } = useAppSelector(s => {
-		let name = s.orders.name;
+	const { canCreate, user, logged } = useAppSelector((s) => {
+		const name = s.orders.name;
 		return {
 			canCreate: canCreateSelector(s) === true,
 			user: name,
@@ -44,25 +45,25 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const fritesElem = React.useMemo(() => {
 		if (!data.fries) return null;
-		let sauces = data.fries.sauces
-			.filter(sq => sq.amount)
-			.map(sq => sq.sauce + (sq.amount > 1 ? ` x${sq.amount}` : ""))
+		const sauces = data.fries.sauces
+			.filter((sq) => sq.amount)
+			.map((sq) => sq.sauce + (sq.amount > 1 ? ` x${sq.amount}` : ""))
 			.join(", ");
 		return <Typography>Frites {sauces.length ? `(${sauces})` : ""}</Typography>;
 	}, [data.fries]);
 
 	const { palette } = useTheme();
 
-	let isSelf = data.user === user;
+	const isSelf = data.user === user;
 
 	const isSmall = useIsSmallScreen();
 
-	const walletAmount = useMemo(() => data.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data]);
+	const walletAmount = useMemo(() => data.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data]);
 
 	const isWaitingPaymentValidation = useMemo(() => {
 		if (!data.paymentEnabled) return false;
 
-		let received = data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0);
+		const received = data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0);
 		return received < data.price - walletAmount;
 	}, [data.paymentEnabled, data.payments, data.price, walletAmount]);
 

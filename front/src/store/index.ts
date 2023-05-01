@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import { themeReducer } from "./module/theme/theme.reducer";
-import { authenticationReducer } from "./module/authentication/authentication.reducer";
-import { container } from "../core/di";
-import { burgersReducer } from "./module/burgers/burgers.reducer";
-import { ordersReducer } from "./module/orders/orders.reducer";
-import { workflowReducer } from "./module/workflow/workflow.reducer";
-import { userReducer } from "./module/users/users.reducer";
-import { configReducer } from "./module/config/config.reducer";
+import { themeReducer } from "@modules/theme/theme.reducer";
+import { authenticationReducer } from "@modules/authentication/authentication.reducer";
+import { container } from "@/core/di";
+import { burgersReducer } from "@modules/burgers/burgers.reducer";
+import { ordersReducer } from "@modules/orders/orders.reducer";
+import { workflowReducer } from "@modules/workflow/workflow.reducer";
+import { userReducer } from "@modules/users/users.reducer";
+import { configReducer } from "@modules/config/config.reducer";
 
 const store = configureStore({
 	reducer: {
@@ -20,7 +20,7 @@ const store = configureStore({
 		config: configReducer,
 	},
 	devTools: process.env.NODE_ENV !== "production",
-	middleware: getDefaultMiddleware => getDefaultMiddleware({ thunk: { extraArgument: { container } } }),
+	middleware: (getDefaultMiddleware) => getDefaultMiddleware({ thunk: { extraArgument: { container } } }),
 });
 
 export type StoreState = ReturnType<typeof store.getState>;

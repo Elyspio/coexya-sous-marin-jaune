@@ -1,7 +1,7 @@
-import { useAppDispatch, useAppSelector } from "../../../../store";
+import { useAppDispatch, useAppSelector } from "@store";
 import React, { useEffect } from "react";
-import { createOrderRecord, setAlteringOrder } from "../../../../store/module/orders/orders.action";
-import { deleteOrder } from "../../../../store/module/orders/orders.async.action";
+import { createOrderRecord, setAlteringOrder } from "@modules/orders/orders.action";
+import { deleteOrder } from "@modules/orders/orders.async.action";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { BurgerItem } from "./BurgerItem";
 import { OrderStudent } from "../../burgers/Record/OrderStudent";
@@ -10,8 +10,8 @@ import { OrderDrink } from "../../burgers/Record/OrderDrink";
 import { EditBurgerRecord } from "../../burgers/Record/EditBurgerRecord";
 
 export function EditMenuOrder() {
-	const { order, recordIndex, creating } = useAppSelector(state => {
-		let orderId = state.orders.altering?.order;
+	const { order, recordIndex, creating } = useAppSelector((state) => {
+		const orderId = state.orders.altering?.order;
 		return {
 			order: state.orders.all[orderId!],
 			recordIndex: state.orders.altering?.record,

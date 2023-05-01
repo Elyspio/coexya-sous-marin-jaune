@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
-import { BackendApi } from "../apis/backend";
+import { BackendApi } from "@apis/backend";
 import { BaseService } from "./technical/base.service";
-import { Order, OrderPaymentType } from "../apis/backend/generated";
+import { Order, OrderPaymentType } from "@apis/backend/generated";
 
 @injectable()
 export class OrderService extends BaseService {

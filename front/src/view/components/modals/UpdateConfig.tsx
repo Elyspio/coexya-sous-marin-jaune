@@ -1,19 +1,19 @@
 import React, { useCallback, useMemo } from "react";
 import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { updateConfig } from "../../../store/module/config/config.async.action";
-import { Config } from "../../../core/apis/backend/generated";
-import { setConfig } from "../../../store/module/config/config.actions";
+import { useAppDispatch, useAppSelector } from "@store";
+import { updateConfig } from "@modules/config/config.async.action";
+import { Config } from "@apis/backend/generated";
+import { setConfig } from "@modules/config/config.actions";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
-import { useMounted } from "../../hooks/common/useMounted";
+import { useMounted } from "@hooks/utils/useMounted";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
-	const { allUsers, config } = useAppSelector(s => ({ allUsers: s.orders.all, config: s.config }));
+	const { allUsers, config } = useAppSelector((s) => ({ allUsers: s.orders.all, config: s.config }));
 
 	const dispatch = useAppDispatch();
 
-	const users = useMemo(() => [...new Set(Object.values(allUsers).map(order => order.user))].sort((o1, o2) => o1.localeCompare(o2)), [allUsers]);
+	const users = useMemo(() => [...new Set(Object.values(allUsers).map((order) => order.user))].sort((o1, o2) => o1.localeCompare(o2)), [allUsers]);
 
 	const updateRemote = useCallback(() => {
 		dispatch(updateConfig());
@@ -58,7 +58,7 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 						options={users}
 						value={config.carrier}
 						freeSolo
-						renderInput={params => <TextField helperText={"La personne qui va aller chercher la commande"} {...params} label={"Livreur"} />}
+						renderInput={(params) => <TextField helperText={"La personne qui va aller chercher la commande"} {...params} label={"Livreur"} />}
 					/>
 					<FormControlLabel label="Restaurant ouvert" control={<Checkbox checked={config.kitchenOpened} onChange={onFieldChanged("kitchenOpened")} />} />
 					<FormControlLabel label="Système de payement" control={<Checkbox checked={config.paymentEnabled} onChange={onFieldChanged("paymentEnabled")} />} />

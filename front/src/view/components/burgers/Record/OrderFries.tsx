@@ -1,9 +1,9 @@
-import { Order, Sauce } from "../../../../core/apis/backend/generated";
-import { useAppDispatch } from "../../../../store";
+import { Order, Sauce } from "@apis/backend/generated";
+import { useAppDispatch } from "@store";
 import React, { useCallback, useMemo } from "react";
 import { Checkbox, Fade, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import { updateOrder } from "../../../../store/module/orders/orders.action";
-import { updateOrderSauceQuantity, updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
+import { updateOrder } from "@modules/orders/orders.action";
+import { updateOrderSauceQuantity, updateRemoteOrder } from "@modules/orders/orders.async.action";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 
@@ -54,7 +54,7 @@ export function OrderFries({ data }: { data: Order }) {
 			<FormControlLabel control={<Checkbox sx={{ pl: 0 }} checked={!!data.fries} onChange={toggleFries} />} label={"Frites"} sx={{ ml: 0 }} />
 			<Fade in={!!data.fries}>
 				<List dense sx={{ width: "100%" }}>
-					{Object.values(Sauce).map(sauce => (
+					{Object.values(Sauce).map((sauce) => (
 						<ListItem sx={{ width: "100%" }} key={sauce}>
 							<Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} spacing={2} pr={2} width={"100%"}>
 								<Typography color={quantityPerSauce[sauce] > 0 ? "inherit" : "gray"}>{sauce}</Typography>

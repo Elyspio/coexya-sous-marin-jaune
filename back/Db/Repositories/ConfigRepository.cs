@@ -21,7 +21,7 @@ public class ConfigRepository : BaseRepository<ConfigEntity>, IConfigRepository
 			.Set(c => c.KitchenOpened, config.KitchenOpened)
 			.Set(c => c.PaymentEnabled, config.PaymentEnabled);
 
-		return await EntityCollection.FindOneAndUpdateAsync(c => true, update, new()
+		return await EntityCollection.FindOneAndUpdateAsync(Builders<ConfigEntity>.Filter.Empty, update, new()
 		{
 			IsUpsert = true,
 			ReturnDocument = ReturnDocument.After

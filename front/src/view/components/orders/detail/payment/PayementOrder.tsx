@@ -1,15 +1,16 @@
-import { useAppDispatch, useAppSelector } from "../../../../../store";
+import { useAppDispatch, useAppSelector } from "@store";
 import React, { useCallback, useMemo } from "react";
 import TabContext from "@mui/lab/TabContext";
-import { Box, Divider, Stack, Tab, Typography, useTheme } from "@mui/material";
+import { Box, Divider, Stack, Tab, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import TabList from "@mui/lab/TabList";
-import { OrderPaymentType } from "../../../../../core/apis/backend/generated";
-import TicketRestaurant from "../../../../icons/ticket-restaurant.png";
-import Bank from "../../../../icons/bank.png";
-import Cash from "../../../../icons/cash.png";
-import Wallet from "../../../../icons/wallet.png";
-import Picsou from "../../../../icons/picsou.gif";
-import { updateOrderPayment } from "../../../../../store/module/orders/orders.action";
+import { OrderPaymentType } from "@apis/backend/generated";
+import TicketRestaurant from "@/view/icons/ticket-restaurant.png";
+import Bank from "@/view/icons/bank.png";
+import Cash from "@/view/icons/cash.png";
+import Wallet from "@/view/icons/wallet.png";
+import Picsou from "@/view/icons/picsou.gif";
+import { updateOrderPayment } from "@modules/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
 import dayjs from "dayjs";
 
@@ -23,13 +24,13 @@ export const payementTypeLabel: Record<OrderPaymentType, string> = {
 };
 
 export function PayementOrder() {
-	const { order, logged, accountWallet } = useAppSelector(state => {
-		let orderId = state.orders.altering?.order;
-		let selectedOrder = state.orders.all[orderId!];
+	const { order, logged, accountWallet } = useAppSelector((state) => {
+		const orderId = state.orders.altering?.order;
+		const selectedOrder = state.orders.all[orderId!];
 		return {
 			order: selectedOrder,
 			logged: state.authentication.logged,
-			accountWallet: state.users.all.find(user => user.name === selectedOrder.user)!.sold,
+			accountWallet: state.users.all.find((user) => user.name === selectedOrder.user)!.sold,
 		};
 	});
 
@@ -53,7 +54,7 @@ export function PayementOrder() {
 		const data: Record<OrderPaymentType, number> = {} as any;
 
 		for (const type of Object.values(OrderPaymentType)) {
-			data[type] = order.payments.find(p => p.type === type)?.amount ?? 0;
+			data[type] = order.payments.find((p) => p.type === type)?.amount ?? 0;
 		}
 
 		return data;
@@ -63,7 +64,7 @@ export function PayementOrder() {
 
 	// region callbacks
 
-	const handleChange = useCallback((_, newValue: OrderPaymentType) => {
+	const handleChange = useCallback((_: React.SyntheticEvent, newValue: OrderPaymentType) => {
 		setValue(newValue);
 	}, []);
 
@@ -76,7 +77,7 @@ export function PayementOrder() {
 	// endregion
 
 	const maxWalletValue = useMemo(() => {
-		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find(p => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
+		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
 
 		return Math.min(accountWallet, remainingToPayWithWallet);
 	}, [remainingToPay, order.payments, accountWallet]);
@@ -106,7 +107,7 @@ export function PayementOrder() {
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
 					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
 					{dayjs(order.date).isBefore("2023-03-01") && <Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />}
-					{(accountWallet > 0 || order.payments.some(payment => payment.type === "Wallet")) && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
+					{(accountWallet > 0 || order.payments.some((payment) => payment.type === "Wallet")) && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
 					{logged && <Tab label={payementTypeLabel.Admin} value={OrderPaymentType.Admin} />}
 				</TabList>
 				<Divider flexItem />

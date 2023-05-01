@@ -2,9 +2,9 @@ import React, { ReactNode, useCallback, useMemo } from "react";
 import TabPanel from "@mui/lab/TabPanel";
 import { Divider, IconButton, Stack, TextField, Tooltip } from "@mui/material";
 import { Clear } from "@mui/icons-material";
-import { OrderPaymentType } from "../../../../../core/apis/backend/generated";
-import { useAppDispatch } from "../../../../../store";
-import { updateRemoteOrder } from "../../../../../store/module/orders/orders.async.action";
+import { OrderPaymentType } from "@apis/backend/generated";
+import { useAppDispatch } from "@store";
+import { updateRemoteOrder } from "@modules/orders/orders.async.action";
 
 type PanelProps = {
 	type: OrderPaymentType;
@@ -33,7 +33,7 @@ export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: P
 		updateRemote();
 	}, [setValue, updateRemote]);
 
-	let isUsed = useMemo(() => value === 0, [value]);
+	const isUsed = useMemo(() => value === 0, [value]);
 	return (
 		<TabPanel value={type} sx={{ height: "100%" }}>
 			<Stack width={"100%"} alignItems={"center"} height={"100%"}>

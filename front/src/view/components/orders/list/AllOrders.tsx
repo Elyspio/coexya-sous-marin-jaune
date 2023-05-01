@@ -1,20 +1,21 @@
 import React from "react";
-import { Box, Stack, Typography, useTheme } from "@mui/material";
-import { useAppSelector } from "../../../../store";
+import { Box, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { useAppSelector } from "@store";
 import dayjs from "dayjs";
-import { Order } from "../../../../core/apis/backend/generated";
+import { Order } from "@apis/backend/generated";
 import { OrderItem } from "./OrderItem";
 import { groupBy } from "lodash";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import "dayjs/locale/fr";
-import { dateTemplate, isToday, isTodayFormatted } from "../../../../store/module/orders/orders.utils";
-import { OrderTime } from "../../../../store/module/orders/orders.reducer";
+import { dateTemplate, isToday, isTodayFormatted } from "@modules/orders/orders.utils";
+import { OrderTime } from "@modules/orders/orders.reducer";
 import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
 
 dayjs.extend(customParseFormat);
 
 export function AllOrders() {
-	const { orders, timeRange } = useAppSelector(s => {
+	const { orders, timeRange } = useAppSelector((s) => {
 		return {
 			orders: s.orders.all,
 			timeRange: s.orders.timeRange,
@@ -22,8 +23,8 @@ export function AllOrders() {
 	});
 
 	const grouped = React.useMemo(() => {
-		let allOrders = Object.values(orders)
-			.filter(order => {
+		const allOrders = Object.values(orders)
+			.filter((order) => {
 				switch (timeRange) {
 					case OrderTime.all:
 						return true;
@@ -74,7 +75,7 @@ export function AllOrders() {
 						>
 							{date}
 						</Typography>
-						{orders.map(order => (
+						{orders.map((order) => (
 							<OrderItem key={order.id} data={order} show={{ name: true, duplicate: true }} />
 						))}
 					</Stack>

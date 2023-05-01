@@ -1,13 +1,13 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { MergeUsers } from "./MergeUsers";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { toggleModal } from "../../../store/module/workflow/workflow.action";
+import { useAppDispatch, useAppSelector } from "@store";
+import { toggleModal } from "@modules/workflow/workflow.action";
 import { EditOrder } from "../orders/detail/EditOrder";
 import { OrderMessageModal } from "./OrderMessageModal";
 import { Balances } from "./balance/Balances";
 import { UpdateConfig } from "./UpdateConfig";
-import { ModalType } from "../../../store/module/workflow/workflow.types";
+import { ModalType } from "@modules/workflow/workflow.types";
 import { DeleteOrderModal } from "./DeleteOrderModal";
 
 export function Modals() {
@@ -16,7 +16,7 @@ export function Modals() {
 		logged,
 		modals: { message, mergeUsers, balances, updateConfig, deleteOrder },
 		orders,
-	} = useAppSelector(s => ({
+	} = useAppSelector((s) => ({
 		modals: s.workflow.modals,
 		orders: s.orders.all,
 		selectedOrder: s.orders.altering?.order,

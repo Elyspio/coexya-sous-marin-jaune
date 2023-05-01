@@ -1,9 +1,9 @@
 import { openPage } from "../../utils/web";
 import { inject, injectable } from "inversify";
-import { AuthenticationApiClient } from "../../apis/authentication";
+import { AuthenticationApiClient } from "@apis/authentication";
 import { EventManager } from "../../utils/event";
 import { BaseService } from "../technical/base.service";
-import { User } from "../../apis/authentication/generated";
+import { User } from "@apis/authentication/generated";
 import { DiKeysService } from "../../di/services/di.keys.service";
 import { LocalStorageService } from "./localStorage.service";
 

@@ -15,7 +15,7 @@ import { makeStyles } from "@mui/styles";
 export interface Action {
 	text: React.ReactNode;
 	icon: React.ReactNode;
-	onClick?: Function;
+	onClick?: (e?: React.MouseEvent) => void;
 }
 
 type Props = {
@@ -26,7 +26,7 @@ type Props = {
 };
 
 const drawerWidth = 210;
-let baseWidth = 46;
+const baseWidth = 46;
 
 const useStyles = makeStyles((theme: Theme) => ({
 	drawer: {
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const getActions = (actions: Action[]) => {
-	const separatorIndexes = actions.map((action, index) => (action.text === null ? index : null)).filter(index => index !== null) as number[];
+	const separatorIndexes = actions.map((action, index) => (action.text === null ? index : null)).filter((index) => index !== null) as number[];
 
 	const comp = separatorIndexes.map((value, index, array) => actions.slice(value, array[index + 1]));
 

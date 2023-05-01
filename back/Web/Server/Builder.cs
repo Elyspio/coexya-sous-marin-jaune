@@ -42,21 +42,27 @@ public class ServerBuilder
 		);
 
 
+		builder.Services.AddResponseCompression();
+		builder.Services.AddResponseCaching();
+		
 		// Setup CORS
-		builder.Services.AddCors(options =>
-			{
-				options.AddPolicy("Cors", b =>
-					{
-						b.WithOrigins("http://localhost:3000");
-						b.AllowAnyHeader();
-						b.AllowAnyMethod();
-						b.AllowCredentials();
-					}
-				);
+		if (builder.Environment.IsDevelopment())
+		{
+			builder.Services.AddCors(options =>
+				{
+					options.AddDefaultPolicy(b =>
+						{
+							b.WithOrigins("http://localhost:3000");
+							b.AllowAnyHeader();
+							b.AllowAnyMethod();
+							b.AllowCredentials();
+						}
+					);
 
-				options.DefaultPolicyName = "Cors";
-			}
-		);
+				}
+			);
+		}
+		
 
 
 		builder.Services.AddModule<AdapterModule>(builder.Configuration);

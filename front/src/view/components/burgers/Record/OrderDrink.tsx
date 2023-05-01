@@ -1,10 +1,10 @@
-import { Drink, Order } from "../../../../core/apis/backend/generated";
-import { useAppDispatch } from "../../../../store";
+import { Drink, Order } from "@apis/backend/generated";
+import { useAppDispatch } from "@store";
 import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
-import { updateOrder } from "../../../../store/module/orders/orders.action";
+import { updateOrder } from "@modules/orders/orders.action";
 import { drinkLabels } from "../../modals/OrderMessageModal";
-import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
+import { updateRemoteOrder } from "@modules/orders/orders.async.action";
 
 type DrinkPair = { key: Drink; label: string };
 const drinks = (Object.values(Drink) as Drink[]).reduce((acc, current) => {
@@ -38,12 +38,12 @@ export function OrderDrink({ data }: { data: Order }) {
 			<FormControl sx={{ minWidth: 120 }} fullWidth>
 				<Autocomplete
 					id="select-drink"
-					value={drinks.find(d => d.key === data.drink)}
+					value={drinks.find((d) => d.key === data.drink)}
 					options={drinks}
 					onChange={setOrder}
-					getOptionDisabled={option => unavailableDrinks.includes(option.key)}
-					getOptionLabel={option => option.label}
-					renderInput={params => <TextField {...params} variant={"standard"} label="Boisson" />}
+					getOptionDisabled={(option) => unavailableDrinks.includes(option.key)}
+					getOptionLabel={(option) => option.label}
+					renderInput={(params) => <TextField {...params} variant={"standard"} label="Boisson" />}
 				/>
 			</FormControl>
 		</Box>

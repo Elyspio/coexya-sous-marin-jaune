@@ -1,8 +1,8 @@
-import { BurgerRecord } from "../../../../core/apis/backend/generated";
-import { useAppDispatch } from "../../../../store";
+import { BurgerRecord } from "@apis/backend/generated";
+import { useAppDispatch } from "@store";
 import React from "react";
-import { deleteOrderRecord, setAlteringRecord } from "../../../../store/module/orders/orders.action";
-import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
+import { deleteOrderRecord, setAlteringRecord } from "@modules/orders/orders.action";
+import { updateRemoteOrder } from "@modules/orders/orders.async.action";
 import { Box, ButtonGroup, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";

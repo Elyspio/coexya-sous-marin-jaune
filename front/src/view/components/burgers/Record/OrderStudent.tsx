@@ -1,9 +1,9 @@
-import { Order } from "../../../../core/apis/backend/generated";
-import { useAppDispatch } from "../../../../store";
+import { Order } from "@apis/backend/generated";
+import { useAppDispatch } from "@store";
 import React, { useCallback } from "react";
 import { Box, Checkbox, FormControlLabel } from "@mui/material";
-import { updateOrder } from "../../../../store/module/orders/orders.action";
-import { updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
+import { updateOrder } from "@modules/orders/orders.action";
+import { updateRemoteOrder } from "@modules/orders/orders.async.action";
 
 export function OrderStudent({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();

@@ -1,5 +1,6 @@
 import React, { ReactNode } from "react";
-import { Divider, IconButton, Stack, Typography, useTheme } from "@mui/material";
+import { Divider, IconButton, Stack, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 export type ActionComponentProps = {
 	icon: React.ReactNode;

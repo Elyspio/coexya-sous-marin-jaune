@@ -3,21 +3,18 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import "./index.scss";
 import { Provider } from "react-redux";
-import store, { useAppSelector } from "./store";
+import store, { useAppSelector } from "@store";
 import Application from "./view/components/Application";
-import { CssBaseline, StyledEngineProvider, Theme, ThemeProvider } from "@mui/material";
+import { CssBaseline } from "@mui/material";
+import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { themes } from "./config/theme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { Provider as DiProvider } from "inversify-react";
-import { container } from "./core/di";
-
-declare module "@mui/styles/defaultTheme" {
-	interface DefaultTheme extends Theme {}
-}
+import { container } from "@/core/di";
 
 function Wrapper() {
-	const { theme, current } = useAppSelector(state => ({
+	const { theme, current } = useAppSelector((state) => ({
 		theme: state.theme.current === "dark" ? themes.dark : themes.light,
 		current: state.theme.current,
 	}));

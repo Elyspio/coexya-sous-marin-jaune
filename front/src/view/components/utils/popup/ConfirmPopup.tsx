@@ -1,9 +1,10 @@
 import React, { ReactNode, useCallback } from "react";
-import { Button, ButtonProps, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, StyledEngineProvider, ThemeProvider } from "@mui/material";
-import { useModal } from "../../../hooks/common/useModal";
+import { Button, ButtonProps, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, StyledEngineProvider } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { useModal } from "@hooks/utils/useModal";
 import { createRoot } from "react-dom/client";
-import store, { useAppSelector } from "../../../../store";
-import { themes } from "../../../../config/theme";
+import store, { useAppSelector } from "@store";
+import { themes } from "@/config/theme";
 import { Provider } from "react-redux";
 
 export type ConfirmPopupProps<T> = {
@@ -21,7 +22,7 @@ function PopupWrapper({ children }: { children: ReactNode }) {
 }
 
 function PopupWrapperStored({ children }: { children: ReactNode }) {
-	const { theme } = useAppSelector(state => ({
+	const { theme } = useAppSelector((state) => ({
 		theme: state.theme.current === "dark" ? themes.dark : themes.light,
 		current: state.theme.current,
 	}));
@@ -57,7 +58,7 @@ export function ConfirmPopup<T>({ choices, title, content, onSelected, defaultVa
 			<DialogTitle>{title}</DialogTitle>
 			<DialogContent dividers>{content}</DialogContent>
 			<DialogActions>
-				{choices.map(choice => (
+				{choices.map((choice) => (
 					<Button key={"" + choice.value} color={choice.color} onClick={onAction(choice.value)} variant={choice.variant}>
 						{choice.label}
 					</Button>
@@ -73,7 +74,7 @@ export async function createConfirmModal<T>(props: Omit<ConfirmPopupProps<T>, "o
 	const root = createRoot(elem);
 	document.body.appendChild(elem);
 
-	const val = await new Promise<boolean>(resolve => {
+	const val = await new Promise<boolean>((resolve) => {
 		root.render(
 			<PopupWrapper>
 				<PopupWrapperStored>

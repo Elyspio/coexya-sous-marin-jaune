@@ -1,8 +1,9 @@
-import { BurgerRecord } from "../../../../core/apis/backend/generated";
-import { useAppDispatch } from "../../../../store";
+import { BurgerRecord } from "@apis/backend/generated";
+import { useAppDispatch } from "@store";
 import React from "react";
-import { Checkbox, debounce, FormControlLabel, TextField } from "@mui/material";
-import { updateBurgerRecord } from "../../../../store/module/orders/orders.action";
+import { Checkbox, FormControlLabel, TextField } from "@mui/material";
+import { debounce } from "@mui/material/utils";
+import { updateBurgerRecord } from "@modules/orders/orders.action";
 
 export function OrderOptions({ data }: { data: BurgerRecord }) {
 	const dispatch = useAppDispatch();

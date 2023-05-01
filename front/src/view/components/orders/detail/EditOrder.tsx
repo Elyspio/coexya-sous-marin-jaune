@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tooltip } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../../store";
-import { deleteOrder, updateRemoteOrder } from "../../../../store/module/orders/orders.async.action";
+import { useAppDispatch, useAppSelector } from "@store";
+import { deleteOrder, updateRemoteOrder } from "@modules/orders/orders.async.action";
 import { isToday } from "../list/CreateOrder";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { PayementOrder } from "./payment/PayementOrder";
 import { EditMenuOrder } from "./EditMenuOrder";
-import { setAlteringOrder } from "../../../../store/module/orders/orders.action";
+import { setAlteringOrder } from "@modules/orders/orders.action";
 
 type Workflow = "menu" | "payment";
 
 export function EditOrder() {
-	const { order, creating } = useAppSelector(state => {
-		let orderId = state.orders.altering?.order;
+	const { order, creating } = useAppSelector((state) => {
+		const orderId = state.orders.altering?.order;
 		return {
 			order: state.orders.all[orderId!],
 			creating: state.orders.mode.order === "create",

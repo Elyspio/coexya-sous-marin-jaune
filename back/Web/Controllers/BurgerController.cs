@@ -19,6 +19,7 @@ public class BurgerController : ControllerBase
 
 	[HttpGet]
 	[SwaggerResponse(HttpStatusCode.OK, typeof(List<Burger>))]
+	[ResponseCache(VaryByHeader = "User-Agent", Duration = 60 * 60)]
 	public async Task<IActionResult> GetAll()
 	{
 		return Ok(await _burgerService.GetAll());

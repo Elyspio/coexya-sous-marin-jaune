@@ -1,21 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../store";
-import { Autocomplete, debounce, FormControl, Paper, Stack, TextField, Typography } from "@mui/material";
-import { setUser } from "../../../store/module/orders/orders.action";
+import { useAppDispatch, useAppSelector } from "@store";
+import { Autocomplete, FormControl, Paper, Stack, TextField, Typography } from "@mui/material";
+import { debounce } from "@mui/material/utils";
+import { setUser } from "@modules/orders/orders.action";
 import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
-import { useIsSmallScreen } from "../../hooks/common/useBreakpoint";
+import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/fr";
+import { useRole } from "@hooks/permissions/useRole";
+import { SousMarinJauneRole } from "@apis/authentication/generated";
 
 dayjs.locale("fr"); // use locale globally
 dayjs.extend(relativeTime);
 
-let lastTime = dayjs("11", "h");
+const lastTime = dayjs("11", "h");
 
 export function Orders() {
-	const { orders, user, allUsers } = useAppSelector(s => ({
+	const { orders, user, allUsers } = useAppSelector((s) => ({
 		user: s.orders.name,
 		orders: s.orders.all,
 		allUsers: s.users.all,
@@ -23,7 +26,7 @@ export function Orders() {
 
 	const dispatch = useAppDispatch();
 
-	const users = React.useMemo(() => [...new Set(Object.values(orders).map(order => order.user))].sort(), [orders]);
+	const users = React.useMemo(() => [...new Set(Object.values(orders).map((order) => order.user))].sort(), [orders]);
 
 	const setUserDebounced = React.useMemo(
 		() =>
@@ -41,7 +44,9 @@ export function Orders() {
 		[setUserDebounced]
 	);
 
-	const userBalance = useMemo(() => allUsers.find(u => u.name === user)?.sold, [allUsers, user]);
+	const isAdmin = useRole(SousMarinJauneRole.Admin);
+
+	const userBalance = useMemo(() => allUsers.find((u) => u.name === user)?.sold, [allUsers, user]);
 
 	const isSmall = useIsSmallScreen();
 
@@ -55,7 +60,7 @@ export function Orders() {
 
 	const remainingTimeToOrder = lastTime.from(now, false);
 
-	let tooLate = now.isAfter(lastTime);
+	const tooLate = now.isAfter(lastTime);
 
 	return (
 		<Paper className={"maxHeightWidth"}>
@@ -75,11 +80,11 @@ export function Orders() {
 							freeSolo
 							options={users}
 							onChange={onChange as any}
-							renderInput={params => <TextField {...params} variant={"standard"} required label="Prénom" onBlur={e => setUserDebounced(e.target.value)} />}
+							renderInput={(params) => <TextField {...params} variant={"standard"} required label="Prénom" onBlur={(e) => setUserDebounced(e.target.value)} />}
 						/>
 					</FormControl>
 
-					{user && !tooLate && <CreateOrder />}
+					{user && (!tooLate || isAdmin) && <CreateOrder />}
 
 					{userBalance !== undefined && (
 						<Stack direction={"row"} spacing={2} alignItems={"center"}>

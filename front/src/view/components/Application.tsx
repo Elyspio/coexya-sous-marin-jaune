@@ -3,23 +3,23 @@ import { useEffect } from "react";
 import "./Application.scss";
 import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { toggleTheme } from "../../store/module/theme/theme.action";
+import { useAppDispatch, useAppSelector } from "@store";
+import { toggleTheme } from "@modules/theme/theme.action";
 import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box, Container } from "@mui/material";
-import { login, logout } from "../../store/module/authentication/authentication.async.action";
+import { login, logout } from "@modules/authentication/authentication.async.action";
 import { bindActionCreators } from "redux";
 import { Orders } from "./orders/Orders";
 import { AccountBalance, DarkMode, LightMode, Merge, Message, Settings } from "@mui/icons-material";
-import { toggleModal } from "../../store/module/workflow/workflow.action";
+import { toggleModal } from "@modules/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
-import { initApp } from "../../store/common/common.actions";
-import { SousMarinJauneRole } from "../../core/apis/authentication/generated";
+import { SousMarinJauneRole } from "@apis/authentication/generated";
+import { initApp } from "@modules/workflow/workflow.async.action";
 
 function Application() {
 	const dispatch = useAppDispatch();
 
-	const { theme, themeIcon, logged, loggedUser } = useAppSelector(s => ({
+	const { theme, themeIcon, logged, loggedUser } = useAppSelector((s) => ({
 		theme: s.theme.current,
 		themeIcon: s.theme.current === "light" ? <DarkMode /> : <LightMode />,
 		logged: s.authentication.logged,

@@ -16,16 +16,16 @@ import {
 	Typography,
 } from "@mui/material";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useAppSelector } from "../../../store";
-import { BurgerRecord, Drink, Fries } from "../../../core/apis/backend/generated";
+import { useAppSelector } from "@store";
+import { BurgerRecord, Drink, Fries } from "@apis/backend/generated";
 import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import dayjs from "dayjs";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
-import { useMounted } from "../../hooks/common/useMounted";
-import { useOrderDates } from "../../hooks/orders/useOrderDates";
+import { useMounted } from "@hooks/utils/useMounted";
+import { useOrderDates } from "@hooks/orders/useOrderDates";
 
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
@@ -34,7 +34,7 @@ export const drinkLabels: Record<Drink, string> = {
 	Limonade: "Limonade",
 };
 
-let pad = number => (number < 10 ? `0${number}` : number);
+const pad = (number: number) => (number < 10 ? `0${number}` : number);
 
 const times: string[] = [];
 
@@ -48,13 +48,13 @@ while (t < 14 * 3600 + 5) {
 }
 
 export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
-	const { orders } = useAppSelector(s => ({
+	const { orders } = useAppSelector((s) => ({
 		orders: s.orders.all,
 	}));
 
 	const [header, setHeader] = useState(true);
 
-	const toggleHeader = useCallback(() => setHeader(old => !old), []);
+	const toggleHeader = useCallback(() => setHeader((old) => !old), []);
 
 	const [time, setTime] = useState("12h15");
 
@@ -68,12 +68,13 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	// region message
 
-	const todayOrders = useMemo(() => Object.values(orders).filter(order => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
+	const todayOrders = useMemo(() => Object.values(orders).filter((order) => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
 
 	const getFriteLabel = useCallback((frites: Fries | undefined) => {
-		let sauces = frites?.sauces
-			.filter(sq => sq.amount)
-			.map(sq => sq.sauce + (sq.amount > 1 ? ` x${sq.amount}` : ""))
+		if (!frites) return "";
+		const sauces = frites?.sauces
+			.filter((sq) => sq.amount)
+			.map((sq) => sq.sauce + (sq.amount > 1 ? ` x${sq.amount}` : ""))
 			.join(", ");
 
 		return `Frites ${sauces ? `(${sauces})` : ""}`;
@@ -81,7 +82,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const getBurgerLabel = useCallback((burgers: BurgerRecord[]) => {
 		let str = "";
-		for (let burger of burgers) {
+		for (const burger of burgers) {
 			str += burger.name;
 			if (burger.vegetarian) str += " végétarien";
 			if (burger.xl) str += " XL";
@@ -98,7 +99,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	// endregion message
 
-	const textRef = useRef<HTMLElement>(null);
+	const textRef = useRef<HTMLDivElement>(null);
 
 	const copy = React.useCallback(async () => {
 		if (textRef.current) {
@@ -121,7 +122,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 					<FormControl>
 						<InputLabel id="select-date-label">Date</InputLabel>
 						<Select labelId="select-date-label" id="select-date" value={selectedDay.toISOString()} label={"Date"} onChange={onSelectedDateChanged}>
-							{availableDates.map(time => (
+							{availableDates.map((time) => (
 								<MenuItem value={time.toISOString()} key={time.toISOString()}>
 									{time.format("DD/MM/YYYY")}
 								</MenuItem>
@@ -137,7 +138,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 						<Fade in={header}>
 							<Select value={time} onChange={onTimeChange}>
-								{times.map(time => (
+								{times.map((time) => (
 									<MenuItem value={time} key={time}>
 										{time}
 									</MenuItem>
@@ -153,7 +154,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 							</Typography>
 						</Fade>
 						<List>
-							{todayOrders.map(order => (
+							{todayOrders.map((order) => (
 								<ListItem key={order.id}>
 									<Typography>
 										{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}

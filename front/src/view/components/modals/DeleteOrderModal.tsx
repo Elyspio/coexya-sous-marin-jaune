@@ -1,15 +1,15 @@
 import React, { useCallback } from "react";
-import { useMounted } from "../../hooks/common/useMounted";
+import { useMounted } from "@hooks/utils/useMounted";
 import { ModalComponentProps } from "./common/ModalProps";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../store";
+import { useAppDispatch, useAppSelector } from "@store";
 import dayjs from "dayjs";
-import { deleteOrder } from "../../../store/module/orders/orders.async.action";
+import { deleteOrder } from "@modules/orders/orders.async.action";
 
 export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
-	const order = useAppSelector(s => {
-		const options = s.workflow.options.deleteOrder;
-		return s.orders.all[options?.orderId!];
+	const order = useAppSelector((s) => {
+		const options = s.workflow.options.deleteOrder!;
+		return options ? s.orders.all[options.orderId] : undefined;
 	});
 
 	const dispatch = useAppDispatch();

@@ -1,14 +1,14 @@
-import { useAppSelector } from "../../../store";
+import { useAppSelector } from "@store";
 import { useMemo } from "react";
 import dayjs from "dayjs";
 
 export function useOrderDates() {
-	const ordersMap = useAppSelector(s => s.orders.all);
+	const ordersMap = useAppSelector((s) => s.orders.all);
 
 	const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
 
 	const availableDates = useMemo(() => {
-		let dates = orders.map(order => dayjs(order.date).startOf("day").toISOString());
+		const dates = orders.map((order) => dayjs(order.date).startOf("day").toISOString());
 		const distinctDates = [...new Set(dates)];
 		const dayjsDates = distinctDates.map(dayjs);
 

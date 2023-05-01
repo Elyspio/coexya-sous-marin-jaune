@@ -12,6 +12,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
 import { Provider as DiProvider } from "inversify-react";
 import { container } from "@/core/di";
+import { DateProvider } from "@hooks/utils/useTime";
 
 function Wrapper() {
 	const { theme, current } = useAppSelector((state) => ({
@@ -23,7 +24,9 @@ function Wrapper() {
 		<StyledEngineProvider injectFirst>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<Application />
+				<DateProvider>
+					<Application />
+				</DateProvider>
 				<ToastContainer theme={current} position={"top-right"} />
 			</ThemeProvider>
 		</StyledEngineProvider>

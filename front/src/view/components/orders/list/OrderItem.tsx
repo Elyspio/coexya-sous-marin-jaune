@@ -9,10 +9,13 @@ import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
-import { canCreateSelector, isToday } from "@modules/orders/orders.utils";
+import { isToday } from "@modules/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
 import { toggleModalWithOptionsFn } from "@modules/workflow/workflow.action";
+import { useRole } from "@hooks/permissions/useRole";
+import { SousMarinJauneRole } from "@apis/authentication/generated";
+import { useCanCreateOrder } from "@hooks/orders/useCanCreateOrder";
 
 type OrderItemProps = {
 	data: Order;
@@ -20,14 +23,13 @@ type OrderItemProps = {
 };
 
 export function OrderItem({ data, show }: OrderItemProps) {
-	const { canCreate, user, logged } = useAppSelector((s) => {
-		const name = s.orders.name;
-		return {
-			canCreate: canCreateSelector(s) === true,
-			user: name,
-			logged: s.authentication.logged,
-		};
-	});
+	const { user } = useAppSelector((s) => ({
+		user: s.orders.name,
+	}));
+
+	const isAdmin = useRole(SousMarinJauneRole.Admin);
+
+	const canCreate = useCanCreateOrder();
 
 	const dispatch = useAppDispatch();
 
@@ -54,7 +56,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const { palette } = useTheme();
 
-	const isSelf = data.user === user;
+	const isSelf = useMemo(() => data.user === user, [data.user, user]);
 
 	const isSmall = useIsSmallScreen();
 
@@ -105,7 +107,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 			{data.student && <Typography>Étudiant</Typography>}
 
 			<Stack alignItems={"center"} direction={"row"} spacing={0.5}>
-				{((isToday(data) && isSelf) || logged) && (
+				{((isToday(data) && isSelf) || isAdmin) && (
 					<>
 						<IconButton onClick={edit}>
 							<EditIcon color={"primary"} fontSize={"small"} />

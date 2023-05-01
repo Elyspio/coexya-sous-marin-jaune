@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useAppDispatch, useAppSelector } from "@store";
 import { Autocomplete, FormControl, Paper, Stack, TextField, Typography } from "@mui/material";
 import { debounce } from "@mui/material/utils";
@@ -11,11 +11,11 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/fr";
 import { useRole } from "@hooks/permissions/useRole";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
+import { lastTime } from "@modules/orders/orders.utils";
+import { useTime } from "@hooks/utils/useTime";
 
 dayjs.locale("fr"); // use locale globally
 dayjs.extend(relativeTime);
-
-const lastTime = dayjs("11", "h");
 
 export function Orders() {
 	const { orders, user, allUsers } = useAppSelector((s) => ({
@@ -50,18 +50,13 @@ export function Orders() {
 
 	const isSmall = useIsSmallScreen();
 
-	const [now, setNow] = useState(dayjs());
-
-	useEffect(() => {
-		setInterval(() => {
-			setNow(dayjs());
-		}, 1000);
-	}, []);
+	const now = useTime();
 
 	const remainingTimeToOrder = lastTime.from(now, false);
 
-	const tooLate = now.isAfter(lastTime);
+	const tooLate = useMemo(() => now.isAfter(lastTime), [now]);
 
+	const canCreate = useMemo(() => user && (!tooLate || isAdmin), [user, tooLate, isAdmin]);
 	return (
 		<Paper className={"maxHeightWidth"}>
 			<Stack m={isSmall ? 1 : 2} spacing={2} p={isSmall ? 0 : 2} className={"maxHeightWidth"}>
@@ -84,7 +79,7 @@ export function Orders() {
 						/>
 					</FormControl>
 
-					{user && (!tooLate || isAdmin) && <CreateOrder />}
+					{canCreate && <CreateOrder />}
 
 					{userBalance !== undefined && (
 						<Stack direction={"row"} spacing={2} alignItems={"center"}>

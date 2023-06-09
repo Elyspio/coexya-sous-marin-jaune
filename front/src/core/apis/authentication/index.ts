@@ -9,7 +9,10 @@ export class AuthenticationApiClient {
 	public readonly jwt: JwtClient;
 
 	constructor(@inject(TokenService) tokenService: TokenService) {
-		const instance = axios.create({ withCredentials: true, transformResponse: [] });
+		const instance = axios.create({
+			withCredentials: true,
+			transformResponse: [],
+		});
 
 		instance.interceptors.request.use((value) => {
 			value.headers!["Authorization"] = `Bearer ${tokenService.getToken()}`;

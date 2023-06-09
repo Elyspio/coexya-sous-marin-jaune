@@ -40,12 +40,21 @@ export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: P
 				{top}
 
 				<Stack direction={"column"} spacing={3} pt={2} alignItems={"center"} mt={"auto"}>
-					<Divider sx={{ border: "1 solid white", width: "100%" }} />
+					<Divider
+						sx={{
+							border: "1 solid white",
+							width: "100%",
+						}}
+					/>
 					{bottom}
 					<Stack direction={"row"} spacing={1} alignItems={"center"} width={"100%"}>
 						<TextField
 							fullWidth
-							inputProps={{ step: 0.1, min: 0, max: maxValue }}
+							inputProps={{
+								step: 0.1,
+								min: 0,
+								max: maxValue,
+							}}
 							label={"Montant"}
 							value={value}
 							type={"number"}

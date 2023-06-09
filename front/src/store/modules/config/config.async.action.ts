@@ -1,11 +1,12 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getService } from "../../utils/utils.actions";
+import { createAsyncActionGenerator, getService } from "../../utils/utils.actions";
 import { toast } from "react-toastify";
 import { ConfigService } from "@services/config.service";
 import { setConfig } from "./config.actions";
 import { StoreState } from "@store";
 
-export const updateConfig = createAsyncThunk("config/updateConfig", async (_, { extra, getState }) => {
+const createAsyncThunk = createAsyncActionGenerator("config");
+
+export const updateConfig = createAsyncThunk("update", async (_, { extra, getState }) => {
 	const userService = getService(ConfigService, extra);
 
 	const { config } = getState() as StoreState;
@@ -19,7 +20,7 @@ export const updateConfig = createAsyncThunk("config/updateConfig", async (_, { 
 	});
 });
 
-export const getConfig = createAsyncThunk("config/getConfig", async (_, { extra, dispatch }) => {
+export const getConfig = createAsyncThunk("get", async (_, { extra, dispatch }) => {
 	const userService = getService(ConfigService, extra);
 	const config = await userService.get();
 

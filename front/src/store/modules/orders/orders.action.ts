@@ -16,4 +16,7 @@ export const deleteOrderRecord = createAction<number>("deleteOrderRecordBurger")
 
 export const setOrderTimeRange = createAction<OrderState["timeRange"]>("setMaxOrderTimeToDisplay");
 
-export const updateOrderPayment = createAction<{ type: OrderPaymentType; value: number }>("updateOrderPayment");
+export const updateOrderPayment = createAction<{
+	type: OrderPaymentType;
+	value: number;
+}>("updateOrderPayment");

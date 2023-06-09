@@ -16,4 +16,4 @@ export const canCreateSelector = (state: StoreState): boolean | "no-name" | "clo
 export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 export const isTodayFormatted = (date: string) => date === dayjs().format(dateTemplate);
 
-export const lastTime = dayjs("11", "h");
+export const lastTime = dayjs().locale("fr").startOf("d").set("h", 11).set("m", 30);

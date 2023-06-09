@@ -11,7 +11,7 @@ export function OrderDessert({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();
 
 	const setOrder = useCallback(
-		(e, val: Dessert | null) => {
+		(e: React.SyntheticEvent, val: Dessert | null) => {
 			dispatch(
 				updateOrder({
 					...data,
@@ -30,7 +30,7 @@ export function OrderDessert({ data }: { data: Order }) {
 					id="select-drink"
 					value={data.dessert ?? null}
 					options={Object.values(Dessert) as Dessert[]}
-					onChange={setOrder as any}
+					onChange={setOrder}
 					getOptionDisabled={(option) => unavailableDesserts.includes(option)}
 					renderInput={(params) => <TextField {...params} variant={"standard"} label="Dessert" />}
 				/>

@@ -96,7 +96,12 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				),
 			});
 			if (confirm) {
-				dispatch(deleteOrderPayement({ payementType: row.type, idOrder: row.idOrder }));
+				dispatch(
+					deleteOrderPayement({
+						payementType: row.type,
+						idOrder: row.idOrder,
+					})
+				);
 			}
 		},
 		[dispatch]

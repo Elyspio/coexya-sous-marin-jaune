@@ -1,10 +1,10 @@
 import "reflect-metadata";
 import React from "react";
+import "dayjs/locale/fr";
 import { createRoot } from "react-dom/client";
 import "./index.scss";
 import { Provider } from "react-redux";
 import store, { useAppSelector } from "@store";
-import Application from "./view/components/Application";
 import { CssBaseline } from "@mui/material";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { themes } from "./config/theme";
@@ -13,6 +13,12 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { Provider as DiProvider } from "inversify-react";
 import { container } from "@/core/di";
 import { DateProvider } from "@hooks/utils/useTime";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import Application from "./view/components/Application";
+
+dayjs.locale("fr"); // use locale globally
+dayjs.extend(relativeTime);
 
 function Wrapper() {
 	const { theme, current } = useAppSelector((state) => ({

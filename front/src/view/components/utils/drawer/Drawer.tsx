@@ -134,7 +134,14 @@ export function Drawer(props: Props) {
 					{props.actions && getActions(props.actions)}
 				</div>
 			</MuiDrawer>
-			<main className={clsx({ [classes.mainSmaller]: open, [classes.main]: !open })}>{props.children}</main>
+			<main
+				className={clsx({
+					[classes.mainSmaller]: open,
+					[classes.main]: !open,
+				})}
+			>
+				{props.children}
+			</main>
 		</div>
 	);
 }

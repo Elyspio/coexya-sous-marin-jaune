@@ -1,7 +1,10 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 
-type TimeContext = { get: Dayjs; set: (date: Dayjs) => void };
+type TimeContext = {
+	get: Dayjs;
+	set: (date: Dayjs) => void;
+};
 /**
  * Context de temps permettant d'avoir un temps unique dans toute l'application
  * Refresh du temps toute les 1 seconde
@@ -40,5 +43,14 @@ export function DateProvider({ children }: DateProviderProps) {
 		};
 	}, []);
 
-	return <TimeCtx.Provider value={{ get: time, set: setTime }}>{children}</TimeCtx.Provider>;
+	return (
+		<TimeCtx.Provider
+			value={{
+				get: time,
+				set: setTime,
+			}}
+		>
+			{children}
+		</TimeCtx.Provider>
+	);
 }

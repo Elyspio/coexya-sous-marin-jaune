@@ -15,12 +15,12 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 
 	const [usersToMerge, setUsersToMerge] = useState<string[]>([]);
 
-	const onNextNameChange = useCallback((_, name: string | null) => {
+	const onNextNameChange = useCallback((_: React.SyntheticEvent, name: string | null) => {
 		setNextName(name ?? "");
 	}, []);
 
 	const onSelectedUserChange = useCallback(
-		(_, names: string[]) => {
+		(_: React.SyntheticEvent, names: string[]) => {
 			setUsersToMerge([...names]);
 			if (!nextName) {
 				setNextName(names[0]);
@@ -30,7 +30,12 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	);
 
 	const merge = useCallback(() => {
-		dispatch(mergeUsers({ nextName, users: usersToMerge }));
+		dispatch(
+			mergeUsers({
+				nextName,
+				users: usersToMerge,
+			})
+		);
 		setClose();
 	}, [setClose, dispatch, nextName, usersToMerge]);
 

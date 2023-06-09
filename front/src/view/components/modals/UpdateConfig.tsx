@@ -9,7 +9,10 @@ import { ModalComponentProps } from "./common/ModalProps";
 import { useMounted } from "@hooks/utils/useMounted";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
-	const { allUsers, config } = useAppSelector((s) => ({ allUsers: s.orders.all, config: s.config }));
+	const { allUsers, config } = useAppSelector((s) => ({
+		allUsers: s.orders.all,
+		config: s.config,
+	}));
 
 	const dispatch = useAppDispatch();
 
@@ -33,7 +36,7 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	);
 
 	const onCarrierChanged = useCallback(
-		(_, carrier: string | null) => {
+		(_: React.SyntheticEvent, carrier: string | null) => {
 			dispatch(
 				setConfig({
 					...config,

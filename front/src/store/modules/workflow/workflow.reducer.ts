@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toggleModal, toggleModalWithOptions } from "./workflow.action";
-import { ModalTypes, WorkflowState } from "./workflow.types";
+import { ModalOptions, ModalTypes, WorkflowState } from "./workflow.types";
 
 const initialState: WorkflowState = {
 	modals: {} as any,
@@ -18,12 +18,12 @@ const slice = createSlice({
 	extraReducers: (builder) => {
 		builder.addCase(toggleModal, (state, action) => {
 			state.modals[action.payload] = !state.modals[action.payload];
-			if (state.options[action.payload]) state.options[action.payload] = undefined;
+			state.options[action.payload as keyof ModalOptions] = undefined;
 		});
 
 		builder.addCase(toggleModalWithOptions, (state, action) => {
 			state.modals[action.payload.modal] = true;
-			state.options[action.payload.modal] = action.payload.options;
+			state.options[action.payload.modal as keyof ModalOptions] = action.payload.options;
 		});
 	},
 });

@@ -27,7 +27,12 @@ export function useMenu() {
 
 	return {
 		open: contextMenu !== null,
-		position: contextMenu ? { top: contextMenu.mouseY, left: contextMenu.mouseX } : undefined,
+		position: contextMenu
+			? {
+					top: contextMenu.mouseY,
+					left: contextMenu.mouseX,
+			  }
+			: undefined,
 		closeMenu: handleClose,
 		onContextMenu: handleContextMenu,
 	};

@@ -65,8 +65,14 @@ export function OrderFries({ data }: { data: Order }) {
 									label={"Nombre"}
 									value={quantityPerSauce[sauce] ?? 0}
 									type={"number"}
-									inputProps={{ min: 0, max: 2 - nbSauces + quantityPerSauce[sauce] ?? 0 }}
-									sx={{ width: 60, color: "red" }}
+									inputProps={{
+										min: 0,
+										max: 2 - nbSauces + quantityPerSauce[sauce] ?? 0,
+									}}
+									sx={{
+										width: 60,
+										color: "red",
+									}}
 								/>
 							</Stack>
 						</ListItem>

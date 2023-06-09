@@ -14,7 +14,11 @@ export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
 
 	const dispatch = useAppDispatch();
 
-	const deleteOrderFn = useCallback(() => dispatch(deleteOrder(order.id)), [dispatch, order]);
+	const deleteOrderFn = useCallback(() => {
+		if (!order) return;
+
+		dispatch(deleteOrder(order.id));
+	}, [dispatch, order]);
 
 	const [mounted, ref] = useMounted();
 

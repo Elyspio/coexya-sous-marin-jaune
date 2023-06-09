@@ -79,7 +79,10 @@ export const duplicateOrder = createAsyncThunk("duplicateOrder", async (id: Orde
 	dispatch(updateOrder(newOrder));
 });
 
-type DeleteOrderPayementParams = { idOrder: Order["id"]; payementType: OrderPaymentType };
+type DeleteOrderPayementParams = {
+	idOrder: Order["id"];
+	payementType: OrderPaymentType;
+};
 export const deleteOrderPayement = createAsyncThunk("deleteOrderPayement", async ({ payementType, idOrder }: DeleteOrderPayementParams, { getState, extra }) => {
 	const {
 		orders: { all },

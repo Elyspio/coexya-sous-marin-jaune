@@ -10,7 +10,12 @@ import { Provider } from "react-redux";
 export type ConfirmPopupProps<T> = {
 	title: ReactNode;
 	content: ReactNode;
-	choices: { label: string; value: T; color?: ButtonProps["color"]; variant?: ButtonProps["variant"] }[];
+	choices: {
+		label: string;
+		value: T;
+		color?: ButtonProps["color"];
+		variant?: ButtonProps["variant"];
+	}[];
 
 	onSelected: (val: T) => any;
 
@@ -83,8 +88,18 @@ export async function createConfirmModal<T>(props: Omit<ConfirmPopupProps<T>, "o
 						onSelected={resolve}
 						defaultValue={false}
 						choices={[
-							{ label: "Annuler", color: "inherit", value: false, variant: "outlined" },
-							{ label: "Oui", color: "error", value: true, variant: "contained" },
+							{
+								label: "Annuler",
+								color: "inherit",
+								value: false,
+								variant: "outlined",
+							},
+							{
+								label: "Oui",
+								color: "error",
+								value: true,
+								variant: "contained",
+							},
 						]}
 					/>
 				</PopupWrapperStored>

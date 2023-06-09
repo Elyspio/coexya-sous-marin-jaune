@@ -15,9 +15,9 @@ const slice = createSlice({
 	reducers: {},
 	extraReducers: (builder) => {
 		builder.addCase(setConfig, (state, action) => {
-			Object.keys(action.payload).forEach((key) => {
-				state[key] = action.payload[key];
-			});
+			state.kitchenOpened = action.payload.kitchenOpened;
+			state.paymentEnabled = action.payload.paymentEnabled;
+			state.carrier = action.payload.carrier;
 		});
 	},
 });

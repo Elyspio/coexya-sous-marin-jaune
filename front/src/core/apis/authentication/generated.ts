@@ -913,11 +913,21 @@ export class ApiException extends Error {
 	override message: string;
 	status: number;
 	response: string;
-	headers: { [key: string]: any };
+	headers: {
+		[key: string]: any;
+	};
 	result: any;
 	protected isApiException = true;
 
-	constructor(message: string, status: number, response: string, headers: { [key: string]: any }, result: any) {
+	constructor(
+		message: string,
+		status: number,
+		response: string,
+		headers: {
+			[key: string]: any;
+		},
+		result: any
+	) {
 		super();
 
 		this.message = message;

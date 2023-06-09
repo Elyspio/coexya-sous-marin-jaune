@@ -32,7 +32,12 @@ export function BurgerItem({ data, index }: { data: BurgerRecord; index: number 
 					<Typography noWrap>{exclusion}</Typography>
 				</Tooltip>
 			)}
-			<Box sx={{ marginLeft: "auto !important", pl: 2 }}>
+			<Box
+				sx={{
+					marginLeft: "auto !important",
+					pl: 2,
+				}}
+			>
 				<ButtonGroup variant="outlined">
 					<IconButton onClick={edit}>
 						<EditIcon color={"primary"} />

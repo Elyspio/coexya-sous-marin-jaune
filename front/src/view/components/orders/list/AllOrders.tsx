@@ -76,7 +76,14 @@ export function AllOrders() {
 							{date}
 						</Typography>
 						{orders.map((order) => (
-							<OrderItem key={order.id} data={order} show={{ name: true, duplicate: true }} />
+							<OrderItem
+								key={order.id}
+								data={order}
+								show={{
+									name: true,
+									duplicate: true,
+								}}
+							/>
 						))}
 					</Stack>
 				))}

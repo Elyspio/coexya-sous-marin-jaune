@@ -4,11 +4,11 @@ import { Config, Order } from "@apis/backend/generated";
 import { injectable } from "inversify";
 
 interface UpdateHub extends HubConnection {
-	on(event: "OrderUpdated", callback: (order: Order) => void);
+	on(event: "OrderUpdated", callback: (order: Order) => void): void;
 
-	on(event: "OrderDeleted", callback: (orderId: Order["id"]) => void);
+	on(event: "OrderDeleted", callback: (orderId: Order["id"]) => void): void;
 
-	on(event: "ConfigUpdated", callback: (config: Config) => void);
+	on(event: "ConfigUpdated", callback: (config: Config) => void): void;
 }
 
 @injectable()

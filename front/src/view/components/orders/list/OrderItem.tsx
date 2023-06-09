@@ -19,7 +19,13 @@ import { useCanCreateOrder } from "@hooks/orders/useCanCreateOrder";
 
 type OrderItemProps = {
 	data: Order;
-	show: { name?: boolean; date?: boolean; edit?: boolean; del?: boolean; duplicate?: boolean };
+	show: {
+		name?: boolean;
+		date?: boolean;
+		edit?: boolean;
+		del?: boolean;
+		duplicate?: boolean;
+	};
 };
 
 export function OrderItem({ data, show }: OrderItemProps) {

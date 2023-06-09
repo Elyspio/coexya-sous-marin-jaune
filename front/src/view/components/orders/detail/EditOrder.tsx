@@ -106,7 +106,13 @@ export function EditOrder() {
 			<DialogTitle>{isToday(order) ? "Création" : "Modification"} de votre commande</DialogTitle>
 			<DialogContent dividers>
 				<TabContext value={workflow}>
-					<Box sx={{ borderBottom: 1, borderColor: "divider", height: "100%" }}>
+					<Box
+						sx={{
+							borderBottom: 1,
+							borderColor: "divider",
+							height: "100%",
+						}}
+					>
 						<TabList onChange={handleChange} variant={"fullWidth"} value={workflow}>
 							<Tab label="Contenu" value="menu" />
 							{order.paymentEnabled && <Tab label="Payement" value="payment" />}

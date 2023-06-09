@@ -6,7 +6,10 @@ import { updateOrder } from "@modules/orders/orders.action";
 import { drinkLabels } from "../../modals/OrderMessageModal";
 import { updateRemoteOrder } from "@modules/orders/orders.async.action";
 
-type DrinkPair = { key: Drink; label: string };
+type DrinkPair = {
+	key: Drink;
+	label: string;
+};
 const drinks = (Object.values(Drink) as Drink[]).reduce((acc, current) => {
 	acc.push({
 		key: current,
@@ -21,7 +24,7 @@ export function OrderDrink({ data }: { data: Order }) {
 	const dispatch = useAppDispatch();
 
 	const setOrder = useCallback(
-		(e, val: DrinkPair | null) => {
+		(e: React.SyntheticEvent, val: DrinkPair | null) => {
 			dispatch(
 				updateOrder({
 					...data,

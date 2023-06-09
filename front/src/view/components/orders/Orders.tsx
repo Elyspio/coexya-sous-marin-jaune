@@ -6,16 +6,11 @@ import { setUser } from "@modules/orders/orders.action";
 import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/fr";
 import { useRole } from "@hooks/permissions/useRole";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
 import { lastTime } from "@modules/orders/orders.utils";
 import { useTime } from "@hooks/utils/useTime";
-
-dayjs.locale("fr"); // use locale globally
-dayjs.extend(relativeTime);
 
 export function Orders() {
 	const { orders, user, allUsers } = useAppSelector((s) => ({
@@ -38,7 +33,7 @@ export function Orders() {
 	);
 
 	const onChange = React.useCallback(
-		(_, str: string) => {
+		(_: React.SyntheticEvent, str: string) => {
 			return setUserDebounced(str);
 		},
 		[setUserDebounced]

@@ -146,7 +146,10 @@ const slice = createSlice({
 			if (payment !== undefined) {
 				payment.amount = value;
 			} else {
-				order.payments.push({ type, amount: value });
+				order.payments.push({
+					type,
+					amount: value,
+				});
 			}
 		});
 

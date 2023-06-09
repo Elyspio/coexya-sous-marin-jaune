@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@store";
 import React, { useCallback, useMemo } from "react";
 import TabContext from "@mui/lab/TabContext";
-import { Box, Divider, Stack, Tab, Typography } from "@mui/material";
+import { Box, Divider, Link, Stack, Tab, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import TabList from "@mui/lab/TabList";
 import { OrderPaymentType } from "@apis/backend/generated";
@@ -13,6 +13,7 @@ import Picsou from "@/view/icons/picsou.gif";
 import { updateOrderPayment } from "@modules/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
 import dayjs from "dayjs";
+import { QRCodeSVG } from "qrcode.react";
 
 export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",
@@ -70,7 +71,12 @@ export function PayementOrder() {
 
 	const updatePayment = useCallback(
 		(type: OrderPaymentType) => (value: number) => {
-			dispatch(updateOrderPayment({ value: value ?? 0, type }));
+			dispatch(
+				updateOrderPayment({
+					value: value ?? 0,
+					type,
+				})
+			);
 		},
 		[dispatch]
 	);
@@ -148,7 +154,16 @@ export function PayementOrder() {
 
 					<PaymentPanel
 						type={OrderPaymentType.Paypal}
-						top={"https://paypal.me/elyspio?country.x=FR"}
+						top={
+							<Stack spacing={1} alignItems={"center"} justifyContent={"center"}>
+								<Box bgcolor={"background.default"} p={2}>
+									<QRCodeSVG height={150} width={150} value="https://paypal.me/elyspio?country.x=FR" />
+								</Box>
+								<Link target={"_blank"} href={"https://paypal.me/elyspio?country.x=FR"}>
+									https://paypal.me/elyspio?country.x=FR
+								</Link>
+							</Stack>
+						}
 						value={amounts.Paypal}
 						setValue={updatePayment(OrderPaymentType.Paypal)}
 					/>

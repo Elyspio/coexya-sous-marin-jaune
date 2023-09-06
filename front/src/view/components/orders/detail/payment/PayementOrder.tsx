@@ -12,14 +12,13 @@ import Wallet from "@/view/icons/wallet.png";
 import Picsou from "@/view/icons/picsou.gif";
 import { updateOrderPayment } from "@modules/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
-import dayjs from "dayjs";
 import { QRCodeSVG } from "qrcode.react";
 
 export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",
 	[OrderPaymentType.Cash]: "Liquide",
 	[OrderPaymentType.Paypal]: "PayPal",
-	[OrderPaymentType.LunchVoucher]: "Ticket restaurant",
+	[OrderPaymentType.LunchVoucher]: "Cartes restaurant",
 	[OrderPaymentType.Admin]: "Admin",
 	[OrderPaymentType.Wallet]: "Solde",
 };
@@ -88,6 +87,8 @@ export function PayementOrder() {
 		return Math.min(accountWallet, remainingToPayWithWallet);
 	}, [remainingToPay, order.payments, accountWallet]);
 
+	const theme = useTheme();
+
 	if (!order) return null;
 
 	return (
@@ -112,7 +113,7 @@ export function PayementOrder() {
 					<Tab label={payementTypeLabel.Cash} value={OrderPaymentType.Cash} />
 					<Tab label={payementTypeLabel.BankTransfer} value={OrderPaymentType.BankTransfer} />
 					<Tab label={payementTypeLabel.Paypal} value={OrderPaymentType.Paypal} />
-					{dayjs(order.date).isBefore("2023-03-01") && <Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />}
+					<Tab label={payementTypeLabel.LunchVoucher} value={OrderPaymentType.LunchVoucher} />
 					{(accountWallet > 0 || order.payments.some((payment) => payment.type === "Wallet")) && <Tab label={payementTypeLabel.Wallet} value={OrderPaymentType.Wallet} />}
 					{logged && <Tab label={payementTypeLabel.Admin} value={OrderPaymentType.Admin} />}
 				</TabList>
@@ -129,8 +130,13 @@ export function PayementOrder() {
 
 					<PaymentPanel
 						type={OrderPaymentType.LunchVoucher}
-						bottom={<Typography>Merci de déposer l'argent avant le départ ~ 11h50</Typography>}
-						top={<img src={TicketRestaurant} height={120} alt={"Ticket restaurant"} />}
+						bottom={
+							<Stack spacing={1} alignItems={"center"}>
+								<Typography color={theme.palette.warning.main}>Uniquement les CARTES restaurant.</Typography>
+								<Typography>Merci de la déposer avant le départ ~11h50</Typography>
+							</Stack>
+						}
+						top={<img src={TicketRestaurant} height={120} alt={"Cartes restaurant"} />}
 						value={amounts.LunchVoucher}
 						setValue={updatePayment(OrderPaymentType.LunchVoucher)}
 					/>
@@ -180,7 +186,7 @@ export function PayementOrder() {
 						<PaymentPanel
 							type={OrderPaymentType.Admin}
 							bottom={<Typography>Zone admin</Typography>}
-							top={<img src={Picsou} height={150} alt={"Argent en espèces"} />}
+							top={<img src={Picsou} height={150} alt={"Zone d'administration"} />}
 							value={amounts.Admin}
 							setValue={updatePayment(OrderPaymentType.Admin)}
 						/>

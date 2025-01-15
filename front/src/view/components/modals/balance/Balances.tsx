@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@store";
 import dayjs, { Dayjs } from "dayjs";
@@ -21,19 +21,16 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const availableDates = useOrderDates();
 
-	const [selectedDate, setSelectedDate] = useState(availableDates[0] ?? dayjs());
+	const [selectedDate, setSelectedDate] = useState(availableDates[0] ?? null);
 
 	const onSelectedDateChanged = useCallback((_: React.SyntheticEvent, date: Dayjs | null) => {
 		date && setSelectedDate(date);
 	}, []);
 
-	useEffect(() => {
-		availableDates.length && setSelectedDate(availableDates[0]);
-	}, [availableDates]);
-
 	// endregion selectedDate
 
 	const rows = useMemo(() => {
+		if (!selectedDate) return [];
 		return Object.values(allOrders)
 			.filter((order) => selectedDate.isSame(order.date, "day"))
 			.map((order) =>

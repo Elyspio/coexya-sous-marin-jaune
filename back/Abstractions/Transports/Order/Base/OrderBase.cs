@@ -28,17 +28,17 @@ public class OrderBase
 
 			if (Student)
 			{
-				sum += 10;
+				sum += 11;
 			}
 			else
 			{
-				var menu = 7.5;
+				var menu = 8.5;
 
 				if (Drink != null) menu += 2;
 
 				if (Fries != null) menu += 3.5;
 
-				if (Drink != null && Fries != null) menu = 11.5; // promotion du meny
+				if (Drink != null && Fries != null) menu = 12.5; // promotion du meny
 
 				sum += menu;
 			}

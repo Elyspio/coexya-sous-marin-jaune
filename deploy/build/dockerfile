@@ -18,7 +18,7 @@ RUN dotnet publish -c Release -o out
 
 
 # Building front
-FROM --platform=linux/amd64 node:18 as builder-front
+FROM  node:18 AS builder-front
 
 COPY front/package.json /front/
 COPY front/yarn.lock /front/

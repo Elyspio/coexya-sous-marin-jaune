@@ -1,13 +1,16 @@
-import { useAppSelector } from "@store";
+import { StoreState, useAppSelector } from "@store";
 import { useMemo } from "react";
 import dayjs from "dayjs";
+import { createSelector } from "@reduxjs/toolkit";
+
+const selector = createSelector([(s: StoreState) => s.orders.all], (order) => Object.values(order));
 
 export function useOrderDates() {
-	const ordersMap = useAppSelector((s) => s.orders.all);
-
-	const orders = useMemo(() => Object.values(ordersMap), [ordersMap]);
+	const orders = useAppSelector(selector);
 
 	const availableDates = useMemo(() => {
+		console.count("orders");
+
 		const dates = orders.map((order) => dayjs(order.date).startOf("day").toISOString());
 		const distinctDates = [...new Set(dates)];
 		const dayjsDates = distinctDates.map(dayjs);

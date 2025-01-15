@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SousMarinJaune.Api.Web", "W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SousMarinJaune.Api.Sockets", "Sockets\SousMarinJaune.Api.Sockets.csproj", "{67AEFC41-C4E8-46ED-A787-7A9099A062C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{5CC25603-04F6-4817-9868-3FB4BC443963}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SousMarinJaune.Api.Tests", "SousMarinJaune.Api.Tests\SousMarinJaune.Api.Tests.csproj", "{418AB6CE-BE75-4CEA-A2D0-73473F761045}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,11 +49,18 @@ Global
 		{67AEFC41-C4E8-46ED-A787-7A9099A062C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67AEFC41-C4E8-46ED-A787-7A9099A062C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67AEFC41-C4E8-46ED-A787-7A9099A062C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{418AB6CE-BE75-4CEA-A2D0-73473F761045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{418AB6CE-BE75-4CEA-A2D0-73473F761045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{418AB6CE-BE75-4CEA-A2D0-73473F761045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{418AB6CE-BE75-4CEA-A2D0-73473F761045}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1772C4C-73A6-4520-8FF8-35363674A984}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{418AB6CE-BE75-4CEA-A2D0-73473F761045} = {5CC25603-04F6-4817-9868-3FB4BC443963}
 	EndGlobalSection
 EndGlobal

@@ -62,9 +62,9 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const [selectedDay, setSelectedDay] = useState(availableDates[0]);
 
-	const onTimeChange = useCallback((e: SelectChangeEvent<string>) => setTime(e.target.value), []);
+	const onTimeChange = useCallback((e: SelectChangeEvent) => setTime(e.target.value), []);
 
-	const onSelectedDateChanged = useCallback((e: SelectChangeEvent<string>) => setSelectedDay(dayjs(e.target.value)), []);
+	const onSelectedDateChanged = useCallback((e: SelectChangeEvent) => setSelectedDay(dayjs(e.target.value)), []);
 
 	// region message
 
@@ -113,6 +113,9 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	if (!mounted && !open) return null;
 
+	const totalPrice = todayOrders.reduce((acc, order) => {
+		return acc + order.price;
+	}, 0);
 	return (
 		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
 			<DialogTitle>
@@ -157,16 +160,20 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 							{todayOrders.map((order) => (
 								<ListItem key={order.id}>
 									<Typography>
-										{order.user} {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)} {getFriteLabel(order.fries)}
-										{order.drink ? `, ${drinkLabels[order.drink]}` : ""} {order.dessert}
+										<span style={{ fontWeight: "bold" }}>{order.user}</span> : {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)}{" "}
+										{getFriteLabel(order.fries)}
+										{order.drink ? `, ${drinkLabels[order.drink]}` : ""} {order.dessert} ({order.price}€)
 									</Typography>
 								</ListItem>
 							))}
 						</List>
 						<Fade in={header}>
-							<Typography>
-								Nous viendrons récupérer la commande sur place à Limonest. Si ça fait trop juste pour {time}, pour quelle heure ça serait ? Merci
-							</Typography>
+							<Stack spacing={1}>
+								<Typography>
+									Nous viendrons récupérer la commande sur place à Limonest. Si ça fait trop juste pour {time}, pour quelle heure ça serait ? Merci
+								</Typography>
+								<Typography>Le total semble être de {totalPrice}€</Typography>
+							</Stack>
 						</Fade>
 					</Stack>
 				</Stack>

@@ -3,4 +3,7 @@ import { defineConfig } from "vite";
 
 const config = getDefaultConfig({ basePath: __dirname });
 
-export default defineConfig((env) => ({ ...config, base: env.command === "build" ? "/coexya/burgers" : undefined }));
+export default defineConfig((env) => ({
+	...config,
+	base: env.command === "build" ? "/coexya/burgers" : undefined,
+}));

@@ -2,14 +2,11 @@
 	"extends": "@elyspio/vite-eslint-config/tsconfig.json",
 	"compilerOptions": {
 		"baseUrl": ".",
+		"lib": ["ES2022", "dom"],
+		"module": "ES2022",
 		"noEmit": true,
-		"types": [
-			"./src/types/imports.d.ts"
-		]
+		"moduleResolution": "bundler",
+		"types": ["./src/types/imports.d.ts", "./src/config/window.d.ts"]
 	},
-	"include": [
-		"vite.config.ts",
-		".eslintrc.js",
-		"src"
-	]
+	"include": ["vite.config.ts", ".eslintrc.js", "src", "scripts"]
 }

@@ -11,6 +11,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import "./Drawer.scss";
 import clsx from "clsx";
 import { makeStyles } from "@mui/styles";
+import { ListItemButton } from "@mui/material";
 
 export interface Action {
 	text: React.ReactNode;
@@ -36,32 +37,17 @@ const useStyles = makeStyles((theme: Theme) => ({
 	},
 	drawerOpen: {
 		width: drawerWidth,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
 	},
 	drawerClose: {
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
+
 		overflowX: "hidden",
 		width: baseWidth,
 	},
 	mainSmaller: {
 		width: `calc(100% - ${drawerWidth}px) !important`,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
 	},
 	main: {
 		width: `calc(100% - ${baseWidth}px)`,
-		transition: theme.transitions.create("width", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
 	},
 }));
 
@@ -73,10 +59,10 @@ const getActions = (actions: Action[]) => {
 	const actionComponents = (comp.length > 0 ? comp : [actions]).map((actions, i) => (
 		<List className={"toolbar"} key={i}>
 			{actions.map((action, i) => (
-				<ListItem button key={i} onClick={() => action.onClick && action.onClick()}>
+				<ListItemButton key={i} onClick={() => action.onClick && action.onClick()}>
 					<ListItemIcon>{action.icon}</ListItemIcon>
 					{action.text}
-				</ListItem>
+				</ListItemButton>
 			))}
 		</List>
 	));

@@ -1,4 +1,4 @@
-﻿namespace SousMarinJaune.Api.Adapters.Configs;
+﻿namespace SousMarinJaune.Api.ExternalApi.Configs;
 
 public class EndpointConfig
 {

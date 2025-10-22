@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Authentication.Api.Abstractions.Exceptions;
+namespace SousMarinJaune.Api.Abstractions.Exceptions;
 
 public class HttpException : Exception
 {

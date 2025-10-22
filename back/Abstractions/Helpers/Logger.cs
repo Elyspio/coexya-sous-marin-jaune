@@ -30,7 +30,7 @@ public static class Log
 	}
 
 
-	public class LoggerInstance<T>
+	public class LoggerInstance<T>: IDisposable
 	{
 		private readonly string _arguments;
 		private readonly LogLevel _level;
@@ -67,6 +67,12 @@ public static class Log
 			if (_arguments?.Length > 0) sb.Append($": {_arguments}");
 			sb.Append($" ({(DateTime.Now - _startedAt).Milliseconds}ms)");
 			_logger.Log(_level, sb.ToString());
+		}
+
+		/// <inheritdoc />
+		public void Dispose()
+		{
+			Exit();
 		}
 	}
 }

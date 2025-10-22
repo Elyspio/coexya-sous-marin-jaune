@@ -11,7 +11,7 @@ using SousMarinJaune.Api.Sockets.Hubs;
 
 namespace SousMarinJaune.Api.Core.Services;
 
-public class OrderService : IOrderService
+internal class OrderService : IOrderService
 {
 	private readonly IConfigService _configService;
 	private readonly IHubContext<UpdateHub, IUpdateHub> _hubContext;
@@ -31,28 +31,26 @@ public class OrderService : IOrderService
 
 	public async Task<List<Order>> GetAll()
 	{
-		var logger = _logger.Enter();
+		using var logger = _logger.Enter();
 
 		var orders = _orderAssembler.Convert(await _orderRepository.GetAll());
-
-		logger.Exit();
+		
 		return orders;
 	}
 
 	public async Task<List<Order>> GetForUser(string user)
 	{
-		var logger = _logger.Enter(Log.Format(user));
+		using var logger = _logger.Enter(Log.Format(user));
 
 		var orders = _orderAssembler.Convert(await _orderRepository.GetForUser(user));
 
-		logger.Exit();
 
 		return orders;
 	}
 
 	public async Task<Order> Create(string user)
 	{
-		var logger = _logger.Enter(Log.Format(user));
+		using var logger = _logger.Enter(Log.Format(user));
 
 		var config = await _configService.Get();
 
@@ -61,39 +59,33 @@ public class OrderService : IOrderService
 		var data = _orderAssembler.Convert(entity);
 		await _hubContext.Clients.All.OrderUpdated(data);
 
-		logger.Exit();
-
 		return data;
 	}
 
 	public async Task Delete(Guid orderId)
 	{
-		var logger = _logger.Enter(Log.Format(orderId));
+		using var logger = _logger.Enter(Log.Format(orderId));
 
 		await _orderRepository.Delete(orderId);
+		
 		await _hubContext.Clients.All.OrderDeleted(orderId);
-
-		logger.Exit();
 	}
 
 	public async Task Update(Order order)
 	{
-		var logger = _logger.Enter(Log.Format(order.Id));
+		using var logger = _logger.Enter(Log.Format(order.Id));
 
 		await _orderRepository.Update(_orderAssembler.Convert(order));
 		await _hubContext.Clients.All.OrderUpdated(order);
 
-		logger.Exit();
 	}
 
 	public async Task UpdateOrderPaymentReceived(Guid idOrder, OrderPaymentType type, double value)
 	{
-		var logger = _logger.Enter($"{Log.Format(idOrder)} {Log.Format(type)} {Log.Format(value)}");
+		using var logger = _logger.Enter($"{Log.Format(idOrder)} {Log.Format(type)} {Log.Format(value)}");
 
 		var entity = await _orderRepository.UpdateOrderPaymentReceived(idOrder, type, value);
 
 		await _hubContext.Clients.All.OrderUpdated(_orderAssembler.Convert(entity));
-
-		logger.Exit();
 	}
 }

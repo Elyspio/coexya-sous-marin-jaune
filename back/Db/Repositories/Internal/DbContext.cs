@@ -11,16 +11,14 @@ public class MongoContext
 {
 	public MongoContext(IConfiguration configuration)
 	{
-		var conf = new DbConfig();
-
-		var connectionString = configuration["Database"];
+        var connectionString = configuration.GetConnectionString("MongoDb");
 
 		var url = new MongoUrl(connectionString);
 		var client = new MongoClient(url);
 
 		Console.WriteLine($"Connecting to Database '{url.DatabaseName}'");
 
-		MongoDatabase = client.GetDatabase(url.DatabaseName);
+		MongoDatabase = client.GetDatabase(url.DatabaseName ?? "coexya_sous-marin-jaune");
 
 		var pack = new ConventionPack
 		{

@@ -1,41 +1,45 @@
 # Building back
-FROM mcr.microsoft.com/dotnet/sdk:latest AS builder-back
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS builder-back
 WORKDIR /app
 
-COPY back/SousMarinJaune.Api.sln ./
 COPY back/Core/SousMarinJaune.Api.Core.csproj ./Core/
 COPY back/Abstractions/SousMarinJaune.Api.Abstractions.csproj ./Abstractions/
 COPY back/Db/SousMarinJaune.Api.Db.csproj ./Db/
-COPY back/Adapters/SousMarinJaune.Api.Adapters.csproj ./Adapters/
+COPY back/Adapters/SousMarinJaune.Api.ExternalApi.csproj ./Adapters/
 COPY back/Web/SousMarinJaune.Api.Web.csproj ./Web/
+COPY back/SousMarinJaune.Api.ServiceDefaults/SousMarinJaune.Api.ServiceDefaults.csproj ./SousMarinJaune.Api.ServiceDefaults/
 COPY back/Sockets/SousMarinJaune.Api.Sockets.csproj ./Sockets/
 
-RUN dotnet restore Web/SousMarinJaune.Api.Web.csproj
+RUN dotnet restore ./Web/SousMarinJaune.Api.Web.csproj -f
 
 
 COPY back .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish ./Web/SousMarinJaune.Api.Web.csproj --no-restore -c Release -o out
 
 
 # Building front
-FROM  node:18 AS builder-front
+FROM  node:24 AS builder-front
+
+
+ARG GITHUB_TOKEN
+ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 
 COPY front/package.json /front/
 COPY front/yarn.lock /front/
-RUN cd /front && yarn
+COPY front/.npmrc /front/
+RUN cd /front && yarn install --frozen-lockfile
 
 COPY front /front/
 RUN cd /front && yarn build
 
 
 # Running
-FROM mcr.microsoft.com/dotnet/aspnet:latest AS production
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS production
 WORKDIR /back
 COPY --from=builder-back /app/out .
 
 COPY --from=builder-front /front/dist /back/wwwroot
 ENV FRONT_PATH /back/wwwroot
 
-EXPOSE 4003
 ENTRYPOINT ["dotnet", "SousMarinJaune.Api.Web.dll"]
 

@@ -1,9 +1,24 @@
-import { getDefaultConfig } from "@elyspio/vite-eslint-config/vite/vite.config";
-import { defineConfig } from "vite";
+import { getDefaultConfig } from "@elyspio/vite-eslint-config";
+import { defineConfig, type UserConfig } from "vite";
 
-const config = getDefaultConfig({ basePath: __dirname });
+const config = getDefaultConfig({ basePath: __dirname }) as UserConfig;
 
 export default defineConfig((env) => ({
 	...config,
-	base: env.command === "build" ? "/coexya/burgers" : undefined,
+	server: {
+		...config.server,
+		proxy: {
+			"/api": {
+				target: "https://localhost:16000",
+				changeOrigin: true,
+				secure: false,
+			},
+			"/ws": {
+				target: "https://localhost:16000",
+				changeOrigin: true,
+				secure: false,
+				ws: true,
+			},
+		},
+	},
 }));

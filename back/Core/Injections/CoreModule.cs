@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
+using SousMarinJaune.Api.Core.Assemblers;
+using SousMarinJaune.Api.Core.Services;
 
 namespace SousMarinJaune.Api.Core.Injections;
 
@@ -8,11 +10,9 @@ public class CoreModule : IDotnetModule
 {
 	public void Load(IServiceCollection services, IConfiguration configuration)
 	{
-		var nsp = typeof(CoreModule).Namespace!;
-		var baseNamespace = nsp[..nsp.LastIndexOf(".", StringComparison.Ordinal)];
 		services.Scan(scan => scan
 			.FromAssemblyOf<CoreModule>()
-			.AddClasses(classes => classes.InNamespaces(baseNamespace + ".Services"))
+			.AddClasses(classes => classes.InNamespaceOf<BurgerService>(), false)
 			.AsImplementedInterfaces()
 			// We need Transient to be able to call Hubs
 			.WithTransientLifetime()
@@ -20,7 +20,7 @@ public class CoreModule : IDotnetModule
 
 		services.Scan(scan => scan
 			.FromAssemblyOf<CoreModule>()
-			.AddClasses(classes => classes.InNamespaces(baseNamespace + ".Assemblers"))
+			.AddClasses(classes => classes.InNamespaceOf<OrderAssembler>(), false)
 			.AsSelf()
 			.WithSingletonLifetime());
 	}

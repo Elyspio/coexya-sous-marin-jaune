@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
 using SousMarinJaune.Api.Abstractions.Models;
 using SousMarinJaune.Api.Abstractions.Transports.Config;

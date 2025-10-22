@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Memory;
 using SousMarinJaune.Api.Abstractions.Transports;
 using System.Web;
 
-namespace SousMarinJaune.Api.Adapters.Custom;
+namespace SousMarinJaune.Api.ExternalApi.Custom;
 
 public class BurgerAdapter
 {
@@ -24,28 +24,27 @@ public class BurgerAdapter
 
 		var doc = await GetDocument();
 		var mainNodes = doc.DocumentNode.Descendants()
-			.Where(node => node.HasClass("single-menu-details"))
-			.Select(node => node.ChildNodes.First(n => n.HasClass("food-menu-details")))
+			.Where(node => node.HasClass("elementor-image-box-content"))
 			.ToList();
 
 		burgers = mainNodes.Select(main =>
 		{
-			var children = main.ChildNodes.Where(node => node.Name == "h3" || node.Name == "p").ToList();
+			var children = main.ChildNodes.Where(node => node.Name is "h3" or "p").ToList();
 
 			// Get burger label
-			var name = children[0].InnerText!;
+            var name = children.Find(n => n.Name == "h3")!;
 
 			// Get burger ingredients
-			var allIngredients = children.Skip(1).Aggregate("", (current, ingredientList) => current + "-" + ingredientList.InnerText);
+			var allIngredients = children.Except([name]).Aggregate("", (current, ingredientList) => current + "-" + ingredientList.InnerText);
 
 
 			return new Burger
 			{
-				Name = HttpUtility.HtmlDecode(name).Trim(),
+				Name = HttpUtility.HtmlDecode(name.InnerText).Trim(),
 				Ingredients = HttpUtility.HtmlDecode(allIngredients)
 					.Split('-', '–', '–')
 					.Select(i => i.Trim())
-					.Where(i => i.Any())
+					.Where(i => i.Length > 0)
 					.ToList()
 			};
 		}).ToList();
@@ -57,7 +56,7 @@ public class BurgerAdapter
 
 	private async Task<HtmlDocument> GetDocument()
 	{
-		var response = await _client.GetAsync("https://www.le-sous-marin-jaune.fr/page-nos-burgers");
+		var response = await _client.GetAsync("https://sousmarinjaune.fr/carte-le-sous-marin-jaune/");
 
 		var doc = new HtmlDocument();
 

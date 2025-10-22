@@ -12,7 +12,7 @@ using System.Collections.Concurrent;
 
 namespace SousMarinJaune.Api.Core.Services;
 
-public class UserService : IUserService
+internal class UserService : IUserService
 {
 	private readonly IHubContext<UpdateHub, IUpdateHub> _hubContext;
 	private readonly ILogger<UserService> _logger;
@@ -29,7 +29,7 @@ public class UserService : IUserService
 
 	public async Task MergeUsers(string newName, List<string> users)
 	{
-		var logger = _logger.Enter($"{Log.Format(newName)} {Log.Format(users)}");
+		using var logger = _logger.Enter($"{Log.Format(newName)} {Log.Format(users)}");
 
 		var entities = await _orderRepository.MergeUsers(newName, users);
 
@@ -37,12 +37,11 @@ public class UserService : IUserService
 
 		await Task.WhenAll(orders.Select(_hubContext.Clients.All.OrderUpdated));
 
-		logger.Exit();
 	}
 
 	public async Task<List<UserSold>> GetUsers()
 	{
-		var logger = _logger.Enter();
+		using var logger = _logger.Enter();
 
 		var orders = await _orderRepository.GetAll();
 		var grouped = orders.GroupBy(order => order.User).ToDictionary(pair => pair.Key, pair => pair.ToList());
@@ -59,14 +58,13 @@ public class UserService : IUserService
 			});
 		});
 
-		logger.Exit();
 
 		return users.ToList();
 	}
 
 	public async Task SoldUser(string user)
 	{
-		var logger = _logger.Enter(Log.Format(user));
+		using var logger = _logger.Enter(Log.Format(user));
 
 		var orders = await _orderRepository.GetForUser(user);
 		var prices = orders.Where(order => order.PaymentEnabled).Sum(order => order.Price);
@@ -87,16 +85,14 @@ public class UserService : IUserService
 			await _orderRepository.Update(lastOrder);
 		}
 
-		logger.Exit();
 	}
 
 	public async Task SoldAllUsers()
 	{
-		var logger = _logger.Enter();
+		using var logger = _logger.Enter();
 
 		var users = (await _orderRepository.GetAll()).Select(order => order.User).Distinct();
 		await Task.WhenAll(users.Select(SoldUser));
 
-		logger.Exit();
 	}
 }

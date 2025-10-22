@@ -6,13 +6,13 @@ import { ConfigBase } from "@apis/backend/generated";
 @injectable()
 export class ConfigService extends BaseService {
 	@inject(BackendApi)
-	private backendApiClient!: BackendApi;
+	private readonly backendApiClient!: BackendApi;
 
 	public update(config: ConfigBase) {
-		return this.backendApiClient.config.update(config);
+		return this.backendApiClient.config.v1_Config_Update(config);
 	}
 
 	public get() {
-		return this.backendApiClient.config.get();
+		return this.backendApiClient.config.v1_Config_Get();
 	}
 }

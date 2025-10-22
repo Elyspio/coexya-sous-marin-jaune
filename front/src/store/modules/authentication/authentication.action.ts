@@ -1,5 +1,5 @@
 import { createActionGenerator } from "../../utils/utils.actions";
-import { User } from "@apis/authentication/generated";
+import type {User} from "oidc-client-ts";
 
 const createAction = createActionGenerator("authentication");
 

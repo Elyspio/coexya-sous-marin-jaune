@@ -1,0 +1,8 @@
+services:
+  sous-marin-jaune:
+    image: elyspio/coexya-sous-marin-jaune:latest
+    build:
+      context: ../..
+      dockerfile: deploy/build/dockerfile
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}

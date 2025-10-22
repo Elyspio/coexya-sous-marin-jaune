@@ -1,4 +1,7 @@
-﻿using SousMarinJaune.Api.Sockets.Hubs;
+﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using SousMarinJaune.Api.Sockets.Hubs;
+using SousMarinJaune.Api.Web.Technical.Extensions;
 
 namespace SousMarinJaune.Api.Web.Server;
 
@@ -6,25 +9,16 @@ public static class ApplicationServer
 {
 	public static WebApplication Initialize(this WebApplication application)
 	{
-		// Allow CORS
-		if(application.Environment.IsDevelopment()) application.UseCors();
-
 		application.UseResponseCompression();
 		application.UseResponseCaching();
 		
-		application.UseOpenApi();
-		application.UseSwaggerUi3();
-
-		// Start Dependency Injection
-		application.UseAdvancedDependencyInjection();
+		application.UseSwaggerWithVersioning();
 
 		// Setup Controllers
 		application.MapControllers();
 
-		application.UseAuthentication();
 
-		application.MapHub<UpdateHub>("/ws/update");
-
+        application.MapHub<UpdateHub>("/ws/update").AllowAnonymous();
 
 		// Start SPA serving
 		if (application.Environment.IsProduction())
@@ -44,9 +38,18 @@ public static class ApplicationServer
 
 			application.UseStaticFiles();
 
-			application.UseEndpoints(endpoints => { endpoints.MapFallbackToFile("/index.html"); });
+			application.MapFallbackToFile("/index.html").AllowAnonymous();
 		}
 
+		application.MapHealthChecks("/health", new HealthCheckOptions
+		{
+			Predicate = _ => true,
+			ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+		}).AllowAnonymous();
+		
+		application.UseAuthentication();
+		application.UseAuthorization();
+		
 		return application;
 	}
 }

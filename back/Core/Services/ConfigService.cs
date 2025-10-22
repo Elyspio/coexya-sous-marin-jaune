@@ -32,29 +32,26 @@ public class ConfigService : IConfigService
 
 	public async Task<Config> Update(ConfigBase config)
 	{
-		var logger = _logger.Enter(Log.Format(config));
+		using var logger = _logger.Enter(Log.Format(config));
 
 		var entity = await _configRepository.Update(config);
 
 		var data = entity.Adapt<Config>();
 		await _hubContext.Clients.All.ConfigUpdated(data);
 
-		logger.Exit();
 
 		return data;
 	}
 
 	public async Task<Config> Get()
 	{
-		var logger = _logger.Enter();
+		using var logger = _logger.Enter();
 
 		var entity = await _configRepository.Get();
 
 		var data = entity == default
 			? await Update(DefaultConfig)
 			: entity.Adapt<Config>();
-
-		logger.Exit();
 
 		return data;
 	}

@@ -9,7 +9,7 @@ import { CssBaseline } from "@mui/material";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { themes } from "./config/theme";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import { Provider as DiProvider } from "inversify-react";
 import { container } from "@/core/di";
 import { DateProvider } from "@hooks/utils/useTime";

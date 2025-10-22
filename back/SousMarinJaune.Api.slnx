@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Api/">
+    <Project Path="Abstractions/SousMarinJaune.Api.Abstractions.csproj" />
+    <Project Path="Core/SousMarinJaune.Api.Core.csproj" />
+    <Project Path="Web/SousMarinJaune.Api.Web.csproj" />
+  </Folder>
+  <Folder Name="/Api/Adapters/">
+    <Project Path="Adapters\SousMarinJaune.Api.ExternalApi.csproj" />
+    <Project Path="Db/SousMarinJaune.Api.Db.csproj" />
+    <Project Path="Sockets/SousMarinJaune.Api.Sockets.csproj" />
+  </Folder>
+  <Folder Name="/Aspire/">
+    <Project Path="SousMarinJaune.Api.ServiceDefaults/SousMarinJaune.Api.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="SousMarinJaune.Api.Tests/SousMarinJaune.Api.Tests.csproj" />
+  </Folder>
+  <Project Path="SousMarinJaune.Api.AppHost/SousMarinJaune.Api.AppHost.csproj" />
+</Solution>

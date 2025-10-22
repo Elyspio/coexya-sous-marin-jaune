@@ -6,25 +6,25 @@ import { Order, OrderPaymentType } from "@apis/backend/generated";
 @injectable()
 export class OrderService extends BaseService {
 	@inject(BackendApi)
-	private backendApiClient!: BackendApi;
+	private readonly backendApiClient!: BackendApi;
 
 	public getAll() {
-		return this.backendApiClient.orders.getAll2();
+		return this.backendApiClient.orders.v1_Order_GetAll();
 	}
 
 	public createOrder(user: Order["user"]) {
-		return this.backendApiClient.orders.create(user);
+		return this.backendApiClient.orders.v1_Order_Create(user);
 	}
 
 	public deleteOrder(id: string) {
-		return this.backendApiClient.orders.delete(id);
+		return this.backendApiClient.orders.v1_Order_Delete(id);
 	}
 
 	public updateOrder(order: Order) {
-		return this.backendApiClient.orders.updateOrder(order.id, order);
+		return this.backendApiClient.orders.v1_Order_UpdateOrder(order.id, order);
 	}
 
 	public updatePaymentReceived(idOrder: string, type: OrderPaymentType, value: number) {
-		return this.backendApiClient.orders.updateOrderPaymentReceived(idOrder, type, value);
+		return this.backendApiClient.orders.v1_Order_UpdateOrderPaymentReceived(idOrder, type, value);
 	}
 }

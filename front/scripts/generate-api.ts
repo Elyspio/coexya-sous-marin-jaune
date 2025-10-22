@@ -1,6 +1,5 @@
-import path from "path";
-import { readFileSync } from "fs";
-import { execSync } from "child_process";
+import * as path from "node:path";
+import { execSync } from "node:child_process";
 
 type NSwagConf = {
 	//  Fichier de configuration nswag
@@ -11,27 +10,16 @@ type NSwagConf = {
 
 function generateFromNswag({ outputFile, file, input }: NSwagConf) {
 	const command = `nswag run ${file} /variables:INPUT_URL=${input},OUTPUT_FILE=${outputFile}`;
-	const {
-		codeGenerators: {
-			openApiToTypeScriptClient: { clientBaseClass, configurationClass },
-		},
-	} = JSON.parse(readFileSync(file).toString());
 
 	console.log(`Executing "${command}"`);
 	execSync(command, { stdio: "inherit" });
 }
 
-if (require.main === module) {
-	console.log("Generating http clients for Api");
-	generateFromNswag({
-		input: "http://localhost:4000/swagger/SousMarinJaune.Api/swagger.json",
-		file: path.resolve(__dirname, "nswag-api-rest.nswag"),
-		outputFile: path.resolve(__dirname, "..", "src", "core", "apis", "backend", "generated.ts"),
-	});
+const __dirname = import.meta.dirname;
 
-	generateFromNswag({
-		input: "http://localhost:4001/swagger/Authentication.Api/swagger.json",
-		file: path.resolve(__dirname, "nswag-api-rest.nswag"),
-		outputFile: path.resolve(__dirname, "..", "src", "core", "apis", "authentication", "generated.ts"),
-	});
-}
+console.log("Generating http clients for Api");
+generateFromNswag({
+	input: "https://localhost:16000/swagger/v1/swagger.json",
+	file: path.resolve(__dirname, "nswag-api-rest.nswag"),
+	outputFile: path.resolve(__dirname, "..", "src", "core", "apis", "backend", "generated.ts"),
+});

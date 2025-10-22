@@ -1,6 +1,6 @@
-﻿using Authentication.Api.Abstractions.Exceptions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using SousMarinJaune.Api.Abstractions.Exceptions;
 
 namespace SousMarinJaune.Api.Web.Filters;
 

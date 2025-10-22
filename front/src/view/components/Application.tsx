@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import "./Application.scss";
 import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
@@ -9,22 +9,20 @@ import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/dra
 import { Box, Container } from "@mui/material";
 import { login, logout } from "@modules/authentication/authentication.async.action";
 import { bindActionCreators } from "redux";
-import { Orders } from "./orders/Orders";
 import { AccountBalance, DarkMode, LightMode, Merge, Message, Settings } from "@mui/icons-material";
 import { toggleModal } from "@modules/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
 import { initApp } from "@modules/workflow/workflow.async.action";
+import { RouterProvider } from "react-router-dom";
+import { router } from "@/view/router/routes"; // selon version
 
 function Application() {
 	const dispatch = useAppDispatch();
 
-	const { theme, themeIcon, logged, loggedUser } = useAppSelector((s) => ({
-		theme: s.theme.current,
-		themeIcon: s.theme.current === "light" ? <DarkMode /> : <LightMode />,
-		logged: s.authentication.logged,
-		loggedUser: s.authentication.user,
-	}));
+	const theme = useAppSelector((s) => s.theme.current);
+	const themeIcon = useMemo(() => (theme === "light" ? <DarkMode /> : <LightMode />), [theme]);
+	const auth = useAppSelector((s) => s.authentication);
 
 	const storeActions = React.useMemo(
 		() =>
@@ -47,18 +45,18 @@ function Application() {
 		}),
 	];
 
-	if (logged) {
+	if (auth.logged) {
 		actions.push(
 			createDrawerAction("Logout", {
 				icon: <Logout fill={"currentColor"} />,
-				onClick: storeActions.logout,
+				onClick: () => storeActions.logout(),
 			})
 		);
 	} else {
 		actions.push(
 			createDrawerAction("Login", {
 				icon: <Login fill={"currentColor"} />,
-				onClick: storeActions.login,
+				onClick: () => storeActions.login(),
 			})
 		);
 	}
@@ -72,7 +70,7 @@ function Application() {
 		})
 	);
 
-	if (loggedUser?.authorizations?.sousMarinJaune?.roles.includes(SousMarinJauneRole.Admin)) {
+	if (auth.permissions?.role == SousMarinJauneRole.Admin) {
 		actions.push(
 			createDrawerDivider("Admin"),
 			createDrawerAction("Merge Users", {
@@ -96,12 +94,10 @@ function Application() {
 
 	const drawer = withDrawer({
 		component: (
-			<>
-				<Container maxWidth={"xl"} className={"Container"}>
-					<Orders />
-				</Container>
+			<Container maxWidth={"xl"} className={"Container"}>
+				<RouterProvider router={router}></RouterProvider>
 				<Modals />
-			</>
+			</Container>
 		),
 		actions,
 		title: "Sous-marin Jaune V2",

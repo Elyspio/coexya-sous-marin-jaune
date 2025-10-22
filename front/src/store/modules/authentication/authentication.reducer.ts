@@ -1,12 +1,10 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { setUserFromToken } from "./authentication.action";
-import { Settings, User } from "@apis/authentication/generated";
-import { logout } from "./authentication.async.action";
+import { finishLogin, logout } from "./authentication.async.action";
+import type { UserPermissions } from "@apis/backend/generated";
 
 export interface AuthenticationState {
 	logged: boolean;
-	user?: User;
-	settings?: Settings;
+	permissions?: UserPermissions;
 }
 
 const defaultState: AuthenticationState = {
@@ -14,13 +12,13 @@ const defaultState: AuthenticationState = {
 };
 
 export const authenticationReducer = createReducer(defaultState, (builder) => {
-	builder.addCase(setUserFromToken, (state, action) => {
+	builder.addCase(finishLogin.fulfilled, (state, action) => {
 		state.logged = true;
-		state.user = action.payload;
+		state.permissions = action.payload.permissions;
 	});
 
 	builder.addCase(logout.fulfilled, (state) => {
 		state.logged = defaultState.logged;
-		state.user = undefined;
+		state.permissions = undefined;
 	});
 });

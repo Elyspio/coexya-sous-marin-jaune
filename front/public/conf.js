@@ -1,4 +1,4 @@
-globalThis.config = {
+window.config = {
 	endpoints: {
 		core: "https://localhost:3000",
 	},
@@ -11,5 +11,8 @@ globalThis.config = {
 		silent_redirect_uri: `${window.location.origin}/auth/callback`,
 		response_type: "code",
 		disablePKCE: false,
+		extraQueryParams: {
+			kc_idp_hint: "google",
+		},
 	},
 };

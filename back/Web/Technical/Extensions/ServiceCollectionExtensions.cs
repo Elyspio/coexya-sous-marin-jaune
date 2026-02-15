@@ -1,8 +1,7 @@
 ﻿using Asp.Versioning;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SousMarinJaune.Api.Abstractions.Configurations;
 using SousMarinJaune.Api.Web.Technical.Swagger.Headers;
-using SousMarinJaune.Api.Web.Technical.Swagger.Nullable;
 using SousMarinJaune.Api.Web.Technical.Versioning.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -13,9 +12,6 @@ namespace SousMarinJaune.Api.Web.Technical.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-
-
-
 	#region Versioning
 
 	/// <summary>
@@ -68,9 +64,6 @@ public static class ServiceCollectionExtensions
 			options.UseAllOfForInheritance();
 			options.UseOneOfForPolymorphism();
 
-			options.ParameterFilter<ImplicitRequiredParameterFilter>();
-			options.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
-
 			options.DescribeAllParametersInCamelCase();
 
 			options.CustomOperationIds(e => $"{e.GroupName!}_{e.ActionDescriptor.RouteValues["controller"]}_{e.ActionDescriptor.RouteValues["action"]}");
@@ -94,7 +87,7 @@ public static class ServiceCollectionExtensions
 	/// <param name="oidcConfiguration"></param>
 	private static void SetupAuthorization(SwaggerGenOptions options, OidcConfiguration oidcConfiguration)
 	{
-		options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+		options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
 		{
 			In = ParameterLocation.Header,
 			Description = "Veuillez entrer JWT valide (sans le BEARER).",
@@ -106,12 +99,12 @@ public static class ServiceCollectionExtensions
 
 
 		options.AddSecurityRequirement(
-			new OpenApiSecurityRequirement
+			doc => new OpenApiSecurityRequirement
 			{
 				{
-					new OpenApiSecurityScheme
+					new OpenApiSecuritySchemeReference("bearer", doc)
 					{
-						Reference = new OpenApiReference
+						Reference = new OpenApiReferenceWithDescription()
 						{
 							Type = ReferenceType.SecurityScheme,
 							Id = "Bearer"
@@ -121,7 +114,6 @@ public static class ServiceCollectionExtensions
 				}
 			}
 		);
-
 	}
 
 	#endregion

@@ -25,15 +25,13 @@ public class ServerBuilder
 	{
 		var builder = WebApplication.CreateBuilder(args);
 
-		builder.Configuration
-			.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-			.AddJsonFile("appsettings.dockerhost.json", optional: true, reloadOnChange: true)
-			.AddEnvironmentVariables();
+		builder.Configuration.AddCommon();
 		
 
 		// Setup Logging
 		builder.Host.UseSerilog((_, lc) => lc
 			.ReadFrom.Configuration(builder.Configuration)
+			.WriteTo.OpenTelemetry()
 		);
 
 		

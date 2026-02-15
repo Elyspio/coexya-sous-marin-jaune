@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace SousMarinJaune.Api.Web.Technical.Swagger.Headers;
@@ -20,10 +20,12 @@ public class ProducesContentTypeFilter : IOperationFilter
 
 		var attribute = textPlainAttributes[0];
 
-		foreach (var resp in operation.Responses)
+		foreach (var resp in operation.Responses ?? [])
 		{
-			resp.Value.Content = resp.Value.Content.Where(c => attribute.ContentTypes.Contains(c.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
-			;
+			if (resp.Value is OpenApiResponse r)
+			{
+				r.Content = resp.Value.Content!.Where(c => attribute.ContentTypes.Contains(c.Key)).ToDictionary(pair => pair.Key, pair => pair.Value);
+			}
 		}
 	}
 }

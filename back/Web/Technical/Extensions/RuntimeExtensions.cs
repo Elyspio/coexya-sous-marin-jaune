@@ -1,5 +1,6 @@
 ﻿
-using Microsoft.OpenApi.Models;
+
+using Microsoft.OpenApi;
 
 namespace SousMarinJaune.Api.Web.Technical.Extensions;
 

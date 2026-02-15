@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports.User;
-using SousMarinJaune.Api.ExternalApi.AuthenticationApi;
 using SousMarinJaune.Api.Web.Controllers.Base;
 using SousMarinJauneRole = SousMarinJaune.Api.Abstractions.Transports.User.Enums.SousMarinJauneRole;
 

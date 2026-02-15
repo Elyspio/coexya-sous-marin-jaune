@@ -7,6 +7,7 @@ namespace SousMarinJaune.Api.ExternalApi.Custom;
 
 public class BurgerAdapter
 {
+	public const string? UrlSousMarinJaune = "https://sousmarinjaune.fr/carte-le-sous-marin-jaune/";
 	private readonly IMemoryCache _cache;
 	private readonly HttpClient _client;
 
@@ -56,7 +57,7 @@ public class BurgerAdapter
 
 	private async Task<HtmlDocument> GetDocument()
 	{
-		var response = await _client.GetAsync("https://sousmarinjaune.fr/carte-le-sous-marin-jaune/");
+		var response = await _client.GetAsync(UrlSousMarinJaune);
 
 		var doc = new HtmlDocument();
 

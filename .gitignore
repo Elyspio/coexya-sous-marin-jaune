@@ -19,3 +19,4 @@ front/dist
 
 # Deploy Prod
 /deploy/prod/config/
+.aspire

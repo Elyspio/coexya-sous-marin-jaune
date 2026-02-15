@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
-using SousMarinJaune.Api.ExternalApi.AuthenticationApi;
 using SousMarinJaune.Api.Web.Controllers.Base;
 
 namespace SousMarinJaune.Api.Web.Controllers.V1;

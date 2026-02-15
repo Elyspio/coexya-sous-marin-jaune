@@ -44,7 +44,7 @@ public static class ApplicationServer
 		application.MapHealthChecks("/health", new HealthCheckOptions
 		{
 			Predicate = _ => true,
-			ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+			ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
 		}).AllowAnonymous();
 		
 		application.UseAuthentication();

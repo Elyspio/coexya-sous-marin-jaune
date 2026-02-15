@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
 using SousMarinJaune.Api.Db.Repositories;
+using SousMarinJaune.Api.Db.Repositories.Internal;
 
 namespace SousMarinJaune.Api.Db.Injections;
 
@@ -15,5 +16,7 @@ public class DatabaseModule : IDotnetModule
 			.AsImplementedInterfaces()
 			.WithSingletonLifetime()
 		);
+		
+		services.AddHealthChecks().AddMongoDb((sp) => new MongoContext(sp.GetRequiredService<IConfiguration>()).MongoDatabase);
 	}
 }

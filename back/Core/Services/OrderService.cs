@@ -43,8 +43,7 @@ internal class OrderService : IOrderService
 		using var logger = _logger.Enter(Log.Format(user));
 
 		var orders = _orderAssembler.Convert(await _orderRepository.GetForUser(user));
-
-
+		
 		return orders;
 	}
 

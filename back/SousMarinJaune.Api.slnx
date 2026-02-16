@@ -10,10 +10,10 @@
     <Project Path="Sockets/SousMarinJaune.Api.Sockets.csproj" />
   </Folder>
   <Folder Name="/Aspire/">
+    <Project Path="SousMarinJaune.Api.AppHost/SousMarinJaune.Api.AppHost.csproj" />
     <Project Path="SousMarinJaune.Api.ServiceDefaults/SousMarinJaune.Api.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="SousMarinJaune.Api.Tests/SousMarinJaune.Api.Tests.csproj" />
+    <Project Path="Tests/SousMarinJaune.Api.Tests/SousMarinJaune.Api.Tests.csproj" />
   </Folder>
-  <Project Path="SousMarinJaune.Api.AppHost/SousMarinJaune.Api.AppHost.csproj" />
 </Solution>

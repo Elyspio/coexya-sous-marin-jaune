@@ -17,7 +17,7 @@ public class UpStreamHealthcheck: IHealthCheck
 	{
 		try
 		{
-			var burgers = await _burgerAdapter.GetBurgers();
+			var burgers = await _burgerAdapter.GetBurgers(cancellationToken);
 			
 			return burgers.Count > 0 ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy("No burgers found");
 		}

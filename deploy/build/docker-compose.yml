@@ -1,6 +1,6 @@
 services:
   sous-marin-jaune:
-    image: elyspio/coexya-sous-marin-jaune:latest
+    image: elyspio/coexya-sous-marin-jaune:2026.02.16.2
     build:
       context: ../..
       dockerfile: deploy/build/dockerfile

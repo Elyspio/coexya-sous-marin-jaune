@@ -21,8 +21,8 @@ public class BurgerController : BaseController
 	[HttpGet]
 	[ProducesResponseType<List<Burger>>(StatusCodes.Status200OK)]
 	[ResponseCache(VaryByHeader = "User-Agent", Duration = 60 * 60)]
-	public async Task<IActionResult> GetAll()
+	public async Task<IActionResult> GetAll(CancellationToken ct)
 	{
-		return Ok(await _burgerService.GetAll());
+		return Ok(await _burgerService.GetAll(ct));
 	}
 }

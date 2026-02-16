@@ -69,8 +69,7 @@ public class ServerBuilder
 				}
 			);
 
-		TypeAdapterConfig.GlobalSettings.ForType<Guid, ObjectId>().MapWith(id => id.AsObjectId());
-		TypeAdapterConfig.GlobalSettings.ForType<ObjectId, Guid>().MapWith(id => id.AsGuid());
+
 
 		builder.AddDefaultHealthChecks();
 		

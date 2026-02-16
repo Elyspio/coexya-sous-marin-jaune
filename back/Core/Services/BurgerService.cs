@@ -18,10 +18,10 @@ internal class BurgerService : IBurgerService
 	}
 
 
-	public async Task<List<Burger>> GetAll()
+	public async Task<List<Burger>> GetAll(CancellationToken ct)
 	{
 		using var logger = _logger.Enter();
 		
-		return await _burgerAdapter.GetBurgers();
+		return await _burgerAdapter.GetBurgers(ct);
 	}
 }

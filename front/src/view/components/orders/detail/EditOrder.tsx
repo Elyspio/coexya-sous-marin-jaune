@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tooltip } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tabs, Tooltip } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "@store";
 import { deleteOrder, updateRemoteOrder } from "@modules/orders/orders.async.action";
 import { isToday } from "../list/CreateOrder";
 import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { PayementOrder } from "./payment/PayementOrder";
 import { EditMenuOrder } from "./EditMenuOrder";
@@ -113,10 +112,10 @@ export function EditOrder() {
 							height: "100%",
 						}}
 					>
-						<TabList onChange={handleChange} variant={"fullWidth"} value={workflow}>
+						<Tabs onChange={handleChange} variant={"fullWidth"} value={workflow}>
 							<Tab label="Contenu" value="menu" />
 							{order.paymentEnabled && <Tab label="Payement" value="payment" />}
-						</TabList>
+						</Tabs>
 					</Box>
 					<Box height={530}>
 						<TabPanel value="menu" sx={{ height: "100%" }}>

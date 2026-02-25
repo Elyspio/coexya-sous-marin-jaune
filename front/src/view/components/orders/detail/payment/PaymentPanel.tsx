@@ -50,10 +50,12 @@ export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: P
 					<Stack direction={"row"} spacing={1} alignItems={"center"} width={"100%"}>
 						<TextField
 							fullWidth
-							inputProps={{
-								step: 0.1,
-								min: 0,
-								max: maxValue,
+							slotProps={{
+								htmlInput: {
+									step: 0.1,
+									min: 0,
+									max: maxValue,
+								},
 							}}
 							label={"Montant"}
 							value={value}

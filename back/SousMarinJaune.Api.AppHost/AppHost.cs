@@ -23,7 +23,8 @@ builder.AddProject<Projects.SousMarinJaune_Api_Web>("api", "local")
 	.WithReference(mongo, "MongoDb");
 
 
-builder.AddNpmApp("front", AppPathHelper.FrontPath)
-	.WithHttpsEndpoint(port: 3000, targetPort: 3000, isProxied: false);
+builder.AddViteApp("front", AppPathHelper.FrontPath)
+	.WithHttpsEndpoint(port: 3000, targetPort: 3000, isProxied: false)
+	.WithPnpm();
 
 builder.Build().Run();

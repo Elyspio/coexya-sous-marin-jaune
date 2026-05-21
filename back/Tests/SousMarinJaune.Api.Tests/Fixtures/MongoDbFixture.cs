@@ -5,8 +5,7 @@ namespace SousMarinJaune.Api.Tests.Fixtures;
 
 public class MongoDbFixture : IAsyncLifetime
 {
-	private readonly MongoDbContainer _container = new MongoDbBuilder()
-		.WithImage("mongo:7.0")
+	private readonly MongoDbContainer _container = new MongoDbBuilder("mongo:7.0")
 		.Build();
 
 	public string ConnectionString => _container.GetConnectionString();

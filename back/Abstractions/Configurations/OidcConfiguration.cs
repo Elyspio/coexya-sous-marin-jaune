@@ -1,9 +1,9 @@
-﻿namespace SousMarinJaune.Api.Abstractions.Configurations;
+namespace SousMarinJaune.Api.Abstractions.Configurations;
 
 /// <summary>
 ///    Configuration pour l'authentification OIDC
 /// </summary>
-public class OidcConfiguration 
+public class OidcConfiguration
 {
 	/// <summary>
 	///    Section de configuration dans les appsettings.json
@@ -16,9 +16,10 @@ public class OidcConfiguration
 	public required string Authority { get; set; }
 
 	/// <summary>
-	///   Audiences valides pour les tokens JWT
+	///  Identifiant du client Keycloak pour cette application. Utilisé pour valider
+	///  la claim <c>azp</c> et pour extraire les rôles client depuis <c>resource_access</c>.
 	/// </summary>
-	public required string[] ValidAudiences { get; set; }
+	public required string ClientId { get; set; }
 
 	/// <summary>
 	///  Émetteur valide pour les tokens JWT
@@ -29,11 +30,6 @@ public class OidcConfiguration
 	/// Valider l'émetteur des tokens JWT
 	/// </summary>
 	public bool ValidateIssuer { get; set; } = true;
-
-	/// <summary>
-	/// Valider l'audience des tokens JWT
-	/// </summary>
-	public bool ValidateAudience { get; set; } = true;
 
 	/// <summary>
 	/// Valider la durée de vie des tokens JWT

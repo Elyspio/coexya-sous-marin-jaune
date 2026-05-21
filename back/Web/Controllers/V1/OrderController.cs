@@ -66,6 +66,7 @@ public class OrderController : BaseController
 
 	[HttpPut("{idOrder:guid}/payment/{type}/received")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> UpdateOrderPaymentReceived(Guid idOrder, OrderPaymentType type, [FromBody] double value)
 	{
 		await _orderService.UpdateOrderPaymentReceived(idOrder, type, value);

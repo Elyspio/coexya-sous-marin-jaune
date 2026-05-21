@@ -5,8 +5,7 @@ import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
 import "dayjs/locale/fr";
-import { useRole } from "@hooks/permissions/useRole";
-import { SousMarinJauneRole } from "@apis/authentication/generated";
+import { useIsAdmin } from "@hooks/permissions/useIsAdmin";
 import { lastTime } from "@/core/data/orders/orders.utils";
 import { useTime } from "@hooks/utils/useTime";
 import { useClientStore } from "@/core/store/clientStore";
@@ -37,7 +36,7 @@ export function Orders() {
 		[setUserDebounced],
 	);
 
-	const isAdmin = useRole(SousMarinJauneRole.Admin);
+	const isAdmin = useIsAdmin();
 
 	const userBalance = useMemo(() => allUsers.find((u) => u.name === user)?.sold, [allUsers, user]);
 

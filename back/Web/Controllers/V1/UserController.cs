@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports.User;
 using SousMarinJaune.Api.Web.Controllers.Base;
-using SousMarinJauneRole = SousMarinJaune.Api.Abstractions.Transports.User.Enums.SousMarinJauneRole;
 
 namespace SousMarinJaune.Api.Web.Controllers.V1;
 
@@ -25,6 +24,7 @@ public class UserController : BaseController
 	/// <returns></returns>
 	[HttpPatch("{user}/merge")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> MergeUsers(string user, [FromBody] List<string> users)
 	{
 		await _userService.MergeUsers(user, users);
@@ -33,6 +33,7 @@ public class UserController : BaseController
 
 	[HttpPut("{user}/sold")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> SoldUser(string user)
 	{
 		await _userService.SoldUser(user);
@@ -41,6 +42,7 @@ public class UserController : BaseController
 
 	[HttpPatch("sold")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> SoldAllUsers()
 	{
 		await _userService.SoldAllUsers();
@@ -55,13 +57,5 @@ public class UserController : BaseController
 	public async Task<IActionResult> GetUsers()
 	{
 		return Ok(await _userService.GetUsers());
-	}
-
-	[HttpGet("permissions")]
-	[ProducesResponseType<UserPermissions>(StatusCodes.Status200OK)]
-	public async Task<IActionResult> GetUserPermissions()
-	{
-		// Pour le moment on retourne toujours admin
-		return Ok(new UserPermissions { Role = SousMarinJauneRole.Admin });
 	}
 }

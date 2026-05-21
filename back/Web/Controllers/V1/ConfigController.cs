@@ -27,6 +27,7 @@ public class ConfigController : ControllerBase
 
 	[HttpPut]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[Authorize(Roles = "admin")]
 	public async Task<IActionResult> Update(ConfigBase config)
 	{
 		await _configService.Update(config);

@@ -1,51 +1,43 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
-import { updateConfig } from "@modules/config/config.async.action";
-import { Config } from "@apis/backend/generated";
-import { setConfig } from "@modules/config/config.actions";
+import type { Config } from "@apis/backend/generated";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
 import { useMounted } from "@hooks/utils/useMounted";
+import { useOrders } from "@/core/data/orders/orders.queries";
+import { useConfig } from "@/core/data/config/config.queries";
+import { useUpdateConfig } from "@/core/data/config/config.mutations";
 
 export function UpdateConfig({ setClose, open }: ModalComponentProps) {
-	const { allUsers, config } = useAppSelector((s) => ({
-		allUsers: s.orders.all,
-		config: s.config,
-	}));
+	const orders = useOrders();
+	const remoteConfig = useConfig();
+	const { mutate: updateConfigMutate } = useUpdateConfig();
 
-	const dispatch = useAppDispatch();
+	const users = useMemo(
+		() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)),
+		[orders]
+	);
 
-	const users = useMemo(() => [...new Set(Object.values(allUsers).map((order) => order.user))].sort((o1, o2) => o1.localeCompare(o2)), [allUsers]);
+	const [draft, setDraft] = useState<Config>(remoteConfig as Config);
+	useEffect(() => {
+		setDraft(remoteConfig as Config);
+	}, [remoteConfig]);
 
 	const updateRemote = useCallback(() => {
-		dispatch(updateConfig());
+		updateConfigMutate(draft);
 		setClose();
-	}, [dispatch, setClose]);
+	}, [draft, updateConfigMutate, setClose]);
 
 	const onFieldChanged = useCallback(
 		(field: keyof Config) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			dispatch(
-				setConfig({
-					...config,
-					[field]: e.target.checked,
-				})
-			);
+			setDraft((d) => ({ ...d, [field]: e.target.checked }));
 		},
-		[dispatch, config]
+		[]
 	);
 
-	const onCarrierChanged = useCallback(
-		(_: React.SyntheticEvent, carrier: string | null) => {
-			dispatch(
-				setConfig({
-					...config,
-					carrier: carrier ?? undefined,
-				})
-			);
-		},
-		[dispatch, config]
-	);
+	const onCarrierChanged = useCallback((_: React.SyntheticEvent, carrier: string | null) => {
+		setDraft((d) => ({ ...d, carrier: carrier ?? undefined }));
+	}, []);
 
 	const [mounted, ref] = useMounted();
 
@@ -59,12 +51,12 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 					<Autocomplete
 						onChange={onCarrierChanged}
 						options={users}
-						value={config.carrier}
+						value={draft.carrier ?? null}
 						freeSolo
 						renderInput={(params) => <TextField helperText={"La personne qui va aller chercher la commande"} {...params} label={"Livreur"} />}
 					/>
-					<FormControlLabel label="Restaurant ouvert" control={<Checkbox checked={config.kitchenOpened} onChange={onFieldChanged("kitchenOpened")} />} />
-					<FormControlLabel label="Système de payement" control={<Checkbox checked={config.paymentEnabled} onChange={onFieldChanged("paymentEnabled")} />} />
+					<FormControlLabel label="Restaurant ouvert" control={<Checkbox checked={draft.kitchenOpened} onChange={onFieldChanged("kitchenOpened")} />} />
+					<FormControlLabel label="Système de payement" control={<Checkbox checked={draft.paymentEnabled} onChange={onFieldChanged("paymentEnabled")} />} />
 				</Stack>
 			</DialogContent>
 			<DialogActions>

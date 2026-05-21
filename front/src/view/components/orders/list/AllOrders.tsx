@@ -1,29 +1,25 @@
 import React from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useAppSelector } from "@store";
 import dayjs from "dayjs";
 import { Order } from "@apis/backend/generated";
 import { OrderItem } from "./OrderItem";
 import { groupBy } from "lodash";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import "dayjs/locale/fr";
-import { dateTemplate, isToday, isTodayFormatted } from "@modules/orders/orders.utils";
-import { OrderTime } from "@modules/orders/orders.reducer";
+import { dateTemplate, isToday, isTodayFormatted } from "@/core/data/orders/orders.utils";
+import { OrderTime, useClientStore } from "@/core/store/clientStore";
 import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
+import { useOrders } from "@/core/data/orders/orders.queries";
 
 dayjs.extend(customParseFormat);
 
 export function AllOrders() {
-	const { orders, timeRange } = useAppSelector((s) => {
-		return {
-			orders: s.orders.all,
-			timeRange: s.orders.timeRange,
-		};
-	});
+	const orders = useOrders();
+	const timeRange = useClientStore((s) => s.timeRange);
 
 	const grouped = React.useMemo(() => {
-		const allOrders = Object.values(orders)
+		const allOrders = orders
 			.filter((order) => {
 				switch (timeRange) {
 					case OrderTime.all:
@@ -39,10 +35,9 @@ export function AllOrders() {
 					case OrderTime.today:
 						return isToday(order);
 				}
-				if (timeRange === OrderTime.today) return isToday(order);
 				return null;
 			})
-			.filter(Boolean);
+			.filter(Boolean) as Order[];
 		allOrders.sort((o1, o2) => o1.user.localeCompare(o2.user));
 
 		const smallDate = (order: Order) => dayjs(order.date).format(dateTemplate);

@@ -1,24 +1,18 @@
 import { BurgerRecord } from "@apis/backend/generated";
-import { useAppDispatch } from "@store";
 import React from "react";
 import { Checkbox, FormControlLabel, TextField } from "@mui/material";
 import { debounce } from "@mui/material/utils";
-import { updateBurgerRecord } from "@modules/orders/orders.action";
+import { useOrderEditing } from "@/core/data/orders/orders.editing";
 
 export function OrderOptions({ data }: { data: BurgerRecord }) {
-	const dispatch = useAppDispatch();
+	const { updateBurgerRecord } = useOrderEditing();
 
 	const setComment = React.useMemo(
 		() =>
 			debounce((txt: string) => {
-				dispatch(
-					updateBurgerRecord({
-						...data,
-						comment: txt,
-					})
-				);
+				updateBurgerRecord({ ...data, comment: txt });
 			}, 100),
-		[data, dispatch]
+		[data, updateBurgerRecord]
 	);
 
 	const onCommentChange = React.useCallback(
@@ -30,14 +24,9 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 
 	const updateCheckbox = React.useCallback(
 		(key: keyof Pick<BurgerRecord, "xl" | "vegetarian">) => () => {
-			dispatch(
-				updateBurgerRecord({
-					...data,
-					[key]: !data[key],
-				})
-			);
+			updateBurgerRecord({ ...data, [key]: !data[key] });
 		},
-		[data, dispatch]
+		[data, updateBurgerRecord]
 	);
 
 	return (

@@ -1,66 +1,65 @@
 import React, { useRef } from "react";
 import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, Stack, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
-import { setAlteringRecord, updateBurgerRecord } from "@modules/orders/orders.action";
 import { OrderOptions } from "./OrderOptions";
 import { Burgers } from "../Burgers";
-import { noneBurger } from "@modules/orders/orders.reducer";
-import { deleteCurrentOrderRecord, deleteOrder, updateRemoteOrder } from "@modules/orders/orders.async.action";
+import { noneBurger, useOrderEditing } from "@/core/data/orders/orders.editing";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useBurgers } from "@/core/data/burgers/burgers.queries";
+import { useDeleteOrder, useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 
 /**
  * Add or edit a burger record
- * @constructor
  */
 export function EditBurgerRecord() {
-	const { data, display, burger, creating, orderId } = useAppSelector((s) => {
-		const data = s.orders.all[s.orders.altering!.order].burgers[s.orders.altering!.record!];
-		return {
-			data,
-			burger: s.burgers.all.find((b) => b.name === data?.name),
-			display: s.orders.altering !== undefined,
-			creating: s.orders.mode,
-			orderId: s.orders.altering!.order,
-		};
-	});
+	const alteringOrderId = useClientStore((s) => s.altering?.order);
+	const recordIndex = useClientStore((s) => s.altering?.record);
+	const mode = useClientStore((s) => s.mode);
+	const setAlteringRecord = useClientStore((s) => s.setAlteringRecord);
+	const order = useOrder(alteringOrderId);
+	const burgers = useBurgers();
+	const { updateBurgerRecord, deleteCurrentOrderRecord } = useOrderEditing();
+	const { mutate: deleteOrder } = useDeleteOrder();
+	const updateRemote = useUpdateRemoteOrder();
+
+	const data = order && recordIndex !== undefined ? order.burgers[recordIndex] : undefined;
+	const burger = burgers.find((b) => b.name === data?.name);
+	const display = alteringOrderId !== undefined;
 
 	const unchangedData = useRef(data);
 
-	const dispatch = useAppDispatch();
-
 	const close = React.useCallback(
-		(mode: "success" | "cancel") => () => {
-			// Update or reset record
-			if (mode === "success") {
-				dispatch(updateRemoteOrder());
-			} else {
-				dispatch(updateBurgerRecord(unchangedData.current));
+		(modeChoice: "success" | "cancel") => () => {
+			if (modeChoice === "success") {
+				if (order) updateRemote.mutate(order);
+			} else if (unchangedData.current) {
+				updateBurgerRecord(unchangedData.current);
 			}
-			// Delete remote order or unset altering order
-			if (mode === "cancel") {
-				if (creating.order === "create") {
-					dispatch(deleteOrder(orderId));
-				} else if (creating.record === "create") {
-					dispatch(deleteCurrentOrderRecord());
+
+			if (modeChoice === "cancel") {
+				if (mode.order === "create" && alteringOrderId) {
+					deleteOrder(alteringOrderId);
+				} else if (mode.record === "create") {
+					deleteCurrentOrderRecord();
 				}
 			} else {
-				dispatch(setAlteringRecord());
+				setAlteringRecord(undefined);
 			}
 		},
-		[creating.order, creating.record, dispatch, orderId]
+		[mode.order, mode.record, alteringOrderId, deleteOrder, deleteCurrentOrderRecord, setAlteringRecord, order, updateRemote, updateBurgerRecord]
 	);
 
 	const updateExcluded = React.useCallback(
 		(ingredient: string) => () => {
+			if (!data) return;
 			const included = data.excluded.includes(ingredient);
-			dispatch(
-				updateBurgerRecord({
-					...data,
-					excluded: included ? data.excluded.filter((i) => i !== ingredient) : [...data.excluded, ingredient],
-				})
-			);
+			updateBurgerRecord({
+				...data,
+				excluded: included ? data.excluded.filter((i) => i !== ingredient) : [...data.excluded, ingredient],
+			});
 		},
-		[dispatch, data]
+		[updateBurgerRecord, data]
 	);
 
 	const isSmall = useIsSmallScreen();

@@ -1,4 +1,3 @@
-import { useAppDispatch, useAppSelector } from "@store";
 import React, { useCallback, useMemo } from "react";
 import TabContext from "@mui/lab/TabContext";
 import { Box, Link, MenuItem, type MenuItemProps, Select, Stack, Typography } from "@mui/material";
@@ -9,10 +8,14 @@ import Bank from "@/view/icons/bank.png";
 import Cash from "@/view/icons/cash.png";
 import Wallet from "@/view/icons/wallet.png";
 import Picsou from "@/view/icons/picsou.gif";
-import { updateOrderPayment } from "@modules/orders/orders.action";
 import { PaymentPanel } from "./PaymentPanel";
 import { QRCodeSVG } from "qrcode.react";
 import { Check } from "@mui/icons-material";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useOrderEditing } from "@/core/data/orders/orders.editing";
+import { useUsers } from "@/core/data/users/users.queries";
+import { useAuth } from "@/core/data/auth/AuthContext";
 
 export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",
@@ -37,76 +40,59 @@ function MenuItemWithSelector(props: { label: string; value: OrderPaymentType; m
 }
 
 export function PayementOrder() {
-	const { logged, accountWallet } = useAppSelector((state) => {
-		const orderId = state.orders.altering?.order;
-		const selectedOrder = state.orders.all[orderId!];
-		return {
-			logged: state.authentication.logged,
-			accountWallet: state.users.all.find((user) => user.name === selectedOrder.user)!.sold,
-		};
-	});
+	const { logged } = useAuth();
+	const alteringId = useClientStore((s) => s.altering?.order);
+	const order = useOrder(alteringId);
+	const users = useUsers();
+	const { updateOrderPayment } = useOrderEditing();
 
-	const order = useAppSelector((state) => state.orders.all[state.orders.altering?.order!]);
-
-	const dispatch = useAppDispatch();
+	const accountWallet = useMemo(() => users.find((u) => u.name === order?.user)?.sold ?? 0, [users, order?.user]);
 
 	const [value, setValue] = React.useState(OrderPaymentType.Cash);
 
 	const { palette } = useTheme();
 
-	// region memo
-
 	const remainingToPay = useMemo(() => {
 		if (!order?.price) return 0;
-
 		return order.price - order.payments.reduce((acc, current) => acc + current.amount, 0);
 	}, [order]);
 
-	const remainingToPayStr = useMemo(() => (Number.isNaN(remainingToPay) ? order.price : remainingToPay.toFixed(2)), [remainingToPay, order]);
+	const remainingToPayStr = useMemo(
+		() => (Number.isNaN(remainingToPay) ? order?.price : remainingToPay.toFixed(2)),
+		[remainingToPay, order]
+	);
 
 	const amounts = useMemo(() => {
 		const data: Record<OrderPaymentType, number> = {} as any;
-
+		if (!order) return data;
 		for (const type of Object.values(OrderPaymentType)) {
 			data[type] = order.payments.find((p) => p.type === type)?.amount ?? 0;
 		}
-
 		return data;
-	}, [order.payments]);
-
-	// endregion
-
-	// region callbacks
+	}, [order]);
 
 	const handleChange = useCallback((e: any) => {
-		console.log("handlechange", e.target.value);
 		setValue(e.target.value);
 	}, []);
 
 	const updatePayment = useCallback(
-		(type: OrderPaymentType) => (value: number) => {
-			dispatch(
-				updateOrderPayment({
-					value: value ?? 0,
-					type,
-				})
-			);
+		(type: OrderPaymentType) => (val: number) => {
+			updateOrderPayment(type, val ?? 0);
 		},
-		[dispatch]
+		[updateOrderPayment]
 	);
-	// endregion
 
 	const maxWalletValue = useMemo(() => {
-		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
-
+		if (!order) return 0;
+		const remainingToPayWithWallet = Math.abs(
+			remainingToPay + (order.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0)
+		);
 		return Math.min(accountWallet, remainingToPayWithWallet);
-	}, [remainingToPay, order.payments, accountWallet]);
+	}, [remainingToPay, order, accountWallet]);
 
 	const theme = useTheme();
 
 	if (!order) return null;
-
-	console.log({ amounts });
 
 	return (
 		<Stack spacing={2} mt={1} alignItems={"center"} height={"100%"} minWidth={450}>

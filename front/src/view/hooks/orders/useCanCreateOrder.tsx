@@ -1,12 +1,12 @@
-import { useAppSelector } from "@store";
 import { useTime } from "@hooks/utils/useTime";
 import { useRole } from "@hooks/permissions/useRole";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
 import { useMemo } from "react";
-import { lastTime } from "@modules/orders/orders.utils";
+import { lastTime } from "@/core/data/orders/orders.utils";
+import { useClientStore } from "@/core/store/clientStore";
 
 export function useCanCreateOrder() {
-	const user = useAppSelector((s) => s.orders.name);
+	const user = useClientStore((s) => s.orderName);
 
 	const now = useTime();
 

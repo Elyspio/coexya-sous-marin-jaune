@@ -16,7 +16,6 @@ import {
 	Typography,
 } from "@mui/material";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { useAppSelector } from "@store";
 import { BurgerRecord, Drink, Fries } from "@apis/backend/generated";
 import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
@@ -26,6 +25,7 @@ import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
 import { useMounted } from "@hooks/utils/useMounted";
 import { useOrderDates } from "@hooks/orders/useOrderDates";
+import { useOrders } from "@/core/data/orders/orders.queries";
 
 export const drinkLabels: Record<Drink, string> = {
 	Coca: "Coca",
@@ -48,9 +48,7 @@ while (t < 14 * 3600 + 5) {
 }
 
 export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
-	const { orders } = useAppSelector((s) => ({
-		orders: s.orders.all,
-	}));
+	const orders = useOrders();
 
 	const [header, setHeader] = useState(true);
 
@@ -66,9 +64,10 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const onSelectedDateChanged = useCallback((e: SelectChangeEvent) => setSelectedDay(dayjs(e.target.value)), []);
 
-	// region message
-
-	const todayOrders = useMemo(() => Object.values(orders).filter((order) => selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
+	const todayOrders = useMemo(
+		() => orders.filter((order) => selectedDay && selectedDay.isSame(order.date, "day")),
+		[orders, selectedDay]
+	);
 
 	const getFriteLabel = useCallback((frites: Fries | undefined) => {
 		if (!frites) return "";
@@ -97,8 +96,6 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 		return str;
 	}, []);
 
-	// endregion message
-
 	const textRef = useRef<HTMLDivElement>(null);
 
 	const copy = React.useCallback(async () => {
@@ -113,9 +110,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	if (!mounted && !open) return null;
 
-	const totalPrice = todayOrders.reduce((acc, order) => {
-		return acc + order.price;
-	}, 0);
+	const totalPrice = todayOrders.reduce((acc, order) => acc + (order.price ?? 0), 0);
 	return (
 		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
 			<DialogTitle>
@@ -124,7 +119,13 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 					<FormControl>
 						<InputLabel id="select-date-label">Date</InputLabel>
-						<Select labelId="select-date-label" id="select-date" value={selectedDay.toISOString()} label={"Date"} onChange={onSelectedDateChanged}>
+						<Select
+							labelId="select-date-label"
+							id="select-date"
+							value={selectedDay ? selectedDay.toISOString() : ""}
+							label={"Date"}
+							onChange={onSelectedDateChanged}
+						>
 							{availableDates.map((time) => (
 								<MenuItem value={time.toISOString()} key={time.toISOString()}>
 									{time.format("DD/MM/YYYY")}

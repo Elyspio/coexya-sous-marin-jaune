@@ -1,18 +1,20 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, TextField } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
-import { mergeUsers } from "@modules/users/users.async.action";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
 import { useMounted } from "@hooks/utils/useMounted";
+import { useOrders } from "@/core/data/orders/orders.queries";
+import { useMergeUsers } from "@/core/data/users/users.mutations";
 
 export function MergeUsers({ setClose, open }: ModalComponentProps) {
-	const allUsers = useAppSelector((s) => s.orders.all);
-	const dispatch = useAppDispatch();
-	const users = useMemo(() => [...new Set(Object.values(allUsers).map((order) => order.user))].sort((o1, o2) => o1.localeCompare(o2)), [allUsers]);
+	const orders = useOrders();
+	const merge = useMergeUsers();
+	const users = useMemo(
+		() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)),
+		[orders]
+	);
 
 	const [nextName, setNextName] = useState(users[0] ?? "");
-
 	const [usersToMerge, setUsersToMerge] = useState<string[]>([]);
 
 	const onNextNameChange = useCallback((_: React.SyntheticEvent, name: string | null) => {
@@ -22,22 +24,15 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	const onSelectedUserChange = useCallback(
 		(_: React.SyntheticEvent, names: string[]) => {
 			setUsersToMerge([...names]);
-			if (!nextName) {
-				setNextName(names[0]);
-			}
+			if (!nextName) setNextName(names[0]);
 		},
 		[nextName]
 	);
 
-	const merge = useCallback(() => {
-		dispatch(
-			mergeUsers({
-				nextName,
-				users: usersToMerge,
-			})
-		);
+	const onMerge = useCallback(() => {
+		merge.mutate({ nextName, users: usersToMerge });
 		setClose();
-	}, [setClose, dispatch, nextName, usersToMerge]);
+	}, [merge, nextName, usersToMerge, setClose]);
 
 	const [mounted, ref] = useMounted();
 
@@ -65,7 +60,7 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 			</DialogContent>
 			<DialogActions>
 				<Box p={1}>
-					<Button variant={"outlined"} color={"success"} onClick={merge}>
+					<Button variant={"outlined"} color={"success"} onClick={onMerge}>
 						Merge
 					</Button>
 				</Box>

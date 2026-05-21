@@ -1,23 +1,34 @@
 import { BurgerRecord } from "@apis/backend/generated";
-import { useAppDispatch } from "@store";
 import React from "react";
-import { deleteOrderRecord, setAlteringRecord } from "@modules/orders/orders.action";
-import { updateRemoteOrder } from "@modules/orders/orders.async.action";
 import { Box, ButtonGroup, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrderEditing } from "@/core/data/orders/orders.editing";
+import { useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
+import { useOrder } from "@/core/data/orders/orders.queries";
 
 export function BurgerItem({ data, index }: { data: BurgerRecord; index: number }) {
-	const dispatch = useAppDispatch();
+	const setAlteringRecord = useClientStore((s) => s.setAlteringRecord);
+	const alteringOrderId = useClientStore((s) => s.altering?.order);
+	const order = useOrder(alteringOrderId);
+	const { deleteOrderRecord } = useOrderEditing();
+	const updateRemote = useUpdateRemoteOrder();
 
 	const edit = React.useCallback(() => {
-		dispatch(setAlteringRecord(index));
-	}, [dispatch, index]);
+		setAlteringRecord(index);
+	}, [setAlteringRecord, index]);
 
 	const del = React.useCallback(() => {
-		dispatch(deleteOrderRecord(index));
-		dispatch(updateRemoteOrder());
-	}, [dispatch, index]);
+		deleteOrderRecord(index);
+		if (order) {
+			const next = {
+				...order,
+				burgers: [...order.burgers.slice(0, index), ...order.burgers.slice(index + 1)],
+			};
+			updateRemote.mutate(next);
+		}
+	}, [deleteOrderRecord, index, order, updateRemote]);
 
 	const exclusion = React.useMemo(() => <>(sans {data.excluded.join(", ")})</>, [data.excluded]);
 
@@ -32,12 +43,7 @@ export function BurgerItem({ data, index }: { data: BurgerRecord; index: number 
 					<Typography noWrap>{exclusion}</Typography>
 				</Tooltip>
 			)}
-			<Box
-				sx={{
-					marginLeft: "auto !important",
-					pl: 2,
-				}}
-			>
+			<Box sx={{ marginLeft: "auto !important", pl: 2 }}>
 				<ButtonGroup variant="outlined">
 					<IconButton onClick={edit}>
 						<EditIcon color={"primary"} />

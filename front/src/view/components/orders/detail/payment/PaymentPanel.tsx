@@ -3,8 +3,9 @@ import TabPanel from "@mui/lab/TabPanel";
 import { Divider, IconButton, Stack, TextField, Tooltip } from "@mui/material";
 import { Clear } from "@mui/icons-material";
 import { OrderPaymentType } from "@apis/backend/generated";
-import { useAppDispatch } from "@store";
-import { updateRemoteOrder } from "@modules/orders/orders.async.action";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 
 type PanelProps = {
 	type: OrderPaymentType;
@@ -17,7 +18,9 @@ type PanelProps = {
 };
 
 export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: PanelProps) {
-	const dispatch = useAppDispatch();
+	const alteringId = useClientStore((s) => s.altering?.order);
+	const order = useOrder(alteringId);
+	const { mutate: updateRemoteOrder } = useUpdateRemoteOrder();
 
 	const handleChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +29,9 @@ export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: P
 		[setValue]
 	);
 
-	const updateRemote = useCallback(() => dispatch(updateRemoteOrder()), [dispatch]);
+	const updateRemote = useCallback(() => {
+		if (order) updateRemoteOrder(order);
+	}, [order, updateRemoteOrder]);
 
 	const stopUse = useCallback(() => {
 		setValue(0);

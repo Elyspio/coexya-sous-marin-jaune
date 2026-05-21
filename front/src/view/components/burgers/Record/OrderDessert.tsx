@@ -1,26 +1,18 @@
 import { Dessert, Order } from "@apis/backend/generated";
-import { useAppDispatch } from "@store";
 import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
-import { updateOrder } from "@modules/orders/orders.action";
-import { updateRemoteOrder } from "@modules/orders/orders.async.action";
+import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 
 const unavailableDesserts: Dessert[] = [Dessert.Brookie];
 
 export function OrderDessert({ data }: { data: Order }) {
-	const dispatch = useAppDispatch();
+	const updateAndSave = useUpdateAndSaveOrder();
 
 	const setOrder = useCallback(
-		(e: React.SyntheticEvent, val: Dessert | null) => {
-			dispatch(
-				updateOrder({
-					...data,
-					dessert: val ?? undefined,
-				})
-			);
-			dispatch(updateRemoteOrder());
+		(_e: React.SyntheticEvent, val: Dessert | null) => {
+			updateAndSave({ ...data, dessert: val ?? undefined });
 		},
-		[data, dispatch]
+		[data, updateAndSave]
 	);
 
 	return (

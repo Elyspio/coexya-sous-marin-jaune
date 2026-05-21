@@ -1,11 +1,10 @@
 import { Order, Sauce } from "@apis/backend/generated";
-import { useAppDispatch } from "@store";
 import React, { useCallback, useMemo } from "react";
 import { Checkbox, Fade, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import { updateOrder } from "@modules/orders/orders.action";
-import { updateOrderSauceQuantity, updateRemoteOrder } from "@modules/orders/orders.async.action";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
+import { useUpdateSauceQuantity } from "@/core/data/orders/orders.mutations";
 
 const defaultSauces = Object.values(Sauce).reduce((acc, current) => {
 	acc[current] = 0;
@@ -13,17 +12,15 @@ const defaultSauces = Object.values(Sauce).reduce((acc, current) => {
 }, {} as Record<Sauce, number>);
 
 export function OrderFries({ data }: { data: Order }) {
-	const dispatch = useAppDispatch();
+	const updateAndSave = useUpdateAndSaveOrder();
+	const { mutate: updateSauceQuantity } = useUpdateSauceQuantity();
 
 	const toggleFries = useCallback(() => {
-		dispatch(
-			updateOrder({
-				...data,
-				fries: data.fries ? undefined : { sauces: [] },
-			})
-		);
-		dispatch(updateRemoteOrder());
-	}, [data, dispatch]);
+		updateAndSave({
+			...data,
+			fries: data.fries ? undefined : { sauces: [] },
+		});
+	}, [data, updateAndSave]);
 
 	const quantityPerSauce = useMemo(() => {
 		return (
@@ -34,17 +31,15 @@ export function OrderFries({ data }: { data: Order }) {
 		);
 	}, [data.fries]);
 
-	const updateSauceQuantity = useCallback(
+	const onSauceQuantityChange = useCallback(
 		(sauce: Sauce) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			dispatch(
-				updateOrderSauceQuantity({
-					idOrder: data.id,
-					quantity: Number.parseInt(e.target.value.toString()),
-					sauce,
-				})
-			);
+			updateSauceQuantity({
+				idOrder: data.id,
+				quantity: Number.parseInt(e.target.value.toString()),
+				sauce,
+			});
 		},
-		[data.id, dispatch]
+		[data.id, updateSauceQuantity]
 	);
 
 	const nbSauces = useMemo(() => data.fries?.sauces.reduce((acc, current) => acc + current.amount, 0) ?? 0, [data.fries?.sauces]);
@@ -60,14 +55,14 @@ export function OrderFries({ data }: { data: Order }) {
 								<Typography color={quantityPerSauce[sauce] > 0 ? "inherit" : "gray"}>{sauce}</Typography>
 								<TextField
 									variant={"standard"}
-									onChange={updateSauceQuantity(sauce)}
+									onChange={onSauceQuantityChange(sauce)}
 									size={"small"}
 									label={"Nombre"}
 									value={quantityPerSauce[sauce] ?? 0}
 									type={"number"}
 									inputProps={{
 										min: 0,
-										max: 2 - nbSauces + quantityPerSauce[sauce] ?? 0,
+										max: (2 - nbSauces + quantityPerSauce[sauce]) ?? 0,
 									}}
 									sx={{
 										width: 60,

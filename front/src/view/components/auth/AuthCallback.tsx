@@ -1,13 +1,15 @@
-import { useEffect } from "react";
-import { useAppDispatch } from "@store";
-import { continueLogin } from "@modules/authentication/authentication.async.action";
+import { useEffect, useRef } from "react";
+import { useAuth } from "@/core/data/auth/AuthContext";
 
 export function AuthCallback() {
-	const dispatch = useAppDispatch();
+	const { continueLogin } = useAuth();
+	const ran = useRef(false);
 
 	useEffect(() => {
-		dispatch(continueLogin());
-	}, []);
+		if (ran.current) return;
+		ran.current = true;
+		void continueLogin();
+	}, [continueLogin]);
 
 	return null;
 }

@@ -1,7 +1,7 @@
 import { getDefaultConfig } from "@elyspio/vite-eslint-config";
-import { defineConfig, type UserConfig } from "vite";
+import { defineConfig } from "vite-plus";
 
-const config = getDefaultConfig({ basePath: import.meta.dirname }) as UserConfig;
+const config = getDefaultConfig({ basePath: import.meta.dirname });
 
 export default defineConfig((env) => ({
 	...config,

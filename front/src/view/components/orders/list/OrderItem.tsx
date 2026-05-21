@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
-import { isToday } from "@/core/data/orders/orders.utils";
+import { calculateOrderPrice, isToday } from "@/core/data/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
 import { useRole } from "@hooks/permissions/useRole";
@@ -64,20 +64,21 @@ export function OrderItem({ data, show }: OrderItemProps) {
 	const isSmall = useIsSmallScreen();
 
 	const walletAmount = useMemo(() => data.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data]);
+	const orderPrice = useMemo(() => calculateOrderPrice(data), [data]);
 
 	const isWaitingPaymentValidation = useMemo(() => {
-		if (!data.paymentEnabled || data.price === undefined) return false;
+		if (!data.paymentEnabled) return false;
 
 		const received = data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0);
-		return received < data.price - walletAmount;
-	}, [data, walletAmount]);
+		return received < orderPrice - walletAmount;
+	}, [data, orderPrice, walletAmount]);
 
 	const isMissingPayment = useMemo(() => {
-		if (!data.paymentEnabled || data.price === undefined) return false;
+		if (!data.paymentEnabled) return false;
 
 		const payments = data.payments.reduce((acc, current) => acc + current.amount, 0);
-		return payments < data.price - walletAmount;
-	}, [data, walletAmount]);
+		return payments < orderPrice - walletAmount;
+	}, [data, orderPrice, walletAmount]);
 
 	return (
 		<Stack direction={isSmall ? "column" : "row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>

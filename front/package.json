@@ -8,9 +8,11 @@
 		"node": ">=22.0.0"
 	},
 	"scripts": {
-		"start": "vp dev",
+		"dev": "vp dev",
 		"build": "tsc && vp build",
 		"docker": "node ../deploy/build/build.js",
+		"lint": "vp lint",
+		"test": "vp test",
 		"refresh-clients": "tsx ./scripts/generate-api.ts",
 		"check:types": "tsc --noEmit --watch --pretty"
 	},
@@ -51,6 +53,7 @@
 		"tsx": "^4.20.6",
 		"typescript": "6.0.3",
 		"vite": "catalog:",
-		"vite-plus": "catalog:"
+		"vite-plus": "catalog:",
+		"vitest": "catalog:"
 	}
 }

@@ -5,8 +5,12 @@ import { Order, OrderPaymentType } from "@apis/backend/generated";
 
 @injectable()
 export class OrderService extends BaseService {
-	@inject(BackendApi)
-	private readonly backendApiClient!: BackendApi;
+	private readonly backendApiClient: BackendApi;
+
+	constructor(@inject(BackendApi) backendApiClient: BackendApi) {
+		super();
+		this.backendApiClient = backendApiClient;
+	}
 
 	public getAll() {
 		return this.backendApiClient.orders.v1_Order_GetAll();

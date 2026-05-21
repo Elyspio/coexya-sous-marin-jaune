@@ -1,9 +1,10 @@
-import { getDefaultConfig } from "@elyspio/vite-eslint-config";
-import { defineConfig } from "vite-plus";
+import {getDefaultConfig} from "@elyspio/vite-eslint-config";
+import {defineConfig} from "vite-plus";
 
 const config = getDefaultConfig({ basePath: import.meta.dirname });
 
-export default defineConfig((env) => ({
+
+export default defineConfig(() => ({
 	...config,
 	server: {
 		...config.server,

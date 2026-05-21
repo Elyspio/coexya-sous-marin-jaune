@@ -4,7 +4,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
 import { PayementOrder } from "./payment/PayementOrder";
 import { EditMenuOrder } from "./EditMenuOrder";
-import { isToday } from "@/core/data/orders/orders.utils";
+import { calculateOrderPrice, isToday } from "@/core/data/orders/orders.utils";
 import { useClientStore } from "@/core/store/clientStore";
 import { useOrder } from "@/core/data/orders/orders.queries";
 import { useDeleteOrder, useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
@@ -48,9 +48,9 @@ export function EditOrder() {
 	}, [workflow, close, order, updateRemote]);
 
 	const remainingToPay = useMemo(() => {
-		if (!order || order.price === undefined) return -1;
+		if (!order) return -1;
 		const amountPaid = order.payments.reduce((acc, current) => acc + current.amount, 0);
-		return order.price - amountPaid;
+		return calculateOrderPrice(order) - amountPaid;
 	}, [order]);
 
 	const validateTooltip = useMemo(() => {
@@ -77,7 +77,7 @@ export function EditOrder() {
 		if (!order) return "";
 		if (workflow === "payment") return "Valider";
 		if (order.paymentEnabled) return "Payer";
-		return `Valider ${order?.price}€`;
+		return `Valider ${calculateOrderPrice(order)}€`;
 	}, [workflow, order]);
 
 	useEffect(() => {

@@ -16,6 +16,7 @@ import { useOrder } from "@/core/data/orders/orders.queries";
 import { useOrderEditing } from "@/core/data/orders/orders.editing";
 import { useUsers } from "@/core/data/users/users.queries";
 import { useAuth } from "@/core/data/auth/AuthContext";
+import { calculateOrderPrice } from "@/core/data/orders/orders.utils";
 
 export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",
@@ -52,14 +53,16 @@ export function PayementOrder() {
 
 	const { palette } = useTheme();
 
+	const orderPrice = useMemo(() => (order ? calculateOrderPrice(order) : 0), [order]);
+
 	const remainingToPay = useMemo(() => {
-		if (!order?.price) return 0;
-		return order.price - order.payments.reduce((acc, current) => acc + current.amount, 0);
-	}, [order]);
+		if (!order) return 0;
+		return orderPrice - order.payments.reduce((acc, current) => acc + current.amount, 0);
+	}, [order, orderPrice]);
 
 	const remainingToPayStr = useMemo(
-		() => (Number.isNaN(remainingToPay) ? order?.price : remainingToPay.toFixed(2)),
-		[remainingToPay, order]
+		() => (Number.isNaN(remainingToPay) ? orderPrice : remainingToPay.toFixed(2)),
+		[remainingToPay, orderPrice]
 	);
 
 	const amounts = useMemo(() => {
@@ -122,7 +125,7 @@ export function PayementOrder() {
 						<PaymentPanel
 							type={OrderPaymentType.Wallet}
 							top={<img src={Wallet} width={120} alt={"Porte-feuille"} />}
-							bottom={<Typography>Argent restant sur votre compte {(accountWallet + (order.price ?? 0) - amounts.Wallet).toFixed(2)}€</Typography>}
+							bottom={<Typography>Argent restant sur votre compte {(accountWallet + orderPrice - amounts.Wallet).toFixed(2)}€</Typography>}
 							value={amounts.Wallet}
 							setValue={updatePayment(OrderPaymentType.Wallet)}
 							maxValue={maxWalletValue}

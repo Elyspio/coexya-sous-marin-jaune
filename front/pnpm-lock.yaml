@@ -124,6 +124,9 @@ importers:
       vite-plus:
         specifier: 'catalog:'
         version: 0.1.21(@types/node@25.9.1)(@voidzero-dev/vite-plus-core@0.1.21(@types/node@25.9.1)(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.3)(typescript@6.0.3))(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.3)(typescript@6.0.3)
+      vitest:
+        specifier: npm:@voidzero-dev/vite-plus-test@0.1.21
+        version: '@voidzero-dev/vite-plus-test@0.1.21(@types/node@25.9.1)(@voidzero-dev/vite-plus-core@0.1.21(@types/node@25.9.1)(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.3)(typescript@6.0.3))(esbuild@0.28.0)(sass@1.99.0)(tsx@4.22.3)(typescript@6.0.3)'
 
 packages:
 

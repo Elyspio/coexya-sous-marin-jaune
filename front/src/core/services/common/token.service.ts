@@ -6,8 +6,12 @@ import { User } from "@apis/authentication/generated";
 
 @injectable()
 export class TokenService extends BaseService {
-	@inject(DiKeysService.localStorage.jwt)
-	private localStorage!: LocalStorageService;
+	private readonly localStorage: LocalStorageService;
+
+	constructor(@inject(DiKeysService.localStorage.jwt) localStorage: LocalStorageService) {
+		super();
+		this.localStorage = localStorage;
+	}
 
 	public parseJwt(token: string): User {
 		const base64Url = token.split(".")[1];

@@ -4,5 +4,3 @@ services:
     build:
       context: ../..
       dockerfile: deploy/build/dockerfile
-      args:
-        - GITHUB_TOKEN=${GITHUB_TOKEN}

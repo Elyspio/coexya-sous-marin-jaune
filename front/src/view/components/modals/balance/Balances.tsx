@@ -27,7 +27,7 @@ import { OrderPaymentType } from "@apis/backend/generated";
 import { useMounted } from "@hooks/utils/useMounted";
 import { useOrderDates } from "@hooks/orders/useOrderDates";
 import { DataGrid, GridColDef, GridRowModel } from "@mui/x-data-grid";
-import { payementTypeLabel } from "../../orders/detail/payment/PayementOrder";
+import { payementTypeLabel } from "../../orders/detail/payment/paymentLabels";
 import { useOrders } from "@/core/data/orders/orders.queries";
 import { useDeleteOrderPayment, useUpdatePaymentReceived } from "@/core/data/orders/orders.mutations";
 import { CalendarMonth, Category, Clear, PriceCheck, TaskAlt } from "@mui/icons-material";
@@ -86,7 +86,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 	const [selectedDate, setSelectedDate] = useState(availableDates[0] ?? null);
 
 	const onSelectedDateChanged = useCallback((_: React.SyntheticEvent, date: Dayjs | null) => {
-		date && setSelectedDate(date);
+		if (date) setSelectedDate(date);
 	}, []);
 
 	// endregion selectedDate
@@ -104,7 +104,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 						rawDate: order.date,
 						user: order.user,
 						idOrder: order.id,
-					}))
+					})),
 			);
 	}, [allOrders, selectedDate]);
 
@@ -119,7 +119,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 					rawDate: order.date,
 					user: order.user,
 					idOrder: order.id,
-				}))
+				})),
 		);
 	}, [allOrders]);
 
@@ -145,7 +145,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				value: value,
 			});
 		},
-		[updatePaymentReceived]
+		[updatePaymentReceived],
 	);
 
 	const onCellEditStop = useCallback(
@@ -153,14 +153,14 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 			updateRemote(row, Number.parseFloat(row.received!.toString()));
 			return row;
 		},
-		[updateRemote]
+		[updateRemote],
 	);
 
 	const fullReceived = useCallback(
 		(row: PendingRow) => () => {
 			updateRemote(row, row.amount);
 		},
-		[updateRemote]
+		[updateRemote],
 	);
 
 	const deletePayement = useCallback(
@@ -186,7 +186,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				});
 			}
 		},
-		[deleteOrderPayement]
+		[deleteOrderPayement],
 	);
 
 	// endregion edit row
@@ -216,7 +216,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				</Stack>
 			),
 		}),
-		[deletePayement, fullReceived]
+		[deletePayement, fullReceived],
 	);
 
 	const columnsByDate = useMemo<GridColDef[]>(
@@ -260,7 +260,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 			},
 			actionsColumn(),
 		],
-		[actionsColumn]
+		[actionsColumn],
 	);
 
 	const columnsByMethod = useMemo<GridColDef[]>(
@@ -303,7 +303,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 			},
 			actionsColumn(),
 		],
-		[actionsColumn]
+		[actionsColumn],
 	);
 
 	const [mounted, ref] = useMounted();
@@ -353,11 +353,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 						<DataGrid getRowId={(row) => `${row.idOrder}-${row.type}`} columns={columnsByDate} rows={rows} autoHeight processRowUpdate={onCellEditStop} />
 					</Stack>
 				) : (
-					<ByMethodView
-						grouped={grouped}
-						columns={columnsByMethod}
-						onCellEditStop={onCellEditStop}
-					/>
+					<ByMethodView grouped={grouped} columns={columnsByMethod} onCellEditStop={onCellEditStop} />
 				)}
 			</DialogContent>
 			<DialogActions>
@@ -427,12 +423,7 @@ function ByMethodView({
 									borderBottom: `1px solid ${theme.palette.divider}`,
 								}}
 							>
-								<Badge
-									badgeContent={list.length}
-									color={"primary"}
-									overlap={"circular"}
-									anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-								>
+								<Badge badgeContent={list.length} color={"primary"} overlap={"circular"} anchorOrigin={{ vertical: "bottom", horizontal: "right" }}>
 									<Avatar
 										src={iconSrc}
 										variant={"rounded"}
@@ -458,22 +449,9 @@ function ByMethodView({
 								</Stack>
 
 								<Stack direction={"row"} spacing={1} alignItems={"center"}>
-									<Chip
-										size={"small"}
-										variant={"outlined"}
-										label={`Dû ${totalDue.toFixed(2)} €`}
-									/>
-									<Chip
-										size={"small"}
-										variant={"outlined"}
-										color={"success"}
-										label={`Reçu ${totalReceived.toFixed(2)} €`}
-									/>
-									<Chip
-										size={"small"}
-										color={remaining > 0 ? "warning" : "success"}
-										label={`Reste ${remaining.toFixed(2)} €`}
-									/>
+									<Chip size={"small"} variant={"outlined"} label={`Dû ${totalDue.toFixed(2)} €`} />
+									<Chip size={"small"} variant={"outlined"} color={"success"} label={`Reçu ${totalReceived.toFixed(2)} €`} />
+									<Chip size={"small"} color={remaining > 0 ? "warning" : "success"} label={`Reste ${remaining.toFixed(2)} €`} />
 								</Stack>
 							</Stack>
 

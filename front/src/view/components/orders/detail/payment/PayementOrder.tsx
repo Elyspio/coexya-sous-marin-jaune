@@ -17,16 +17,7 @@ import { useOrderEditing } from "@/core/data/orders/orders.editing";
 import { useUsers } from "@/core/data/users/users.queries";
 import { useAuth } from "@/core/data/auth/AuthContext";
 import { calculateOrderPrice } from "@/core/data/orders/orders.utils";
-
-export const payementTypeLabel: Record<OrderPaymentType, string> = {
-	[OrderPaymentType.BankTransfer]: "Virement",
-	[OrderPaymentType.Cash]: "Liquide",
-	[OrderPaymentType.Paypal]: "PayPal",
-	[OrderPaymentType.LunchVoucher]: "Cartes restaurant",
-	[OrderPaymentType.Admin]: "Admin",
-	[OrderPaymentType.Wallet]: "Solde",
-	[OrderPaymentType.Wero]: "Wero",
-};
+import { payementTypeLabel } from "./paymentLabels";
 
 function MenuItemWithSelector(props: { label: string; value: OrderPaymentType; mark: boolean } & MenuItemProps) {
 	const { label, value, mark, ...other } = props;
@@ -60,10 +51,7 @@ export function PayementOrder() {
 		return orderPrice - order.payments.reduce((acc, current) => acc + current.amount, 0);
 	}, [order, orderPrice]);
 
-	const remainingToPayStr = useMemo(
-		() => (Number.isNaN(remainingToPay) ? orderPrice : remainingToPay.toFixed(2)),
-		[remainingToPay, orderPrice]
-	);
+	const remainingToPayStr = useMemo(() => (Number.isNaN(remainingToPay) ? orderPrice : remainingToPay.toFixed(2)), [remainingToPay, orderPrice]);
 
 	const amounts = useMemo(() => {
 		const data: Record<OrderPaymentType, number> = {} as any;
@@ -82,14 +70,12 @@ export function PayementOrder() {
 		(type: OrderPaymentType) => (val: number) => {
 			updateOrderPayment(type, val ?? 0);
 		},
-		[updateOrderPayment]
+		[updateOrderPayment],
 	);
 
 	const maxWalletValue = useMemo(() => {
 		if (!order) return 0;
-		const remainingToPayWithWallet = Math.abs(
-			remainingToPay + (order.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0)
-		);
+		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
 		return Math.min(accountWallet, remainingToPayWithWallet);
 	}, [remainingToPay, order, accountWallet]);
 

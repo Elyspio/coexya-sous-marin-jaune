@@ -1,11 +1,18 @@
-import {getDefaultConfig} from "@elyspio/vite-eslint-config";
-import {defineConfig} from "vite-plus";
+import { getDefaultConfig } from "@elyspio/vite-eslint-config";
+import { defineConfig } from "vite-plus";
 
 const config = getDefaultConfig({ basePath: import.meta.dirname });
 
-
-export default defineConfig(() => ({
+export default defineConfig({
 	...config,
+	fmt: {
+		...config.fmt,
+		ignorePatterns: [...config.fmt.ignorePatterns, "**/generated/**", "**/generated.ts", "public/**"],
+	},
+	lint: {
+		...config.lint,
+		ignorePatterns: [...config.lint.ignorePatterns, "**/generated/**", "**/generated.ts", "public/**"],
+	},
 	server: {
 		...config.server,
 		proxy: {
@@ -22,4 +29,4 @@ export default defineConfig(() => ({
 			},
 		},
 	},
-}));
+});

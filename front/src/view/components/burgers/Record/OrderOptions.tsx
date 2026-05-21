@@ -12,21 +12,21 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 			debounce((txt: string) => {
 				updateBurgerRecord({ ...data, comment: txt });
 			}, 100),
-		[data, updateBurgerRecord]
+		[data, updateBurgerRecord],
 	);
 
 	const onCommentChange = React.useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			setComment(e.target.value);
 		},
-		[setComment]
+		[setComment],
 	);
 
 	const updateCheckbox = React.useCallback(
 		(key: keyof Pick<BurgerRecord, "xl" | "vegetarian">) => () => {
 			updateBurgerRecord({ ...data, [key]: !data[key] });
 		},
-		[data, updateBurgerRecord]
+		[data, updateBurgerRecord],
 	);
 
 	return (

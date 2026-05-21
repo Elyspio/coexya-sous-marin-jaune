@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField } from "@mui/material";
 import type { Config } from "@apis/backend/generated";
 import { Transition } from "./common/Transition";
@@ -13,10 +13,7 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const remoteConfig = useConfig();
 	const { mutate: updateConfigMutate } = useUpdateConfig();
 
-	const users = useMemo(
-		() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)),
-		[orders]
-	);
+	const users = useMemo(() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)), [orders]);
 
 	const [draft, setDraft] = useState<Config>(remoteConfig as Config);
 	useEffect(() => {
@@ -32,7 +29,7 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 		(field: keyof Config) => (e: React.ChangeEvent<HTMLInputElement>) => {
 			setDraft((d) => ({ ...d, [field]: e.target.checked }));
 		},
-		[]
+		[],
 	);
 
 	const onCarrierChanged = useCallback((_: React.SyntheticEvent, carrier: string | null) => {

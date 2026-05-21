@@ -26,7 +26,7 @@ export function PaymentPanel({ type, top, bottom, value, setValue, maxValue }: P
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			setValue(Number.parseFloat(e.target.value));
 		},
-		[setValue]
+		[setValue],
 	);
 
 	const updateRemote = useCallback(() => {

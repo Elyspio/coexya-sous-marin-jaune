@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { lazy, Suspense, useCallback, useEffect, useMemo } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tabs, Tooltip } from "@mui/material";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
-import { PayementOrder } from "./payment/PayementOrder";
 import { EditMenuOrder } from "./EditMenuOrder";
 import { calculateOrderPrice, isToday } from "@/core/data/orders/orders.utils";
 import { useClientStore } from "@/core/store/clientStore";
@@ -10,6 +9,8 @@ import { useOrder } from "@/core/data/orders/orders.queries";
 import { useDeleteOrder, useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 
 type Workflow = "menu" | "payment";
+
+const PayementOrder = lazy(() => import("./payment/PayementOrder").then((module) => ({ default: module.PayementOrder })));
 
 export function EditOrder() {
 	const alteringId = useClientStore((s) => s.altering?.order);
@@ -102,7 +103,9 @@ export function EditOrder() {
 							<EditMenuOrder />
 						</TabPanel>
 						<TabPanel value="payment" sx={{ height: "100%" }}>
-							<PayementOrder />
+							<Suspense fallback={null}>
+								<PayementOrder />
+							</Suspense>
 						</TabPanel>
 					</Box>
 				</TabContext>

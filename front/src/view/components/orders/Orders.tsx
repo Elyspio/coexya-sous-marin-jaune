@@ -27,14 +27,14 @@ export function Orders() {
 				const usr = str ? str[0].toUpperCase() + str.slice(1) : undefined;
 				setOrderName(usr);
 			}, 50),
-		[setOrderName]
+		[setOrderName],
 	);
 
 	const onChange = React.useCallback(
 		(_: React.SyntheticEvent, str: string) => {
 			return setUserDebounced(str);
 		},
-		[setUserDebounced]
+		[setUserDebounced],
 	);
 
 	const isAdmin = useRole(SousMarinJauneRole.Admin);

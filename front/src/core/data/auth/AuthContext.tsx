@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				qc.setQueryData(["auth", "permissions"], undefined);
 			}
 		},
-		[qc]
+		[qc],
 	);
 
 	const login = useCallback(async () => {
@@ -95,7 +95,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			continueLogin,
 			silentLogin,
 		}),
-		[user, logged, permissionsQuery.data, login, logout, continueLogin, silentLogin]
+		[user, logged, permissionsQuery.data, login, logout, continueLogin, silentLogin],
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

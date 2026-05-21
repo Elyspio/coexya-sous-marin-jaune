@@ -115,8 +115,8 @@ export const useClientStore = create<ClientState>()(
 						? {
 								altering: { ...s.altering, record },
 								mode: { ...s.mode, record: record === undefined ? undefined : "update" },
-						  }
-						: s
+							}
+						: s,
 				),
 			setOrderMode: (mode) => set((s) => ({ mode: { ...s.mode, ...mode } })),
 			resetOrderMode: () => set({ mode: {} }),
@@ -129,7 +129,7 @@ export const useClientStore = create<ClientState>()(
 					theme: state.theme,
 					orderName: state.orderName,
 					timeRange: state.timeRange,
-				} as PersistedState),
-		}
-	)
+				}) as PersistedState,
+		},
+	),
 );

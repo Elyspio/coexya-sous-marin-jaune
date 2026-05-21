@@ -1,14 +1,16 @@
 import * as React from "react";
+import { lazy, Suspense } from "react";
 import { useCallback, useMemo } from "react";
-import { MergeUsers } from "./MergeUsers";
-import { EditOrder } from "../orders/detail/EditOrder";
-import { OrderMessageModal } from "./OrderMessageModal";
-import { Balances } from "./balance/Balances";
-import { UpdateConfig } from "./UpdateConfig";
-import { DeleteOrderModal } from "./DeleteOrderModal";
-import { useClientStore, type ModalType } from "@/core/store/clientStore";
+import { type ModalType, useClientStore } from "@/core/store/clientStore";
 import { useOrders } from "@/core/data/orders/orders.queries";
 import { useAuth } from "@/core/data/auth/AuthContext";
+
+const DeleteOrderModal = lazy(() => import("./DeleteOrderModal").then((module) => ({ default: module.DeleteOrderModal })));
+const EditOrder = lazy(() => import("../orders/detail/EditOrder").then((module) => ({ default: module.EditOrder })));
+const OrderMessageModal = lazy(() => import("./OrderMessageModal").then((module) => ({ default: module.OrderMessageModal })));
+const MergeUsers = lazy(() => import("./MergeUsers").then((module) => ({ default: module.MergeUsers })));
+const Balances = lazy(() => import("./balance/Balances").then((module) => ({ default: module.Balances })));
+const UpdateConfig = lazy(() => import("./UpdateConfig").then((module) => ({ default: module.UpdateConfig })));
 
 export function Modals() {
 	const modals = useClientStore((s) => s.modals);
@@ -23,16 +25,14 @@ export function Modals() {
 
 	return (
 		<>
-			<DeleteOrderModal setClose={closeModal("deleteOrder")} open={modals.deleteOrder} />
-			{selectedOrder && <EditOrder />}
-			{hasOrders && <OrderMessageModal setClose={closeModal("message")} open={modals.message} />}
-			{logged && (
-				<>
-					<MergeUsers setClose={closeModal("mergeUsers")} open={modals.mergeUsers} />
-					<Balances setClose={closeModal("balances")} open={modals.balances} />
-					<UpdateConfig setClose={closeModal("updateConfig")} open={modals.updateConfig} />
-				</>
-			)}
+			<Suspense fallback={null}>
+				{modals.deleteOrder && <DeleteOrderModal setClose={closeModal("deleteOrder")} open />}
+				{selectedOrder && <EditOrder />}
+				{hasOrders && modals.message && <OrderMessageModal setClose={closeModal("message")} open />}
+				{logged && modals.mergeUsers && <MergeUsers setClose={closeModal("mergeUsers")} open />}
+				{logged && modals.balances && <Balances setClose={closeModal("balances")} open />}
+				{logged && modals.updateConfig && <UpdateConfig setClose={closeModal("updateConfig")} open />}
+			</Suspense>
 		</>
 	);
 }

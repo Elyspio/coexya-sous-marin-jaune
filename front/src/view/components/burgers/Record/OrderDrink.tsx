@@ -25,7 +25,7 @@ export function OrderDrink({ data }: { data: Order }) {
 		(_e: React.SyntheticEvent, val: DrinkPair | null) => {
 			updateAndSave({ ...data, drink: val?.key ?? undefined });
 		},
-		[data, updateAndSave]
+		[data, updateAndSave],
 	);
 
 	return (

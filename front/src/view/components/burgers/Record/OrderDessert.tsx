@@ -12,7 +12,7 @@ export function OrderDessert({ data }: { data: Order }) {
 		(_e: React.SyntheticEvent, val: Dessert | null) => {
 			updateAndSave({ ...data, dessert: val ?? undefined });
 		},
-		[data, updateAndSave]
+		[data, updateAndSave],
 	);
 
 	return (

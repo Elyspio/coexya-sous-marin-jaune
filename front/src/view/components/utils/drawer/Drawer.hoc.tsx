@@ -17,9 +17,9 @@ export type WithDrawerProps = {
 function Actions(props: { elements: WithDrawerProps["actions"] }) {
 	return (
 		<Box className={"Actions"}>
-			{props.elements.map((action) => (
-				<ActionComponent key={action.key ?? action.description.children?.toString()} {...action.component}>
-					<ActionDescription children={action.description.children} />
+			{props.elements.map((action, index) => (
+				<ActionComponent key={action.key ?? index} {...action.component}>
+					<ActionDescription>{action.description.children}</ActionDescription>
 				</ActionComponent>
 			))}
 		</Box>

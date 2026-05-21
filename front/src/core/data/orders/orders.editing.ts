@@ -35,7 +35,7 @@ export function useOrderEditing() {
 				return { ...order, burgers };
 			});
 		},
-		[qc]
+		[qc],
 	);
 
 	const setOrderRecordBurger = useCallback(
@@ -48,7 +48,7 @@ export function useOrderEditing() {
 				return { ...order, burgers };
 			});
 		},
-		[qc]
+		[qc],
 	);
 
 	const deleteOrderRecord = useCallback(
@@ -67,7 +67,7 @@ export function useOrderEditing() {
 				});
 			}
 		},
-		[qc]
+		[qc],
 	);
 
 	const deleteCurrentOrderRecord = useCallback(() => {
@@ -85,13 +85,11 @@ export function useOrderEditing() {
 					return { ...order, payments: order.payments.filter((p) => p.type !== type) };
 				}
 				const existing = order.payments.find((p) => p.type === type);
-				const payments = existing
-					? order.payments.map((p) => (p.type === type ? { ...p, amount: value } : p))
-					: [...order.payments, { type, amount: value }];
+				const payments = existing ? order.payments.map((p) => (p.type === type ? { ...p, amount: value } : p)) : [...order.payments, { type, amount: value }];
 				return { ...order, payments };
 			});
 		},
-		[qc]
+		[qc],
 	);
 
 	return {
@@ -116,6 +114,6 @@ export function useUpdateAndSaveOrder() {
 			ordersCache.upsert(qc, order);
 			updateRemote.mutate(order);
 		},
-		[qc, updateRemote]
+		[qc, updateRemote],
 	);
 }

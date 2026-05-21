@@ -1,12 +1,10 @@
 import React, { ReactNode } from "react";
-import { Theme } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import "./Drawer.scss";
 import clsx from "clsx";
@@ -29,7 +27,7 @@ type Props = {
 const drawerWidth = 210;
 const baseWidth = 46;
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
 	drawer: {
 		width: drawerWidth,
 		flexShrink: 0,
@@ -39,7 +37,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 		width: drawerWidth,
 	},
 	drawerClose: {
-
 		overflowX: "hidden",
 		width: baseWidth,
 	},

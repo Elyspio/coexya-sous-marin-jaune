@@ -37,11 +37,7 @@ export function calculateOrderPrice(order: Order): number {
 	return sum;
 }
 
-export function canCreate(
-	orderName: string | undefined,
-	kitchenOpened: boolean,
-	orders: Order[]
-): boolean | "no-name" | "closed" {
+export function canCreate(orderName: string | undefined, kitchenOpened: boolean, orders: Order[]): boolean | "no-name" | "closed" {
 	if (!orderName) return "no-name";
 	if (!kitchenOpened) return "closed";
 	return !orders.filter((order) => order.user === orderName).some(isToday);

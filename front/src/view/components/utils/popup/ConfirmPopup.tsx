@@ -43,7 +43,7 @@ export function ConfirmPopup<T>({ choices, title, content, onSelected, defaultVa
 			onSelected(value);
 			toggle();
 		},
-		[onSelected, toggle]
+		[onSelected, toggle],
 	);
 
 	const cancel = useCallback(() => {
@@ -94,7 +94,7 @@ export async function createConfirmModal<T>(props: Omit<ConfirmPopupProps<T>, "o
 						},
 					]}
 				/>
-			</PopupWrapperStored>
+			</PopupWrapperStored>,
 		);
 	});
 

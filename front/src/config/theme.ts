@@ -1,6 +1,6 @@
+import type { PaletteOptions } from "@mui/material/styles";
 import { createTheme, Theme } from "@mui/material/styles";
 import * as colors from "@mui/material/colors";
-import type { PaletteOptions } from "@mui/material/styles";
 
 function withPalette(palette: PaletteOptions) {
 	return createTheme({

@@ -36,14 +36,14 @@ function Application() {
 			createDrawerAction("Logout", {
 				icon: <Logout fill={"currentColor"} />,
 				onClick: () => void logout(),
-			})
+			}),
 		);
 	} else {
 		actions.push(
 			createDrawerAction("Login", {
 				icon: <Login fill={"currentColor"} />,
 				onClick: () => void login(),
-			})
+			}),
 		);
 	}
 
@@ -51,7 +51,7 @@ function Application() {
 		createDrawerAction("Message", {
 			icon: <Message />,
 			onClick: () => toggleModal("message"),
-		})
+		}),
 	);
 
 	if (permissions?.role === SousMarinJauneRole.Admin) {
@@ -68,7 +68,7 @@ function Application() {
 			createDrawerAction("Config", {
 				icon: <Settings />,
 				onClick: () => toggleModal("updateConfig"),
-			})
+			}),
 		);
 	}
 

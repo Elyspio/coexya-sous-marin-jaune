@@ -3,10 +3,6 @@
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@11.1.3",
-	"engines": {
-		"node": ">=22.0.0"
-	},
 	"scripts": {
 		"dev": "vp dev",
 		"build": "tsc && vp build",
@@ -55,5 +51,9 @@
 		"vite": "catalog:",
 		"vite-plus": "catalog:",
 		"vitest": "catalog:"
-	}
+	},
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"packageManager": "pnpm@11.1.3"
 }

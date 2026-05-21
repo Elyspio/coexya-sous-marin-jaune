@@ -7,6 +7,6 @@ export const Transition = React.forwardRef(
 		props: TransitionProps & {
 			children: React.ReactElement<any, any>;
 		},
-		ref: React.Ref<unknown>
-	) => <Slide direction="left" ref={ref} {...props} />
+		ref: React.Ref<unknown>,
+	) => <Slide direction="left" ref={ref} {...props} />,
 );

@@ -47,7 +47,7 @@ export function EditBurgerRecord() {
 				setAlteringRecord(undefined);
 			}
 		},
-		[mode.order, mode.record, alteringOrderId, deleteOrder, deleteCurrentOrderRecord, setAlteringRecord, order, updateRemote, updateBurgerRecord]
+		[mode.order, mode.record, alteringOrderId, deleteOrder, deleteCurrentOrderRecord, setAlteringRecord, order, updateRemote, updateBurgerRecord],
 	);
 
 	const updateExcluded = React.useCallback(
@@ -59,7 +59,7 @@ export function EditBurgerRecord() {
 				excluded: included ? data.excluded.filter((i) => i !== ingredient) : [...data.excluded, ingredient],
 			});
 		},
-		[updateBurgerRecord, data]
+		[updateBurgerRecord, data],
 	);
 
 	const isSmall = useIsSmallScreen();

@@ -18,19 +18,18 @@ RUN dotnet publish ./Web/SousMarinJaune.Api.Web.csproj --no-restore -c Release -
 
 
 # Building front
-FROM  node:24 AS builder-front
+FROM node:24 AS builder-front
 
 
-ARG GITHUB_TOKEN
-ENV GITHUB_TOKEN=${GITHUB_TOKEN}
+WORKDIR /front
 
 COPY front/package.json /front/
-COPY front/yarn.lock /front/
-COPY front/.npmrc /front/
-RUN cd /front && yarn install --frozen-lockfile
+COPY front/pnpm-lock.yaml /front/
+COPY front/pnpm-workspace.yaml /front/
+RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
 
 COPY front /front/
-RUN cd /front && yarn build
+RUN pnpm build
 
 
 # Running

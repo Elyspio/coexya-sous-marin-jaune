@@ -65,8 +65,7 @@ export type UpdatePaymentReceivedParams = {
 export function useUpdatePaymentReceived() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: ({ idOrder, type, value }: UpdatePaymentReceivedParams) =>
-			service(OrderService).updatePaymentReceived(idOrder, type, value),
+		mutationFn: ({ idOrder, type, value }: UpdatePaymentReceivedParams) => service(OrderService).updatePaymentReceived(idOrder, type, value),
 		onError: (e) => {
 			toast.error(extractApiError(e, "Mise à jour du paiement impossible."));
 		},
@@ -166,6 +165,6 @@ export function useDuplicateOrder() {
 
 			ordersCache.upsert(qc, duplicate);
 		},
-		[createOrder, qc]
+		[createOrder, qc],
 	);
 }

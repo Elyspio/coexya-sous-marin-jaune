@@ -10,7 +10,7 @@ export function OrderStudent({ data }: { data: Order }) {
 		(e: React.ChangeEvent<HTMLInputElement>) => {
 			updateAndSave({ ...data, student: e.target.checked });
 		},
-		[data, updateAndSave]
+		[data, updateAndSave],
 	);
 
 	return (

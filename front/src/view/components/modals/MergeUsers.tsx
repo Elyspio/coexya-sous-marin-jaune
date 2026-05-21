@@ -9,10 +9,7 @@ import { useMergeUsers } from "@/core/data/users/users.mutations";
 export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	const orders = useOrders();
 	const merge = useMergeUsers();
-	const users = useMemo(
-		() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)),
-		[orders]
-	);
+	const users = useMemo(() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)), [orders]);
 
 	const [nextName, setNextName] = useState(users[0] ?? "");
 	const [usersToMerge, setUsersToMerge] = useState<string[]>([]);
@@ -26,7 +23,7 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 			setUsersToMerge([...names]);
 			if (!nextName) setNextName(names[0]);
 		},
-		[nextName]
+		[nextName],
 	);
 
 	const onMerge = useCallback(() => {

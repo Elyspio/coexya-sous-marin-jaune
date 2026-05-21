@@ -6,10 +6,7 @@ export function SelectTimeRangeOrder() {
 	const timeRange = useClientStore((s) => s.timeRange);
 	const setTimeRange = useClientStore((s) => s.setTimeRange);
 
-	const onTimeRangeChange = React.useCallback(
-		(e: SelectChangeEvent<OrderTime>) => setTimeRange(e.target.value as OrderTime),
-		[setTimeRange]
-	);
+	const onTimeRangeChange = React.useCallback((e: SelectChangeEvent<OrderTime>) => setTimeRange(e.target.value as OrderTime), [setTimeRange]);
 
 	return (
 		<FormControl sx={{ maxWidth: 120 }} fullWidth>

@@ -6,10 +6,13 @@ import ListItem from "@mui/material/ListItem";
 import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 import { useUpdateSauceQuantity } from "@/core/data/orders/orders.mutations";
 
-const defaultSauces = Object.values(Sauce).reduce((acc, current) => {
-	acc[current] = 0;
-	return acc;
-}, {} as Record<Sauce, number>);
+const defaultSauces = Object.values(Sauce).reduce(
+	(acc, current) => {
+		acc[current] = 0;
+		return acc;
+	},
+	{} as Record<Sauce, number>,
+);
 
 export function OrderFries({ data }: { data: Order }) {
 	const updateAndSave = useUpdateAndSaveOrder();
@@ -24,10 +27,13 @@ export function OrderFries({ data }: { data: Order }) {
 
 	const quantityPerSauce = useMemo(() => {
 		return (
-			data.fries?.sauces?.reduce((acc, current) => {
-				acc[current.sauce] = current.amount;
-				return acc;
-			}, {} as Record<Sauce, number>) ?? defaultSauces
+			data.fries?.sauces?.reduce(
+				(acc, current) => {
+					acc[current.sauce] = current.amount;
+					return acc;
+				},
+				{} as Record<Sauce, number>,
+			) ?? defaultSauces
 		);
 	}, [data.fries]);
 
@@ -39,7 +45,7 @@ export function OrderFries({ data }: { data: Order }) {
 				sauce,
 			});
 		},
-		[data.id, updateSauceQuantity]
+		[data.id, updateSauceQuantity],
 	);
 
 	const nbSauces = useMemo(() => data.fries?.sauces.reduce((acc, current) => acc + current.amount, 0) ?? 0, [data.fries?.sauces]);

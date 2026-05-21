@@ -64,10 +64,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const onSelectedDateChanged = useCallback((e: SelectChangeEvent) => setSelectedDay(dayjs(e.target.value)), []);
 
-	const todayOrders = useMemo(
-		() => orders.filter((order) => selectedDay && selectedDay.isSame(order.date, "day")),
-		[orders, selectedDay]
-	);
+	const todayOrders = useMemo(() => orders.filter((order) => selectedDay && selectedDay.isSame(order.date, "day")), [orders, selectedDay]);
 
 	const getFriteLabel = useCallback((frites: Fries | undefined) => {
 		if (!frites) return "";
@@ -86,7 +83,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 			if (burger.vegetarian) str += " végétarien";
 			if (burger.xl) str += " XL";
 			if (burger.excluded.length) {
-				str += ` sans ${burger.excluded}`;
+				str += ` sans ${burger.excluded.join(", ")}`;
 			}
 			if (burger.comment) str += ` (${burger.comment})`;
 			str += ", ";
@@ -119,13 +116,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 					<FormControl>
 						<InputLabel id="select-date-label">Date</InputLabel>
-						<Select
-							labelId="select-date-label"
-							id="select-date"
-							value={selectedDay ? selectedDay.toISOString() : ""}
-							label={"Date"}
-							onChange={onSelectedDateChanged}
-						>
+						<Select labelId="select-date-label" id="select-date" value={selectedDay ? selectedDay.toISOString() : ""} label={"Date"} onChange={onSelectedDateChanged}>
 							{availableDates.map((time) => (
 								<MenuItem value={time.toISOString()} key={time.toISOString()}>
 									{time.format("DD/MM/YYYY")}

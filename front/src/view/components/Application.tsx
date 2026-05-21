@@ -7,11 +7,11 @@ import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/dra
 import { Box, Container } from "@mui/material";
 import { AccountBalance, DarkMode, LightMode, Merge, Message, Settings } from "@mui/icons-material";
 import { Modals } from "./modals/Modals";
-import { SousMarinJauneRole } from "@apis/authentication/generated";
 import { RouterProvider } from "react-router-dom";
 import { router } from "@/view/router/routes";
 import { useClientStore } from "@/core/store/clientStore";
 import { useAuth } from "@/core/data/auth/AuthContext";
+import { useIsAdmin } from "@hooks/permissions/useIsAdmin";
 import { useInitApp } from "@/core/data/init/useInitApp";
 
 function Application() {
@@ -20,7 +20,8 @@ function Application() {
 	const toggleModal = useClientStore((s) => s.toggleModal);
 	const themeIcon = useMemo(() => (theme === "light" ? <DarkMode /> : <LightMode />), [theme]);
 
-	const { logged, permissions, login, logout } = useAuth();
+	const { logged, login, logout } = useAuth();
+	const isAdmin = useIsAdmin();
 
 	useInitApp();
 
@@ -54,7 +55,7 @@ function Application() {
 		}),
 	);
 
-	if (permissions?.role === SousMarinJauneRole.Admin) {
+	if (isAdmin) {
 		actions.push(
 			createDrawerDivider("Admin"),
 			createDrawerAction("Merge Users", {

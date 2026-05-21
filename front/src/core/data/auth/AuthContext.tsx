@@ -1,15 +1,11 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { type User, UserManager } from "oidc-client-ts";
 import { service } from "../api/services";
-import { UserService } from "@services/user.service";
 import { TokenService } from "@services/common/token.service";
-import type { UserPermissions } from "@apis/backend/generated";
 
 type AuthState = {
 	user: User | null;
 	logged: boolean;
-	permissions: UserPermissions | undefined;
 	login: () => Promise<void>;
 	logout: () => Promise<void>;
 	continueLogin: () => Promise<void>;
@@ -26,28 +22,12 @@ function applyUser(user: User | null) {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<User | null>(null);
-	const qc = useQueryClient();
 	const logged = !!user && !user.expired;
 
-	const permissionsQuery = useQuery({
-		queryKey: ["auth", "permissions"],
-		queryFn: () => service(UserService).getUserPermissions(),
-		enabled: logged,
-		staleTime: 5 * 60_000,
-	});
-
-	const finish = useCallback(
-		(next: User | null) => {
-			applyUser(next);
-			setUser(next);
-			if (next && !next.expired) {
-				void qc.invalidateQueries({ queryKey: ["auth", "permissions"] });
-			} else {
-				qc.setQueryData(["auth", "permissions"], undefined);
-			}
-		},
-		[qc],
-	);
+	const finish = useCallback((next: User | null) => {
+		applyUser(next);
+		setUser(next);
+	}, []);
 
 	const login = useCallback(async () => {
 		const mgr = service(UserManager);
@@ -89,13 +69,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		() => ({
 			user,
 			logged,
-			permissions: permissionsQuery.data,
 			login,
 			logout,
 			continueLogin,
 			silentLogin,
 		}),
-		[user, logged, permissionsQuery.data, login, logout, continueLogin, silentLogin],
+		[user, logged, login, logout, continueLogin, silentLogin],
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

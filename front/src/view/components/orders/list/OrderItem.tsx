@@ -9,8 +9,7 @@ import ContentCopy from "@mui/icons-material/ContentCopy";
 import { calculateOrderPrice, isToday } from "@/core/data/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
-import { useRole } from "@hooks/permissions/useRole";
-import { SousMarinJauneRole } from "@apis/authentication/generated";
+import { useIsAdmin } from "@hooks/permissions/useIsAdmin";
 import { useCanCreateOrder } from "@hooks/orders/useCanCreateOrder";
 import { useClientStore } from "@/core/store/clientStore";
 import { useDuplicateOrder } from "@/core/data/orders/orders.mutations";
@@ -32,7 +31,7 @@ export function OrderItem({ data, show }: OrderItemProps) {
 	const openModalWithOptions = useClientStore((s) => s.openModalWithOptions);
 	const duplicateOrder = useDuplicateOrder();
 
-	const isAdmin = useRole(SousMarinJauneRole.Admin);
+	const isAdmin = useIsAdmin();
 
 	const canCreate = useCanCreateOrder();
 

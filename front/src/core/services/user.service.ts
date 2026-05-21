@@ -18,8 +18,4 @@ export class UserService extends BaseService {
 	public getAll() {
 		return this.backendApiClient.users.v1_User_GetUsers();
 	}
-
-	async getUserPermissions() {
-		return this.backendApiClient.users.v1_User_GetUserPermissions();
-	}
 }

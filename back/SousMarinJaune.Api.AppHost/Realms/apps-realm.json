@@ -1,0 +1,114 @@
+{
+	"realm": "apps",
+	"enabled": true,
+	"sslRequired": "external",
+	"registrationAllowed": false,
+	"loginWithEmailAllowed": true,
+	"duplicateEmailsAllowed": false,
+	"resetPasswordAllowed": true,
+	"editUsernameAllowed": false,
+	"bruteForceProtected": false,
+	"accessTokenLifespan": 3600,
+	"ssoSessionIdleTimeout": 3600,
+	"ssoSessionMaxLifespan": 36000,
+	"defaultSignatureAlgorithm": "RS256",
+	"roles": {
+		"client": {
+			"sous-marin-jaune": [
+				{
+					"name": "admin",
+					"description": "Admin de Sous Marin Jaune — accès aux opérations admin (merge, sold, config)"
+				},
+				{
+					"name": "user",
+					"description": "Utilisateur authentifié de Sous Marin Jaune"
+				}
+			]
+		}
+	},
+	"clients": [
+		{
+			"clientId": "sous-marin-jaune",
+			"name": "Sous Marin Jaune — SPA (local)",
+			"enabled": true,
+			"protocol": "openid-connect",
+			"publicClient": true,
+			"standardFlowEnabled": true,
+			"directAccessGrantsEnabled": true,
+			"implicitFlowEnabled": false,
+			"serviceAccountsEnabled": false,
+			"rootUrl": "https://localhost:3000",
+			"baseUrl": "https://localhost:3000",
+			"redirectUris": [
+				"https://localhost:3000/*",
+				"http://localhost:3000/*"
+			],
+			"webOrigins": [
+				"+"
+			],
+			"attributes": {
+				"post.logout.redirect.uris": "https://localhost:3000/*##http://localhost:3000/*",
+				"pkce.code.challenge.method": "S256"
+			},
+			"defaultClientScopes": [
+				"web-origins",
+				"acr",
+				"profile",
+				"roles",
+				"basic",
+				"email"
+			],
+			"optionalClientScopes": [
+				"address",
+				"phone",
+				"offline_access",
+				"microprofile-jwt"
+			]
+		}
+	],
+	"users": [
+		{
+			"id": "00000000-0000-4000-8000-0000000000ad",
+			"username": "admin",
+			"enabled": true,
+			"emailVerified": true,
+			"firstName": "Admin",
+			"lastName": "Sous Marin Jaune",
+			"email": "admin@sous-marin-jaune.local",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password",
+					"temporary": false
+				}
+			],
+			"clientRoles": {
+				"sous-marin-jaune": [
+					"admin",
+					"user"
+				]
+			}
+		},
+		{
+			"id": "00000000-0000-4000-8000-0000000000a1",
+			"username": "user",
+			"enabled": true,
+			"emailVerified": true,
+			"firstName": "Utilisateur",
+			"lastName": "Standard",
+			"email": "user@sous-marin-jaune.local",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password",
+					"temporary": false
+				}
+			],
+			"clientRoles": {
+				"sous-marin-jaune": [
+					"user"
+				]
+			}
+		}
+	]
+}

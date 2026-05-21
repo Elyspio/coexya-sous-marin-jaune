@@ -62,7 +62,7 @@ export function OrderFries({ data }: { data: Order }) {
 									type={"number"}
 									inputProps={{
 										min: 0,
-										max: (2 - nbSauces + quantityPerSauce[sauce]) ?? 0,
+										max: 2 - nbSauces + quantityPerSauce[sauce],
 									}}
 									sx={{
 										width: 60,

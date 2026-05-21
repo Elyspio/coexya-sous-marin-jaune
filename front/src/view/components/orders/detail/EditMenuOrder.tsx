@@ -1,42 +1,27 @@
-import { useAppDispatch, useAppSelector } from "@store";
 import React, { useEffect } from "react";
-import { createOrderRecord, setAlteringOrder } from "@modules/orders/orders.action";
-import { deleteOrder } from "@modules/orders/orders.async.action";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { BurgerItem } from "./BurgerItem";
 import { OrderStudent } from "../../burgers/Record/OrderStudent";
 import { OrderFries } from "../../burgers/Record/OrderFries";
 import { OrderDrink } from "../../burgers/Record/OrderDrink";
 import { EditBurgerRecord } from "../../burgers/Record/EditBurgerRecord";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useOrderEditing } from "@/core/data/orders/orders.editing";
 
 export function EditMenuOrder() {
-	const { order, recordIndex, creating } = useAppSelector((state) => {
-		const orderId = state.orders.altering?.order;
-		return {
-			order: state.orders.all[orderId!],
-			recordIndex: state.orders.altering?.record,
-			creating: state.orders.mode.order === "create",
-		};
-	});
-
-	const dispatch = useAppDispatch();
+	const alteringId = useClientStore((s) => s.altering?.order);
+	const recordIndex = useClientStore((s) => s.altering?.record);
+	const order = useOrder(alteringId);
+	const { createOrderRecord } = useOrderEditing();
 
 	const addRecord = React.useCallback(() => {
-		dispatch(createOrderRecord());
-	}, [dispatch]);
-
-	const close = React.useCallback(() => dispatch(setAlteringOrder()), [dispatch]);
-
-	React.useCallback(() => {
-		if (creating) {
-			dispatch(deleteOrder(order.id));
-		}
-		close();
-	}, [creating, close, dispatch, order?.id]);
+		createOrderRecord();
+	}, [createOrderRecord]);
 
 	useEffect(() => {
 		if (order?.burgers.length === 0) addRecord();
-	}, [order, dispatch, addRecord]);
+	}, [order, addRecord]);
 
 	if (!order) return null;
 

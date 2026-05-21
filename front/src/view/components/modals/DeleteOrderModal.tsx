@@ -2,23 +2,21 @@ import React, { useCallback } from "react";
 import { useMounted } from "@hooks/utils/useMounted";
 import { ModalComponentProps } from "./common/ModalProps";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
 import dayjs from "dayjs";
-import { deleteOrder } from "@modules/orders/orders.async.action";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useDeleteOrder } from "@/core/data/orders/orders.mutations";
 
 export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
-	const order = useAppSelector((s) => {
-		const options = s.workflow.options.deleteOrder!;
-		return options ? s.orders.all[options.orderId] : undefined;
-	});
-
-	const dispatch = useAppDispatch();
+	const orderId = useClientStore((s) => s.modalOptions.deleteOrder?.orderId);
+	const order = useOrder(orderId);
+	const { mutate } = useDeleteOrder();
 
 	const deleteOrderFn = useCallback(() => {
 		if (!order) return;
-
-		dispatch(deleteOrder(order.id));
-	}, [dispatch, order]);
+		mutate(order.id);
+		setClose();
+	}, [order, mutate, setClose]);
 
 	const [mounted, ref] = useMounted();
 

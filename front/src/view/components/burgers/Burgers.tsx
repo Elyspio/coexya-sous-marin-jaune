@@ -2,13 +2,11 @@ import { Box, Stack } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
-import { useAppSelector } from "@store";
 import { BurgerItem } from "./Burger";
+import { useBurgers } from "@/core/data/burgers/burgers.queries";
 
 export const Burgers = () => {
-	const { burgers } = useAppSelector((state) => ({
-		burgers: state.burgers.all,
-	}));
+	const burgers = useBurgers();
 
 	const theme = useTheme();
 	const isSmall = useMediaQuery(theme.breakpoints.down("sm"));

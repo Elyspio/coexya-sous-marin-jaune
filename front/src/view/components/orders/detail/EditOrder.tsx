@@ -1,74 +1,63 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tabs, Tooltip } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
-import { deleteOrder, updateRemoteOrder } from "@modules/orders/orders.async.action";
-import { isToday } from "../list/CreateOrder";
 import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
 import { PayementOrder } from "./payment/PayementOrder";
 import { EditMenuOrder } from "./EditMenuOrder";
-import { setAlteringOrder } from "@modules/orders/orders.action";
+import { calculateOrderPrice, isToday } from "@/core/data/orders/orders.utils";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useDeleteOrder, useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 
 type Workflow = "menu" | "payment";
 
 export function EditOrder() {
-	const { order, creating } = useAppSelector((state) => {
-		const orderId = state.orders.altering?.order;
-		return {
-			order: state.orders.all[orderId!],
-			creating: state.orders.mode.order === "create",
-		};
-	});
+	const alteringId = useClientStore((s) => s.altering?.order);
+	const creating = useClientStore((s) => s.mode.order === "create");
+	const setAlteringOrder = useClientStore((s) => s.setAlteringOrder);
+	const order = useOrder(alteringId);
 
 	const [workflow, setWorkflow] = React.useState<Workflow>("menu");
 
-	const dispatch = useAppDispatch();
+	const { mutate: deleteOrder } = useDeleteOrder();
+	const updateRemote = useUpdateRemoteOrder();
 
 	const close = useCallback(() => {
-		dispatch(setAlteringOrder());
-	}, [dispatch]);
+		setAlteringOrder(undefined);
+	}, [setAlteringOrder]);
 
 	const deleteOrderFn = React.useCallback(() => {
-		if (creating) {
-			dispatch(deleteOrder(order.id));
+		if (creating && order) {
+			deleteOrder(order.id);
 		}
 		close();
-	}, [creating, close, dispatch, order?.id]);
+	}, [creating, close, deleteOrder, order]);
 
 	const handleChange = (event: React.SyntheticEvent, newValue: Workflow) => {
 		setWorkflow(newValue);
 	};
 
 	const updateOrderFn = React.useCallback(() => {
-		if (workflow === "menu" && order?.paymentEnabled) {
+		if (!order) return;
+		if (workflow === "menu" && order.paymentEnabled) {
 			setWorkflow("payment");
 		} else {
-			dispatch(updateRemoteOrder());
+			updateRemote.mutate(order);
 			close();
 		}
-	}, [workflow, dispatch, close, order]);
+	}, [workflow, close, order, updateRemote]);
 
 	const remainingToPay = useMemo(() => {
 		if (!order) return -1;
 		const amountPaid = order.payments.reduce((acc, current) => acc + current.amount, 0);
-		return order.price - amountPaid;
+		return calculateOrderPrice(order) - amountPaid;
 	}, [order]);
-
-	useMemo(() => {
-		if (!order) return true;
-		if (order.burgers.length) return true;
-		if (order.student && (!order.fries || !order.drink)) return true;
-		return remainingToPay > 0;
-	}, [order, remainingToPay]);
 
 	const validateTooltip = useMemo(() => {
 		if (!order) return "";
 
 		if (workflow === "menu") {
-			// Burgers
 			if (!order.burgers.length) return "Vous devez prendre au moins un burger";
-
-			// Étudiant
 			if (!order.student) return "";
 			if (!order.fries) return "Vous devez prendre des frites";
 			if (!order.drink) return "Vous devez prendre une boisson";
@@ -86,12 +75,9 @@ export function EditOrder() {
 
 	const validateBtnLabel = useMemo(() => {
 		if (!order) return "";
-
 		if (workflow === "payment") return "Valider";
-
 		if (order.paymentEnabled) return "Payer";
-
-		return `Valider ${order?.price}€`;
+		return `Valider ${calculateOrderPrice(order)}€`;
 	}, [workflow, order]);
 
 	useEffect(() => {
@@ -105,13 +91,7 @@ export function EditOrder() {
 			<DialogTitle>{isToday(order) ? "Création" : "Modification"} de votre commande</DialogTitle>
 			<DialogContent dividers>
 				<TabContext value={workflow}>
-					<Box
-						sx={{
-							borderBottom: 1,
-							borderColor: "divider",
-							height: "100%",
-						}}
-					>
+					<Box sx={{ borderBottom: 1, borderColor: "divider", height: "100%" }}>
 						<Tabs onChange={handleChange} variant={"fullWidth"} value={workflow}>
 							<Tab label="Contenu" value="menu" />
 							{order.paymentEnabled && <Tab label="Payement" value="payment" />}

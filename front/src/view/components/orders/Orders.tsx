@@ -1,35 +1,33 @@
 import React, { useMemo } from "react";
-import { useAppDispatch, useAppSelector } from "@store";
 import { Autocomplete, FormControl, Paper, Stack, TextField, Typography } from "@mui/material";
 import { debounce } from "@mui/material/utils";
-import { setUser } from "@modules/orders/orders.action";
 import { CreateOrder } from "./list/CreateOrder";
 import { AllOrders } from "./list/AllOrders";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
 import "dayjs/locale/fr";
 import { useRole } from "@hooks/permissions/useRole";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
-import { lastTime } from "@modules/orders/orders.utils";
+import { lastTime } from "@/core/data/orders/orders.utils";
 import { useTime } from "@hooks/utils/useTime";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrders } from "@/core/data/orders/orders.queries";
+import { useUsers } from "@/core/data/users/users.queries";
 
 export function Orders() {
-	const { orders, user, allUsers } = useAppSelector((s) => ({
-		user: s.orders.name,
-		orders: s.orders.all,
-		allUsers: s.users.all,
-	}));
+	const orders = useOrders();
+	const allUsers = useUsers();
+	const user = useClientStore((s) => s.orderName);
+	const setOrderName = useClientStore((s) => s.setOrderName);
 
-	const dispatch = useAppDispatch();
-
-	const users = React.useMemo(() => [...new Set(Object.values(orders).map((order) => order.user))].sort(), [orders]);
+	const users = React.useMemo(() => [...new Set(orders.map((order) => order.user))].sort(), [orders]);
 
 	const setUserDebounced = React.useMemo(
 		() =>
 			debounce((str: string | null) => {
 				const usr = str ? str[0].toUpperCase() + str.slice(1) : undefined;
-				return dispatch(setUser(usr));
+				setOrderName(usr);
 			}, 50),
-		[dispatch]
+		[setOrderName]
 	);
 
 	const onChange = React.useCallback(

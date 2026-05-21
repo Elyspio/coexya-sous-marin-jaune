@@ -1,21 +1,19 @@
 import { BurgerRecord, Order, OrderPaymentType } from "@apis/backend/generated";
-import { useAppDispatch, useAppSelector } from "@store";
 import React, { useMemo } from "react";
-import { setAlteringOrder } from "@modules/orders/orders.action";
-import { duplicateOrder } from "@modules/orders/orders.async.action";
 import { Chip, IconButton, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import dayjs from "dayjs";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContentCopy from "@mui/icons-material/ContentCopy";
-import { isToday } from "@modules/orders/orders.utils";
+import { calculateOrderPrice, isToday } from "@/core/data/orders/orders.utils";
 import { Euro } from "@mui/icons-material";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
-import { toggleModalWithOptionsFn } from "@modules/workflow/workflow.action";
 import { useRole } from "@hooks/permissions/useRole";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
 import { useCanCreateOrder } from "@hooks/orders/useCanCreateOrder";
+import { useClientStore } from "@/core/store/clientStore";
+import { useDuplicateOrder } from "@/core/data/orders/orders.mutations";
 
 type OrderItemProps = {
 	data: Order;
@@ -29,27 +27,26 @@ type OrderItemProps = {
 };
 
 export function OrderItem({ data, show }: OrderItemProps) {
-	const { user } = useAppSelector((s) => ({
-		user: s.orders.name,
-	}));
+	const orderName = useClientStore((s) => s.orderName);
+	const setAlteringOrder = useClientStore((s) => s.setAlteringOrder);
+	const openModalWithOptions = useClientStore((s) => s.openModalWithOptions);
+	const duplicateOrder = useDuplicateOrder();
 
 	const isAdmin = useRole(SousMarinJauneRole.Admin);
 
 	const canCreate = useCanCreateOrder();
 
-	const dispatch = useAppDispatch();
-
 	const edit = React.useCallback(() => {
-		dispatch(setAlteringOrder(data.id));
-	}, [data.id, dispatch]);
+		setAlteringOrder(data.id);
+	}, [data.id, setAlteringOrder]);
 
 	const del = React.useCallback(() => {
-		dispatch(toggleModalWithOptionsFn("deleteOrder", { orderId: data.id }));
-	}, [data.id, dispatch]);
+		openModalWithOptions("deleteOrder", { orderId: data.id });
+	}, [data.id, openModalWithOptions]);
 
 	const duplicate = React.useCallback(() => {
-		dispatch(duplicateOrder(data.id));
-	}, [data.id, dispatch]);
+		void duplicateOrder(data.id);
+	}, [data.id, duplicateOrder]);
 
 	const fritesElem = React.useMemo(() => {
 		if (!data.fries) return null;
@@ -62,25 +59,26 @@ export function OrderItem({ data, show }: OrderItemProps) {
 
 	const { palette } = useTheme();
 
-	const isSelf = useMemo(() => data.user === user, [data.user, user]);
+	const isSelf = useMemo(() => data.user === orderName, [data.user, orderName]);
 
 	const isSmall = useIsSmallScreen();
 
 	const walletAmount = useMemo(() => data.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0, [data]);
+	const orderPrice = useMemo(() => calculateOrderPrice(data), [data]);
 
 	const isWaitingPaymentValidation = useMemo(() => {
 		if (!data.paymentEnabled) return false;
 
 		const received = data.payments.reduce((acc, current) => acc + (current.received ?? 0), 0);
-		return received < data.price - walletAmount;
-	}, [data.paymentEnabled, data.payments, data.price, walletAmount]);
+		return received < orderPrice - walletAmount;
+	}, [data, orderPrice, walletAmount]);
 
 	const isMissingPayment = useMemo(() => {
 		if (!data.paymentEnabled) return false;
 
 		const payments = data.payments.reduce((acc, current) => acc + current.amount, 0);
-		return payments < data.price - walletAmount;
-	}, [data, walletAmount]);
+		return payments < orderPrice - walletAmount;
+	}, [data, orderPrice, walletAmount]);
 
 	return (
 		<Stack direction={isSmall ? "column" : "row"} alignItems={"center"} spacing={2} position={"relative"} color={isSelf ? palette.secondary.main : "inherit"}>

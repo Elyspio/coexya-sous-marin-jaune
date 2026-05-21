@@ -1,26 +1,28 @@
 import React, { useMemo } from "react";
 import { Button, Tooltip } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
 import dayjs from "dayjs";
 import { Order } from "@apis/backend/generated";
-import { createOrder } from "@modules/orders/orders.async.action";
-import { canCreateSelector } from "@modules/orders/orders.utils";
 import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
+import { canCreate } from "@/core/data/orders/orders.utils";
+import { useClientStore } from "@/core/store/clientStore";
+import { useConfig } from "@/core/data/config/config.queries";
+import { useOrders } from "@/core/data/orders/orders.queries";
+import { useCreateOrder } from "@/core/data/orders/orders.mutations";
 
 export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 
 export function CreateOrder() {
-	const { created } = useAppSelector((s) => {
-		return {
-			created: canCreateSelector(s),
-		};
-	});
+	const orderName = useClientStore((s) => s.orderName);
+	const config = useConfig();
+	const orders = useOrders();
+	const { mutate: create } = useCreateOrder();
 
-	const dispatch = useAppDispatch();
+	const created = useMemo(() => canCreate(orderName, !!config.kitchenOpened, orders), [orderName, config.kitchenOpened, orders]);
 
 	const createOrderOnClick = React.useCallback(() => {
-		dispatch(createOrder());
-	}, [dispatch]);
+		if (!orderName) return;
+		create(orderName);
+	}, [create, orderName]);
 
 	const tooltip = useMemo(() => {
 		if (created === false) return "Vous avez déjà créé une commande aujourd'hui";

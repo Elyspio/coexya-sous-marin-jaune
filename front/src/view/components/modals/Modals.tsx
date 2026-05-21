@@ -1,44 +1,36 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { MergeUsers } from "./MergeUsers";
-import { useAppDispatch, useAppSelector } from "@store";
-import { toggleModal } from "@modules/workflow/workflow.action";
 import { EditOrder } from "../orders/detail/EditOrder";
 import { OrderMessageModal } from "./OrderMessageModal";
 import { Balances } from "./balance/Balances";
 import { UpdateConfig } from "./UpdateConfig";
-import { ModalType } from "@modules/workflow/workflow.types";
 import { DeleteOrderModal } from "./DeleteOrderModal";
+import { useClientStore, type ModalType } from "@/core/store/clientStore";
+import { useOrders } from "@/core/data/orders/orders.queries";
+import { useAuth } from "@/core/data/auth/AuthContext";
 
 export function Modals() {
-	const {
-		selectedOrder,
-		logged,
-		modals: { message, mergeUsers, balances, updateConfig, deleteOrder },
-		orders,
-	} = useAppSelector((s) => ({
-		modals: s.workflow.modals,
-		orders: s.orders.all,
-		selectedOrder: s.orders.altering?.order,
-		logged: s.authentication.logged,
-	}));
+	const modals = useClientStore((s) => s.modals);
+	const selectedOrder = useClientStore((s) => s.altering?.order);
+	const toggleModal = useClientStore((s) => s.toggleModal);
+	const orders = useOrders();
+	const { logged } = useAuth();
 
-	const dispatch = useAppDispatch();
+	const closeModal = useCallback((modal: ModalType) => () => toggleModal(modal), [toggleModal]);
 
-	const closeModal = useCallback((modal: ModalType) => () => dispatch(toggleModal(modal)), [dispatch]);
-
-	const allOrders = useMemo(() => Object.keys(orders), [orders]);
+	const hasOrders = useMemo(() => orders.length > 0, [orders]);
 
 	return (
 		<>
-			<DeleteOrderModal setClose={closeModal("deleteOrder")} open={deleteOrder} />
+			<DeleteOrderModal setClose={closeModal("deleteOrder")} open={modals.deleteOrder} />
 			{selectedOrder && <EditOrder />}
-			{allOrders.length > 0 && <OrderMessageModal setClose={closeModal("message")} open={message} />}
+			{hasOrders && <OrderMessageModal setClose={closeModal("message")} open={modals.message} />}
 			{logged && (
 				<>
-					<MergeUsers setClose={closeModal("mergeUsers")} open={mergeUsers} />
-					<Balances setClose={closeModal("balances")} open={balances} />
-					<UpdateConfig setClose={closeModal("updateConfig")} open={updateConfig} />
+					<MergeUsers setClose={closeModal("mergeUsers")} open={modals.mergeUsers} />
+					<Balances setClose={closeModal("balances")} open={modals.balances} />
+					<UpdateConfig setClose={closeModal("updateConfig")} open={modals.updateConfig} />
 				</>
 			)}
 		</>

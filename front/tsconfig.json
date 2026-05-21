@@ -8,7 +8,10 @@
 			"@/*": ["./src/*"],
 			"@apis/*": ["./src/core/apis/*"],
 			"@services/*": ["./src/core/services/*"],
-			"@data/*": ["./src/core/data/*"]
+			"@data/*": ["./src/core/data/*"],
+			"@components/*": ["./src/view/components/*"],
+			"@hooks/*": ["./src/view/hooks/*"],
+			"@pages/*": ["./src/view/pages/*"]
 		},
 		"types": ["vite/client"]
 	},

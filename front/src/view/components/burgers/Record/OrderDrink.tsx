@@ -1,10 +1,8 @@
 import { Drink, Order } from "@apis/backend/generated";
-import { useAppDispatch } from "@store";
 import React, { useCallback } from "react";
 import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
-import { updateOrder } from "@modules/orders/orders.action";
 import { drinkLabels } from "../../modals/OrderMessageModal";
-import { updateRemoteOrder } from "@modules/orders/orders.async.action";
+import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 
 type DrinkPair = {
 	key: Drink;
@@ -21,19 +19,13 @@ const drinks = (Object.values(Drink) as Drink[]).reduce((acc, current) => {
 const unavailableDrinks: Drink[] = [Drink.Limonade];
 
 export function OrderDrink({ data }: { data: Order }) {
-	const dispatch = useAppDispatch();
+	const updateAndSave = useUpdateAndSaveOrder();
 
 	const setOrder = useCallback(
-		(e: React.SyntheticEvent, val: DrinkPair | null) => {
-			dispatch(
-				updateOrder({
-					...data,
-					drink: val?.key ?? undefined,
-				})
-			);
-			dispatch(updateRemoteOrder());
+		(_e: React.SyntheticEvent, val: DrinkPair | null) => {
+			updateAndSave({ ...data, drink: val?.key ?? undefined });
 		},
-		[data, dispatch]
+		[data, updateAndSave]
 	);
 
 	return (

@@ -3,9 +3,8 @@ import { Button, ButtonProps, CssBaseline, Dialog, DialogActions, DialogContent,
 import { ThemeProvider } from "@mui/material/styles";
 import { useModal } from "@hooks/utils/useModal";
 import { createRoot } from "react-dom/client";
-import store, { useAppSelector } from "@store";
 import { themes } from "@/config/theme";
-import { Provider } from "react-redux";
+import { useClientStore } from "@/core/store/clientStore";
 
 export type ConfirmPopupProps<T> = {
 	title: ReactNode;
@@ -22,15 +21,9 @@ export type ConfirmPopupProps<T> = {
 	defaultValue: T;
 };
 
-function PopupWrapper({ children }: { children: ReactNode }) {
-	return <Provider store={store}>{children}</Provider>;
-}
-
 function PopupWrapperStored({ children }: { children: ReactNode }) {
-	const { theme } = useAppSelector((state) => ({
-		theme: state.theme.current === "dark" ? themes.dark : themes.light,
-		current: state.theme.current,
-	}));
+	const current = useClientStore((s) => s.theme);
+	const theme = current === "dark" ? themes.dark : themes.light;
 
 	return (
 		<StyledEngineProvider injectFirst>
@@ -81,29 +74,27 @@ export async function createConfirmModal<T>(props: Omit<ConfirmPopupProps<T>, "o
 
 	const val = await new Promise<boolean>((resolve) => {
 		root.render(
-			<PopupWrapper>
-				<PopupWrapperStored>
-					<ConfirmPopup
-						{...props}
-						onSelected={resolve}
-						defaultValue={false}
-						choices={[
-							{
-								label: "Annuler",
-								color: "inherit",
-								value: false,
-								variant: "outlined",
-							},
-							{
-								label: "Oui",
-								color: "error",
-								value: true,
-								variant: "contained",
-							},
-						]}
-					/>
-				</PopupWrapperStored>
-			</PopupWrapper>
+			<PopupWrapperStored>
+				<ConfirmPopup
+					{...props}
+					onSelected={resolve}
+					defaultValue={false}
+					choices={[
+						{
+							label: "Annuler",
+							color: "inherit",
+							value: false,
+							variant: "outlined",
+						},
+						{
+							label: "Oui",
+							color: "error",
+							value: true,
+							variant: "contained",
+						},
+					]}
+				/>
+			</PopupWrapperStored>
 		);
 	});
 

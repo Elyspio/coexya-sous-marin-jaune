@@ -21,7 +21,6 @@ import {
 	Typography,
 	useTheme,
 } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "@store";
 import dayjs, { Dayjs } from "dayjs";
 import { ModalComponentProps } from "../common/ModalProps";
 import { OrderPaymentType } from "@apis/backend/generated";
@@ -29,7 +28,8 @@ import { useMounted } from "@hooks/utils/useMounted";
 import { useOrderDates } from "@hooks/orders/useOrderDates";
 import { DataGrid, GridColDef, GridRowModel } from "@mui/x-data-grid";
 import { payementTypeLabel } from "../../orders/detail/payment/PayementOrder";
-import { deleteOrderPayement, updatePaymentReceived } from "@modules/orders/orders.async.action";
+import { useOrders } from "@/core/data/orders/orders.queries";
+import { useDeleteOrderPayment, useUpdatePaymentReceived } from "@/core/data/orders/orders.mutations";
 import { CalendarMonth, Category, Clear, PriceCheck, TaskAlt } from "@mui/icons-material";
 import { createConfirmModal } from "../../utils/popup/ConfirmPopup";
 import Bank from "@/view/icons/bank.png";
@@ -69,9 +69,9 @@ const groupOrder: OrderPaymentType[] = [
 ];
 
 export function Balances({ setClose, open }: ModalComponentProps) {
-	const dispatch = useAppDispatch();
-
-	const allOrders = useAppSelector((s) => s.orders.all);
+	const allOrders = useOrders();
+	const { mutate: updatePaymentReceived } = useUpdatePaymentReceived();
+	const { mutate: deleteOrderPayement } = useDeleteOrderPayment();
 
 	const [viewMode, setViewMode] = useState<ViewMode>("date");
 
@@ -93,7 +93,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const rows = useMemo<PendingRow[]>(() => {
 		if (!selectedDate) return [];
-		return Object.values(allOrders)
+		return allOrders
 			.filter((order) => selectedDate.isSame(order.date, "day"))
 			.flatMap((order) =>
 				order.payments
@@ -109,7 +109,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 	}, [allOrders, selectedDate]);
 
 	const allPendingRows = useMemo<PendingRow[]>(() => {
-		return Object.values(allOrders).flatMap((order) =>
+		return allOrders.flatMap((order) =>
 			order.payments
 				.filter((p) => p.type !== OrderPaymentType.Wallet)
 				.filter((p) => (p.received ?? 0) < p.amount)
@@ -139,15 +139,13 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 
 	const updateRemote = useCallback(
 		(row: PendingRow, value: number) => {
-			dispatch(
-				updatePaymentReceived({
-					idOrder: row.idOrder,
-					type: row.type,
-					value: value,
-				})
-			);
+			updatePaymentReceived({
+				idOrder: row.idOrder,
+				type: row.type,
+				value: value,
+			});
 		},
-		[dispatch]
+		[updatePaymentReceived]
 	);
 
 	const onCellEditStop = useCallback(
@@ -182,15 +180,13 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				),
 			});
 			if (confirm) {
-				dispatch(
-					deleteOrderPayement({
-						payementType: row.type,
-						idOrder: row.idOrder,
-					})
-				);
+				deleteOrderPayement({
+					payementType: row.type,
+					idOrder: row.idOrder,
+				});
 			}
 		},
-		[dispatch]
+		[deleteOrderPayement]
 	);
 
 	// endregion edit row

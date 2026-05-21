@@ -1,8 +1,7 @@
 import { SousMarinJauneRole } from "@apis/authentication/generated";
-import { useAppSelector } from "@store";
+import { useAuth } from "@/core/data/auth/AuthContext";
 
 export function useRole(role: SousMarinJauneRole): boolean {
-	const roles = useAppSelector((s) => [s.authentication.permissions?.role].filter(Boolean));
-
-	return roles.includes(role);
+	const { permissions } = useAuth();
+	return permissions?.role === role;
 }

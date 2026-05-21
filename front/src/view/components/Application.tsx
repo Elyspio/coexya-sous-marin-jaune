@@ -3,60 +3,46 @@ import { useEffect, useMemo } from "react";
 import "./Application.scss";
 import Login from "@mui/icons-material/Login";
 import Logout from "@mui/icons-material/Logout";
-import { useAppDispatch, useAppSelector } from "@store";
-import { toggleTheme } from "@modules/theme/theme.action";
 import { createDrawerAction, createDrawerDivider, withDrawer } from "./utils/drawer/Drawer.hoc";
 import { Box, Container } from "@mui/material";
-import { login, logout } from "@modules/authentication/authentication.async.action";
-import { bindActionCreators } from "redux";
 import { AccountBalance, DarkMode, LightMode, Merge, Message, Settings } from "@mui/icons-material";
-import { toggleModal } from "@modules/workflow/workflow.action";
 import { Modals } from "./modals/Modals";
 import { SousMarinJauneRole } from "@apis/authentication/generated";
-import { initApp } from "@modules/workflow/workflow.async.action";
 import { RouterProvider } from "react-router-dom";
-import { router } from "@/view/router/routes"; // selon version
+import { router } from "@/view/router/routes";
+import { useClientStore } from "@/core/store/clientStore";
+import { useAuth } from "@/core/data/auth/AuthContext";
+import { useInitApp } from "@/core/data/init/useInitApp";
 
 function Application() {
-	const dispatch = useAppDispatch();
-
-	const theme = useAppSelector((s) => s.theme.current);
+	const theme = useClientStore((s) => s.theme);
+	const toggleTheme = useClientStore((s) => s.toggleTheme);
+	const toggleModal = useClientStore((s) => s.toggleModal);
 	const themeIcon = useMemo(() => (theme === "light" ? <DarkMode /> : <LightMode />), [theme]);
-	const auth = useAppSelector((s) => s.authentication);
 
-	const storeActions = React.useMemo(
-		() =>
-			bindActionCreators(
-				{
-					toggleTheme,
-					logout,
-					login,
-					toggleModal,
-				},
-				dispatch
-			),
-		[dispatch]
-	);
+	const { logged, permissions, login, logout } = useAuth();
+
+	useInitApp();
 
 	const actions = [
 		createDrawerAction(theme === "dark" ? "Light Mode" : "Dark Mode", {
 			icon: themeIcon,
-			onClick: () => storeActions.toggleTheme(),
+			onClick: toggleTheme,
 		}),
 	];
 
-	if (auth.logged) {
+	if (logged) {
 		actions.push(
 			createDrawerAction("Logout", {
 				icon: <Logout fill={"currentColor"} />,
-				onClick: () => storeActions.logout(),
+				onClick: () => void logout(),
 			})
 		);
 	} else {
 		actions.push(
 			createDrawerAction("Login", {
 				icon: <Login fill={"currentColor"} />,
-				onClick: () => storeActions.login(),
+				onClick: () => void login(),
 			})
 		);
 	}
@@ -64,33 +50,27 @@ function Application() {
 	actions.push(
 		createDrawerAction("Message", {
 			icon: <Message />,
-			onClick: () => {
-				storeActions.toggleModal("message");
-			},
+			onClick: () => toggleModal("message"),
 		})
 	);
 
-	if (auth.permissions?.role == SousMarinJauneRole.Admin) {
+	if (permissions?.role === SousMarinJauneRole.Admin) {
 		actions.push(
 			createDrawerDivider("Admin"),
 			createDrawerAction("Merge Users", {
 				icon: <Merge />,
-				onClick: () => storeActions.toggleModal("mergeUsers"),
+				onClick: () => toggleModal("mergeUsers"),
 			}),
 			createDrawerAction("Balances", {
 				icon: <AccountBalance />,
-				onClick: () => storeActions.toggleModal("balances"),
+				onClick: () => toggleModal("balances"),
 			}),
 			createDrawerAction("Config", {
 				icon: <Settings />,
-				onClick: () => storeActions.toggleModal("updateConfig"),
+				onClick: () => toggleModal("updateConfig"),
 			})
 		);
 	}
-
-	React.useEffect(() => {
-		dispatch(initApp());
-	}, [dispatch]);
 
 	const drawer = withDrawer({
 		component: (

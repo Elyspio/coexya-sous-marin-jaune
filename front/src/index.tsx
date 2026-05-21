@@ -3,28 +3,25 @@ import React from "react";
 import "dayjs/locale/fr";
 import { createRoot } from "react-dom/client";
 import "./index.scss";
-import { Provider } from "react-redux";
-import store, { useAppSelector } from "@store";
 import { CssBaseline } from "@mui/material";
 import { StyledEngineProvider, ThemeProvider } from "@mui/material/styles";
 import { themes } from "./config/theme";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Provider as DiProvider } from "inversify-react";
-import { container } from "@/core/di";
 import { DateProvider } from "@hooks/utils/useTime";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Application from "./view/components/Application";
+import { QueryProvider } from "@/core/data/QueryProvider";
+import { AuthProvider } from "@/core/data/auth/AuthContext";
+import { useClientStore } from "@/core/store/clientStore";
 
-dayjs.locale("fr"); // use locale globally
+dayjs.locale("fr");
 dayjs.extend(relativeTime);
 
 function Wrapper() {
-	const { theme, current } = useAppSelector((state) => ({
-		theme: state.theme.current === "dark" ? themes.dark : themes.light,
-		current: state.theme.current,
-	}));
+	const current = useClientStore((s) => s.theme);
+	const theme = current === "dark" ? themes.dark : themes.light;
 
 	return (
 		<StyledEngineProvider injectFirst>
@@ -41,16 +38,12 @@ function Wrapper() {
 
 function App() {
 	return (
-		<DiProvider container={container}>
-			<Provider store={store}>
+		<QueryProvider>
+			<AuthProvider>
 				<Wrapper />
-			</Provider>
-		</DiProvider>
+			</AuthProvider>
+		</QueryProvider>
 	);
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA

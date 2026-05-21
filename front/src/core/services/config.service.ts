@@ -5,8 +5,12 @@ import { ConfigBase } from "@apis/backend/generated";
 
 @injectable()
 export class ConfigService extends BaseService {
-	@inject(BackendApi)
-	private readonly backendApiClient!: BackendApi;
+	private readonly backendApiClient: BackendApi;
+
+	constructor(@inject(BackendApi) backendApiClient: BackendApi) {
+		super();
+		this.backendApiClient = backendApiClient;
+	}
 
 	public update(config: ConfigBase) {
 		return this.backendApiClient.config.v1_Config_Update(config);

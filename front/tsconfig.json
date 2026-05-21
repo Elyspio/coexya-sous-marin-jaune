@@ -1,12 +1,16 @@
 {
 	"extends": "@elyspio/vite-eslint-config/tsconfig.json",
 	"compilerOptions": {
-		"baseUrl": ".",
-		"lib": ["ES2022", "dom"],
-		"module": "ES2022",
-		"noEmit": true,
+		"module": "esnext",
 		"moduleResolution": "bundler",
-		"types": ["./src/types/imports.d.ts", "./src/config/window.d.ts"]
+		"downlevelIteration": null,
+		"paths": {
+			"@/*": ["./src/*"],
+			"@apis/*": ["./src/core/apis/*"],
+			"@services/*": ["./src/core/services/*"],
+			"@data/*": ["./src/core/data/*"]
+		},
+		"types": ["vite/client"]
 	},
-	"include": ["vite.config.ts", ".eslintrc.js", "src", "scripts"]
+	"include": ["src", "vite.config.ts", "scripts"]
 }

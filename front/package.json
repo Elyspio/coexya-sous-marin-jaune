@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"start": "vp dev",
-		"build": "vp build",
+		"build": "tsc && vp build",
 		"docker": "node ../deploy/build/build.js",
 		"refresh-clients": "tsx ./scripts/generate-api.ts",
 		"check:types": "tsc --noEmit --watch --pretty"

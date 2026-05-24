@@ -12,5 +12,6 @@ export function getUserManager() {
 		...runtime,
 		authority,
 		client_id: clientId,
+		automaticSilentRenew: true,
 	});
 }

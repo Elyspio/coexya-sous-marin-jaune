@@ -1,19 +1,19 @@
-import { useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { cloneDeep } from "lodash";
-import { toast } from "react-toastify";
-import type { Order, OrderPaymentType, Sauce } from "@apis/backend/generated";
-import { service } from "../api/services";
-import { OrderService } from "@services/order.service";
-import { extractApiError } from "../api/extractError";
-import { usersKeys } from "../users/users.keys";
-import { ordersCache } from "./orders.cache";
-import { useClientStore } from "@/core/store/clientStore";
+import {useCallback} from "react";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {cloneDeep} from "lodash";
+import {toast} from "react-toastify";
+import type {Order, OrderPaymentType, Sauce} from "@apis/backend/generated";
+import {getService} from "../api/services";
+import {OrderService} from "@services/order.service";
+import {extractApiError} from "../api/extractError";
+import {usersKeys} from "../users/users.keys";
+import {ordersCache} from "./orders.cache";
+import {useClientStore} from "@/core/store/clientStore";
 
 export function useCreateOrder() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: (user: string) => service(OrderService).createOrder(user),
+		mutationFn: (user: string) => getService(OrderService).createOrder(user),
 		onError: (e) => {
 			toast.error(extractApiError(e, "Création impossible."));
 		},
@@ -30,7 +30,7 @@ export function useCreateOrder() {
 export function useDeleteOrder() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: (id: Order["id"]) => service(OrderService).deleteOrder(id),
+		mutationFn: (id: Order["id"]) => getService(OrderService).deleteOrder(id),
 		onError: (e) => {
 			toast.error(extractApiError(e, "Suppression impossible."));
 		},
@@ -44,7 +44,7 @@ export function useDeleteOrder() {
 export function useUpdateRemoteOrder() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: (order: Order) => service(OrderService).updateOrder(order),
+		mutationFn: (order: Order) => getService(OrderService).updateOrder(order),
 		onError: (e) => {
 			toast.error(extractApiError(e, "Mise à jour impossible."));
 		},
@@ -65,7 +65,7 @@ export type UpdatePaymentReceivedParams = {
 export function useUpdatePaymentReceived() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: ({ idOrder, type, value }: UpdatePaymentReceivedParams) => service(OrderService).updatePaymentReceived(idOrder, type, value),
+		mutationFn: ({ idOrder, type, value }: UpdatePaymentReceivedParams) => getService(OrderService).updatePaymentReceived(idOrder, type, value),
 		onError: (e) => {
 			toast.error(extractApiError(e, "Mise à jour du paiement impossible."));
 		},
@@ -93,7 +93,7 @@ export function useDeleteOrderPayment() {
 			if (!current) throw new Error("Order introuvable dans le cache.");
 			const next: Order = cloneDeep(current);
 			next.payments = next.payments.filter((p) => p.type !== payementType);
-			await service(OrderService).updateOrder(next);
+			await getService(OrderService).updateOrder(next);
 			return next;
 		},
 		onError: (e) => {
@@ -124,7 +124,7 @@ export function useUpdateSauceQuantity() {
 			const existing = sauces.find((sq) => sq.sauce === sauce);
 			if (existing) existing.amount = quantity;
 			else sauces.push({ sauce, amount: quantity });
-			await service(OrderService).updateOrder(next);
+			await getService(OrderService).updateOrder(next);
 			return next;
 		},
 		onError: (e) => {

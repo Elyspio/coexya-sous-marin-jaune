@@ -1,102 +1,92 @@
-import React from "react";
-import { Box, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import * as React from "react";
+import { useMemo } from "react";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
-import { Order } from "@apis/backend/generated";
-import { OrderItem } from "./OrderItem";
 import { groupBy } from "lodash";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import "dayjs/locale/fr";
-import { dateTemplate, isToday, isTodayFormatted } from "@/core/data/orders/orders.utils";
-import { OrderTime, useClientStore } from "@/core/store/clientStore";
+import { Order } from "@apis/backend/generated";
+import { OrderRow } from "./OrderItem";
 import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
+import { isToday } from "@/core/data/orders/orders.utils";
+import { fmtDay } from "@/core/utils/format";
+import { OrderTime, useClientStore } from "@/core/store/clientStore";
 import { useOrders } from "@/core/data/orders/orders.queries";
 
-dayjs.extend(customParseFormat);
+const dayKey = (o: Order) => dayjs(o.date).format("YYYY-MM-DD");
+
+function matchRange(order: Order, range: OrderTime): boolean {
+	const d = dayjs(order.date);
+	switch (range) {
+		case OrderTime.all:
+			return true;
+		case OrderTime.year:
+			return d.isAfter(dayjs().add(-1, "year"));
+		case OrderTime.months6:
+			return d.isAfter(dayjs().add(-6, "month"));
+		case OrderTime.months3:
+			return d.isAfter(dayjs().add(-3, "month"));
+		case OrderTime.month:
+			return d.isAfter(dayjs().add(-1, "month"));
+		case OrderTime.today:
+			return isToday(order);
+	}
+}
 
 export function AllOrders() {
 	const orders = useOrders();
 	const timeRange = useClientStore((s) => s.timeRange);
+	const viewToday = timeRange === OrderTime.today;
 
-	const grouped = React.useMemo(() => {
-		const allOrders = orders
-			.filter((order) => {
-				switch (timeRange) {
-					case OrderTime.all:
-						return true;
-					case OrderTime.year:
-						return dayjs(order.date).isAfter(dayjs().add(-1, "year"));
-					case OrderTime.months6:
-						return dayjs(order.date).isAfter(dayjs().add(-6, "month"));
-					case OrderTime.months3:
-						return dayjs(order.date).isAfter(dayjs().add(-3, "month"));
-					case OrderTime.month:
-						return dayjs(order.date).isAfter(dayjs().add(-1, "month"));
-					case OrderTime.today:
-						return isToday(order);
-				}
-				return null;
-			})
-			.filter(Boolean) as Order[];
-		allOrders.sort((o1, o2) => o1.user.localeCompare(o2.user));
-
-		const smallDate = (order: Order) => dayjs(order.date).format(dateTemplate);
-
-		return groupBy(allOrders, smallDate) as Record<string, Order[]>;
+	const grouped = useMemo(() => {
+		const filtered = orders.filter((o) => matchRange(o, timeRange));
+		filtered.sort((a, b) => a.user.localeCompare(b.user));
+		return groupBy(filtered, dayKey) as Record<string, Order[]>;
 	}, [orders, timeRange]);
 
-	const { palette } = useTheme();
-
-	const groupedElem = React.useMemo(() => {
-		const entries = Object.entries(grouped).sort(([date], [date2]) => {
-			return dayjs(date2, dateTemplate, "fr").isBefore(dayjs(date, dateTemplate, "fr")) ? -1 : 1;
-		});
-		return (
-			<Stack spacing={5} position={"absolute"} top={0} bottom={0} left={0} right={0} overflow={"auto"}>
-				{entries.map(([date, orders]) => (
-					<Stack key={date} spacing={1.5}>
-						<Typography
-							variant={"overline"}
-							color={isTodayFormatted(date) ? "primary" : palette.text.disabled}
-							sx={{
-								position: "sticky",
-								top: 0,
-								left: 0,
-								width: "100%",
-								fontWeight: "bold",
-								zIndex: 10,
-								background: palette.background.paper,
-							}}
-						>
-							{date}
-						</Typography>
-						{orders.map((order) => (
-							<OrderItem
-								key={order.id}
-								data={order}
-								show={{
-									name: true,
-									duplicate: true,
-								}}
-							/>
-						))}
-					</Stack>
-				))}
-			</Stack>
-		);
-	}, [grouped, palette.background.paper, palette.text.disabled]);
+	const dayKeys = useMemo(() => Object.keys(grouped).sort((a, b) => b.localeCompare(a)), [grouped]);
 
 	return (
-		<Stack display={"flex"} height={"100%"}>
-			<Stack pb={2} direction={"row"} spacing={4} alignItems={"center"} flexGrow={0}>
-				<Typography variant={"overline"} fontSize={"100%"}>
-					Toutes les commandes{" "}
-				</Typography>
-				<SelectTimeRangeOrder />
-			</Stack>
-			<Box overflow={"hidden"} flexGrow={1} position={"relative"}>
-				{groupedElem}
-			</Box>
+		<Stack spacing={4.5}>
+			{!viewToday && (
+				<Stack direction="row" alignItems="center" justifyContent="flex-end">
+					<SelectTimeRangeOrder />
+				</Stack>
+			)}
+
+			{dayKeys.length === 0 && (
+				<Paper variant="outlined" sx={(t) => ({ border: `1px solid ${t.palette.custom.line}`, borderRadius: "12px", p: 5, textAlign: "center", color: "custom.ink3" })}>
+					<Typography sx={{ fontWeight: 500, color: "custom.ink2" }}>Aucune commande</Typography>
+					<Typography sx={{ fontSize: 13 }}>Pas encore de commande sur cette période.</Typography>
+				</Paper>
+			)}
+
+			{dayKeys.map((key) => {
+				const dayOrders = grouped[key];
+				const today = isToday(dayOrders[0]);
+				return (
+					<Box key={key}>
+						<Stack direction="row" alignItems="baseline" spacing={1.75} sx={{ mb: 1.75, px: 0.5 }}>
+							<Typography sx={{ fontSize: 17, fontWeight: 600, letterSpacing: "-0.015em", textTransform: "capitalize" }}>{fmtDay(dayOrders[0].date)}</Typography>
+							{today && <Box sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "custom.accent" }} />}
+							<Typography variant="eyebrow">
+								{dayOrders.length} {dayOrders.length > 1 ? "commandes" : "commande"}
+							</Typography>
+						</Stack>
+						<Paper
+							variant="outlined"
+							sx={(t) => ({
+								border: `1px solid ${t.palette.custom.line}`,
+								borderRadius: "12px",
+								overflow: "hidden",
+								boxShadow: t.palette.custom.shadowSm,
+							})}
+						>
+							{dayOrders.map((order) => (
+								<OrderRow key={order.id} data={order} today={today} />
+							))}
+						</Paper>
+					</Box>
+				);
+			})}
 		</Stack>
 	);
 }

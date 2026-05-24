@@ -1,16 +1,16 @@
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import type { Order } from "@apis/backend/generated";
-import { service } from "../api/services";
-import { OrderService } from "@services/order.service";
-import { ordersKeys } from "./orders.keys";
+import {useMemo} from "react";
+import {useQuery} from "@tanstack/react-query";
+import type {Order} from "@apis/backend/generated";
+import {getService} from "../api/services";
+import {OrderService} from "@services/order.service";
+import {ordersKeys} from "./orders.keys";
 
 const EMPTY: Order[] = [];
 
 export function useOrders(): Order[] {
 	const query = useQuery({
 		queryKey: ordersKeys.list(),
-		queryFn: () => service(OrderService).getAll(),
+		queryFn: () => getService(OrderService).getAll(),
 	});
 	return query.data ?? EMPTY;
 }

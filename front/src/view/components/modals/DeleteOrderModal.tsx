@@ -38,7 +38,7 @@ export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
 			</DialogContent>
 			<DialogActions>
 				<Stack spacing={2} p={1} direction={"row"}>
-					<Button variant={"outlined"} onClick={setClose}>
+					<Button variant={"soft"} onClick={setClose}>
 						Non
 					</Button>
 

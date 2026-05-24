@@ -1,26 +1,16 @@
-const { spawnSync } = require("child_process");
-const path = require("path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { runKubernetesDeploy } from "@elyspio/kubernetes-deploy";
 
-const dockerCommand =
-  `docker compose build --push`
-    .split(" ")
-    .filter((str) => str.length);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const dryRun = process.argv.includes("--dry-run");
 
-const ret = spawnSync(dockerCommand[0], dockerCommand.slice(1), {
-  cwd: path.resolve(__dirname),
-  stdio: "inherit",
-});
-//
-// if (ret.status === 0) {
-//   spawnSync(
-//     "ssh",
-//     [
-//       "elyspio@192.168.0.10",
-//       "cd /apps/coexya/sous-marin-jaune && docker-compose pull && docker-compose up -d --force-recreate",
-//     ],
-//     {
-//       cwd: __dirname,
-//       stdio: "inherit",
-//     }
-//   );
-// }
+runKubernetesDeploy(
+	{
+		cacheFile: path.join(__dirname, "cache", ".build-counter"),
+		chartDir: "P:\\own\\common\\keycloak\\kubernetes\\apps\\coexya-sous-marin-jaune",
+		composeDir: __dirname,
+		deployScript: "update.ps1",
+	},
+	{ dryRun },
+);

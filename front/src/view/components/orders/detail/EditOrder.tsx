@@ -1,15 +1,65 @@
-import React, {Suspense, useCallback, useEffect, useMemo} from "react";
-import {Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Tab, Tabs, Tooltip} from "@mui/material";
-import TabContext from "@mui/lab/TabContext";
-import TabPanel from "@mui/lab/TabPanel";
-import {EditMenuOrder} from "./EditMenuOrder";
-import {calculateOrderPrice, isToday} from "@/core/data/orders/orders.utils";
-import {useClientStore} from "@/core/store/clientStore";
-import {useOrder} from "@/core/data/orders/orders.queries";
-import {useDeleteOrder, useUpdateRemoteOrder} from "@/core/data/orders/orders.mutations";
-import {PayementOrder} from "@components/orders/detail/payment/PayementOrder";
+import * as React from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Box, Button, Drawer, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import Close from "@mui/icons-material/Close";
+import Check from "@mui/icons-material/Check";
+import ArrowForward from "@mui/icons-material/ArrowForward";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+import { EditMenuOrder } from "./EditMenuOrder";
+import { PayementOrder } from "./payment/PayementOrder";
+import { calculateOrderPrice } from "@/core/data/orders/orders.utils";
+import { fmtPrice } from "@/core/utils/format";
+import { useClientStore } from "@/core/store/clientStore";
+import { useOrder } from "@/core/data/orders/orders.queries";
+import { useDeleteOrder, useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 
-type Workflow = "menu" | "payment";
+type Step = "content" | "payment";
+
+function StepTab({ active, done, disabled, num, label, onClick }: { active: boolean; done: boolean; disabled?: boolean; num: number; label: string; onClick: () => void }) {
+	return (
+		<Box
+			component="button"
+			disabled={disabled}
+			onClick={onClick}
+			sx={(t) => ({
+				appearance: "none",
+				border: 0,
+				background: "transparent",
+				display: "flex",
+				alignItems: "center",
+				gap: 1,
+				py: "14px",
+				mr: 3,
+				cursor: disabled ? "not-allowed" : "pointer",
+				opacity: disabled ? 0.5 : 1,
+				fontSize: 13,
+				fontWeight: 500,
+				fontFamily: t.typography.fontFamily,
+				color: active ? t.palette.custom.ink : t.palette.custom.ink3,
+				borderBottom: `2px solid ${active ? t.palette.custom.ink : "transparent"}`,
+				transition: "color 120ms ease, border-color 120ms ease",
+			})}
+		>
+			<Box
+				sx={(t) => ({
+					width: 18,
+					height: 18,
+					borderRadius: "50%",
+					display: "grid",
+					placeItems: "center",
+					fontSize: 11,
+					fontFamily: t.typography.fontFamily,
+					backgroundColor: done ? t.palette.custom.accent : active ? t.palette.custom.ink : t.palette.custom.paper2,
+					color: done || active ? t.palette.custom.paper : t.palette.custom.ink3,
+				})}
+			>
+				{done ? <Check sx={{ fontSize: 12 }} /> : num}
+			</Box>
+			{label}
+		</Box>
+	);
+}
 
 export function EditOrder() {
 	const alteringId = useClientStore((s) => s.altering?.order);
@@ -17,112 +67,122 @@ export function EditOrder() {
 	const setAlteringOrder = useClientStore((s) => s.setAlteringOrder);
 	const order = useOrder(alteringId);
 
-	const [workflow, setWorkflow] = React.useState<Workflow>("menu");
+	const [step, setStep] = useState<Step>("content");
 
 	const { mutate: deleteOrder } = useDeleteOrder();
 	const updateRemote = useUpdateRemoteOrder();
 
-	const close = useCallback(() => {
-		setAlteringOrder(undefined);
-	}, [setAlteringOrder]);
+	const close = useCallback(() => setAlteringOrder(undefined), [setAlteringOrder]);
 
-	const deleteOrderFn = React.useCallback(() => {
-		if (creating && order) {
-			deleteOrder(order.id);
-		}
+	const closeAndMaybeDelete = useCallback(() => {
+		if (creating && order) deleteOrder(order.id);
 		close();
 	}, [creating, close, deleteOrder, order]);
 
-	const handleChange = (event: React.SyntheticEvent, newValue: Workflow) => {
-		setWorkflow(newValue);
-	};
+	const price = useMemo(() => (order ? calculateOrderPrice(order) : 0), [order]);
 
-	const updateOrderFn = React.useCallback(() => {
+	const remainingToPay = useMemo(() => {
+		if (!order) return -1;
+		const paid = order.payments.reduce((acc, p) => acc + p.amount, 0);
+		return +(price - paid).toFixed(2);
+	}, [order, price]);
+
+	const advance = useCallback(() => {
 		if (!order) return;
-		if (workflow === "menu" && order.paymentEnabled) {
-			setWorkflow("payment");
+		if (step === "content" && order.paymentEnabled) {
+			setStep("payment");
 		} else {
 			updateRemote.mutate(order);
 			close();
 		}
-	}, [workflow, close, order, updateRemote]);
-
-	const remainingToPay = useMemo(() => {
-		if (!order) return -1;
-		const amountPaid = order.payments.reduce((acc, current) => acc + current.amount, 0);
-		return calculateOrderPrice(order) - amountPaid;
-	}, [order]);
+	}, [step, order, updateRemote, close]);
 
 	const validateTooltip = useMemo(() => {
 		if (!order) return "";
-
-		if (workflow === "menu") {
+		if (step === "content") {
 			if (!order.burgers.length) return "Vous devez prendre au moins un burger";
-			if (!order.student) return "";
-			if (!order.fries) return "Vous devez prendre des frites";
-			if (!order.drink) return "Vous devez prendre une boisson";
-		}
-
-		if (workflow === "payment" && order.paymentEnabled) {
-			if (remainingToPay > 0) return `Il reste ${remainingToPay}€ à payer`;
+			if (order.student && !order.fries) return "Les étudiants prennent des frites";
+			if (order.student && !order.drink) return "Les étudiants prennent une boisson";
 			return "";
 		}
-
+		if (step === "payment" && order.paymentEnabled && remainingToPay > 0.001) return `Il reste ${fmtPrice(remainingToPay)} à payer`;
 		return "";
-	}, [order, remainingToPay, workflow]);
+	}, [order, step, remainingToPay]);
 
-	const cantValidate = useMemo(() => validateTooltip !== "", [validateTooltip]);
-
-	const validateBtnLabel = useMemo(() => {
-		if (!order) return "";
-		if (workflow === "payment") return "Valider";
-		if (order.paymentEnabled) return "Payer";
-		return `Valider ${calculateOrderPrice(order)}€`;
-	}, [workflow, order]);
+	const cantValidate = validateTooltip !== "";
 
 	useEffect(() => {
-		if (!order?.paymentEnabled) setWorkflow("menu");
+		if (!order?.paymentEnabled) setStep("content");
 	}, [order]);
 
 	if (!order) return null;
 
+	const hasBurger = order.burgers.length > 0;
+
 	return (
-		<Dialog open={Boolean(order)} onClose={deleteOrderFn}>
-			<DialogTitle>{isToday(order) ? "Création" : "Modification"} de votre commande</DialogTitle>
-			<DialogContent dividers>
-				<TabContext value={workflow}>
-					<Box sx={{ borderBottom: 1, borderColor: "divider", height: "100%" }}>
-						<Tabs onChange={handleChange} variant={"fullWidth"} value={workflow}>
-							<Tab label="Contenu" value="menu" />
-							{order.paymentEnabled && <Tab label="Payement" value="payment" />}
-						</Tabs>
-					</Box>
-					<Box height={530}>
-						<TabPanel value="menu" sx={{ height: "100%" }}>
-							<EditMenuOrder />
-						</TabPanel>
-						<TabPanel value="payment" sx={{ height: "100%" }}>
-							<Suspense fallback={null}>
-								<PayementOrder />
-							</Suspense>
-						</TabPanel>
-					</Box>
-				</TabContext>
-			</DialogContent>
-			<DialogActions>
-				<Stack direction={"row"} spacing={2} p={1}>
-					<Button color={"inherit"} variant={"outlined"} onClick={deleteOrderFn}>
+		<Drawer
+			anchor="right"
+			open={Boolean(order)}
+			onClose={closeAndMaybeDelete}
+			slotProps={{ paper: { sx: { width: { xs: "100vw", sm: 560 }, maxWidth: "100vw", display: "flex", flexDirection: "column" } } }}
+		>
+			<Stack direction="row" alignItems="center" justifyContent="space-between" sx={(t) => ({ p: "20px 24px 16px", borderBottom: `1px solid ${t.palette.custom.line}` })}>
+				<Box sx={{ minWidth: 0 }}>
+					<Typography variant="eyebrow">Commande · {dayjs(order.date).locale("fr").format("dddd D MMMM")}</Typography>
+					<Typography variant="h4" noWrap>
+						{creating ? "Nouvelle commande" : "Modifier"}
+						<Box component="span" sx={{ color: "custom.ink3", fontSize: 15, fontWeight: 400, ml: 0.75 }}>
+							· {order.user}
+						</Box>
+					</Typography>
+				</Box>
+				<IconButton onClick={closeAndMaybeDelete}>
+					<Close sx={{ fontSize: 18 }} />
+				</IconButton>
+			</Stack>
+
+			<Stack direction="row" sx={(t) => ({ px: 3, borderBottom: `1px solid ${t.palette.custom.line}` })}>
+				<StepTab active={step === "content"} done={step === "payment"} num={1} label="Contenu" onClick={() => setStep("content")} />
+				{order.paymentEnabled && (
+					<StepTab active={step === "payment"} done={false} disabled={!hasBurger} num={2} label="Paiement" onClick={() => hasBurger && setStep("payment")} />
+				)}
+			</Stack>
+
+			<Box sx={{ flex: 1, overflowY: "auto", p: 3 }}>
+				{step === "content" ? (
+					<EditMenuOrder />
+				) : (
+					<Suspense fallback={null}>
+						<PayementOrder />
+					</Suspense>
+				)}
+			</Box>
+
+			<Stack direction="row" alignItems="center" justifyContent="space-between" sx={(t) => ({ p: "14px 24px", borderTop: `1px solid ${t.palette.custom.line}` })}>
+				<Stack direction="row" alignItems="baseline" spacing={1}>
+					<Typography variant="eyebrow">Total</Typography>
+					<Typography variant="mono" data-testid="panel-total" sx={{ fontSize: 20, fontWeight: 500 }}>
+						{fmtPrice(price)}
+					</Typography>
+					{step === "payment" && remainingToPay > 0.001 && (
+						<Typography variant="mono" sx={{ ml: 1, fontSize: 13, color: "custom.ink3" }}>
+							· reste {fmtPrice(remainingToPay)}
+						</Typography>
+					)}
+				</Stack>
+				<Stack direction="row" spacing={1.25}>
+					<Button variant="soft" onClick={closeAndMaybeDelete}>
 						Fermer
 					</Button>
 					<Tooltip title={validateTooltip}>
 						<span>
-							<Button variant={"contained"} color={"success"} onClick={updateOrderFn} disabled={cantValidate} sx={{ minWidth: 100 }}>
-								{validateBtnLabel}
+							<Button variant="accent" disabled={cantValidate} onClick={advance} endIcon={step === "content" && order.paymentEnabled ? <ArrowForward /> : undefined} startIcon={step === "payment" || !order.paymentEnabled ? <Check /> : undefined}>
+								{step === "payment" ? "Valider" : order.paymentEnabled ? "Payer" : `Valider ${fmtPrice(price)}`}
 							</Button>
 						</span>
 					</Tooltip>
 				</Stack>
-			</DialogActions>
-		</Dialog>
+			</Stack>
+		</Drawer>
 	);
 }

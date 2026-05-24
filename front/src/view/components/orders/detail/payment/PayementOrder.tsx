@@ -1,34 +1,57 @@
-import React, { useCallback, useMemo } from "react";
-import TabContext from "@mui/lab/TabContext";
-import { Box, Link, MenuItem, type MenuItemProps, Select, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import { OrderPaymentType } from "@apis/backend/generated";
-import TicketRestaurant from "@/view/icons/ticket-restaurant.png";
-import Bank from "@/view/icons/bank.png";
-import Cash from "@/view/icons/cash.png";
-import Wallet from "@/view/icons/wallet.png";
-import Picsou from "@/view/icons/picsou.gif";
-import { PaymentPanel } from "./PaymentPanel";
+import * as React from "react";
+import { useCallback, useMemo } from "react";
+import { Box, IconButton, Link, Stack, Tooltip, Typography } from "@mui/material";
+import AccountBalanceWallet from "@mui/icons-material/AccountBalanceWallet";
+import CreditCard from "@mui/icons-material/CreditCard";
+import PhoneAndroid from "@mui/icons-material/PhoneAndroid";
+import AccountBalance from "@mui/icons-material/AccountBalance";
+import Payments from "@mui/icons-material/Payments";
+import LocalAtm from "@mui/icons-material/LocalAtm";
+import Close from "@mui/icons-material/Close";
 import { QRCodeSVG } from "qrcode.react";
-import { Check } from "@mui/icons-material";
+import { OrderPaymentType } from "@apis/backend/generated";
+import { PicsouMark } from "@components/ui/marks";
+import { fmtPrice } from "@/core/utils/format";
+import { payementTypeLabel } from "./paymentLabels";
 import { useClientStore } from "@/core/store/clientStore";
 import { useOrder } from "@/core/data/orders/orders.queries";
-import { useOrderEditing } from "@/core/data/orders/orders.editing";
 import { useUsers } from "@/core/data/users/users.queries";
 import { useAuth } from "@/core/data/auth/AuthContext";
+import { useOrderEditing, useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
+import { useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 import { calculateOrderPrice } from "@/core/data/orders/orders.utils";
-import { payementTypeLabel } from "./paymentLabels";
 
-function MenuItemWithSelector(props: { label: string; value: OrderPaymentType; mark: boolean } & MenuItemProps) {
-	const { label, value, mark, ...other } = props;
-	return (
-		<MenuItem value={value} {...other}>
-			<Stack direction={"row"} spacing={1}>
-				<Typography>{label}</Typography>
-				{mark && <Check color={"primary"} />}
-			</Stack>
-		</MenuItem>
-	);
+const PAYPAL_URL = "https://paypal.me/elyspio?country.x=FR";
+const IBAN = "FR76 3000 4003 7800 0014 7491 905";
+const WERO_NUMBER = "06 95 13 50 64";
+
+const subLabels: Partial<Record<OrderPaymentType, string>> = {
+	[OrderPaymentType.Wallet]: "Crédit interne",
+	[OrderPaymentType.LunchVoucher]: "Cartes uniquement",
+	[OrderPaymentType.Wero]: WERO_NUMBER,
+	[OrderPaymentType.BankTransfer]: "Virement bancaire",
+	[OrderPaymentType.Paypal]: "paypal.me/elyspio",
+	[OrderPaymentType.Cash]: "Avant ~11h50",
+	[OrderPaymentType.Admin]: "Picsou",
+};
+
+function PayGlyph({ type }: { type: OrderPaymentType }) {
+	switch (type) {
+		case OrderPaymentType.Wallet:
+			return <AccountBalanceWallet sx={{ fontSize: 18 }} />;
+		case OrderPaymentType.LunchVoucher:
+			return <CreditCard sx={{ fontSize: 18 }} />;
+		case OrderPaymentType.Wero:
+			return <PhoneAndroid sx={{ fontSize: 18 }} />;
+		case OrderPaymentType.BankTransfer:
+			return <AccountBalance sx={{ fontSize: 18 }} />;
+		case OrderPaymentType.Paypal:
+			return <Payments sx={{ fontSize: 18 }} />;
+		case OrderPaymentType.Cash:
+			return <LocalAtm sx={{ fontSize: 18 }} />;
+		case OrderPaymentType.Admin:
+			return <PicsouMark size={20} />;
+	}
 }
 
 export function PayementOrder() {
@@ -37,164 +60,227 @@ export function PayementOrder() {
 	const order = useOrder(alteringId);
 	const users = useUsers();
 	const { updateOrderPayment } = useOrderEditing();
+	const updateAndSave = useUpdateAndSaveOrder();
+	const updateRemote = useUpdateRemoteOrder();
 
 	const accountWallet = useMemo(() => users.find((u) => u.name === order?.user)?.sold ?? 0, [users, order?.user]);
-
-	const [value, setValue] = React.useState(OrderPaymentType.Cash);
-
-	const { palette } = useTheme();
-
-	const orderPrice = useMemo(() => (order ? calculateOrderPrice(order) : 0), [order]);
-
-	const remainingToPay = useMemo(() => {
-		if (!order) return 0;
-		return orderPrice - order.payments.reduce((acc, current) => acc + current.amount, 0);
-	}, [order, orderPrice]);
-
-	const remainingToPayStr = useMemo(() => (Number.isNaN(remainingToPay) ? orderPrice : remainingToPay.toFixed(2)), [remainingToPay, orderPrice]);
+	const price = useMemo(() => (order ? calculateOrderPrice(order) : 0), [order]);
 
 	const amounts = useMemo(() => {
-		const data: Record<OrderPaymentType, number> = {} as any;
-		if (!order) return data;
-		for (const type of Object.values(OrderPaymentType)) {
-			data[type] = order.payments.find((p) => p.type === type)?.amount ?? 0;
-		}
+		const data = {} as Record<OrderPaymentType, number>;
+		for (const type of Object.values(OrderPaymentType)) data[type] = order?.payments.find((p) => p.type === type)?.amount ?? 0;
 		return data;
 	}, [order]);
 
-	const handleChange = useCallback((e: any) => {
-		setValue(e.target.value);
-	}, []);
+	const paid = useMemo(() => Object.values(amounts).reduce((acc, n) => acc + n, 0), [amounts]);
+	const remaining = useMemo(() => Math.max(0, +(price - paid).toFixed(2)), [price, paid]);
+	const progress = price > 0 ? Math.min(100, (paid / price) * 100) : 0;
 
-	const updatePayment = useCallback(
-		(type: OrderPaymentType) => (val: number) => {
-			updateOrderPayment(type, val ?? 0);
+	const maxWalletValue = useMemo(() => Math.min(accountWallet, remaining + amounts.Wallet), [accountWallet, remaining, amounts.Wallet]);
+
+	// Met à jour le cache localement (réactif) pendant la frappe, sans persister.
+	const setAmount = useCallback(
+		(type: OrderPaymentType, value: number) => {
+			let v = Number.isNaN(value) ? 0 : Math.max(0, value);
+			if (type === OrderPaymentType.Wallet) v = Math.min(v, maxWalletValue);
+			updateOrderPayment(type, v);
 		},
-		[updateOrderPayment],
+		[updateOrderPayment, maxWalletValue],
 	);
 
-	const maxWalletValue = useMemo(() => {
-		if (!order) return 0;
-		const remainingToPayWithWallet = Math.abs(remainingToPay + (order.payments.find((p) => p.type === OrderPaymentType.Wallet)?.amount ?? 0));
-		return Math.min(accountWallet, remainingToPayWithWallet);
-	}, [remainingToPay, order, accountWallet]);
+	// Construit l'order à jour et le persiste (évite d'enregistrer une closure périmée).
+	const commitPayment = useCallback(
+		(type: OrderPaymentType, value: number) => {
+			if (!order) return;
+			let v = Number.isNaN(value) ? 0 : Math.max(0, value);
+			if (type === OrderPaymentType.Wallet) v = Math.min(v, maxWalletValue);
+			v = +v.toFixed(2);
+			const existing = order.payments.find((p) => p.type === type);
+			const payments = v <= 0 ? order.payments.filter((p) => p.type !== type) : existing ? order.payments.map((p) => (p.type === type ? { ...p, amount: v } : p)) : [...order.payments, { type, amount: v }];
+			updateAndSave({ ...order, payments });
+		},
+		[order, maxWalletValue, updateAndSave],
+	);
 
-	const theme = useTheme();
+	const persist = useCallback(() => {
+		if (order) updateRemote.mutate(order);
+	}, [order, updateRemote]);
+
+	const fillRemaining = useCallback(
+		(type: OrderPaymentType) => () => {
+			const target = type === OrderPaymentType.Wallet ? Math.min(remaining, maxWalletValue) : remaining;
+			commitPayment(type, target);
+		},
+		[remaining, maxWalletValue, commitPayment],
+	);
 
 	if (!order) return null;
 
+	const types = Object.values(OrderPaymentType).filter((t) => t !== OrderPaymentType.Admin || logged);
+
 	return (
-		<Stack spacing={2} mt={1} alignItems={"center"} height={"100%"} minWidth={450}>
-			<Typography variant={"overline"}>
-				Montant restant à payer
-				<Typography component={"span"} pl={2} color={palette.warning.main}>
-					{remainingToPayStr}€
-				</Typography>
-			</Typography>
+		<Stack spacing={3}>
+			<Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 1fr" }, gap: 1.5 }}>
+				<SummaryCard label="Total" value={fmtPrice(price)} />
+				<SummaryCard label="Versé" value={fmtPrice(paid)} tone={paid >= price - 0.001 ? "ok" : undefined} />
+				<SummaryCard label="Reste" value={fmtPrice(remaining)} tone={remaining > 0 ? "due" : "ok"} />
+			</Box>
 
-			<TabContext value={value}>
-				<Stack spacing={2} width={"100%"}>
-					<Select fullWidth value={value} onChange={handleChange} renderValue={(selected) => payementTypeLabel[selected]}>
-						{Object.keys(payementTypeLabel)
-							.filter((key) => (key as OrderPaymentType) !== "Admin")
-							.map((key) => (
-								<MenuItemWithSelector
-									key={key}
-									mark={amounts[key as OrderPaymentType] > 0}
-									label={payementTypeLabel[key as OrderPaymentType]}
-									value={key as OrderPaymentType}
-								/>
-							))}
-						{logged && <MenuItem value={OrderPaymentType.Admin}>{payementTypeLabel.Admin}</MenuItem>}
-					</Select>
-					<Box alignItems={"center"} justifyContent={"center"} height={"100%"} width={"100%"}>
-						<PaymentPanel
-							type={OrderPaymentType.Wallet}
-							top={<img src={Wallet} width={120} alt={"Porte-feuille"} />}
-							bottom={<Typography>Argent restant sur votre compte {(accountWallet + orderPrice - amounts.Wallet).toFixed(2)}€</Typography>}
-							value={amounts.Wallet}
-							setValue={updatePayment(OrderPaymentType.Wallet)}
-							maxValue={maxWalletValue}
-						/>
+			<Box sx={(t) => ({ height: 6, borderRadius: 999, backgroundColor: t.palette.custom.paper3, overflow: "hidden" })}>
+				<Box sx={(t) => ({ height: "100%", width: `${progress}%`, borderRadius: 999, background: `linear-gradient(90deg, ${t.palette.custom.accent}, ${t.palette.custom.accent2})`, transition: "width 240ms ease" })} />
+			</Box>
 
-						<PaymentPanel
-							type={OrderPaymentType.LunchVoucher}
-							bottom={
-								<Stack spacing={1} alignItems={"center"}>
-									<Typography color={theme.palette.warning.main}>Uniquement les CARTES restaurant.</Typography>
-									<Typography>Merci de la déposer avant le départ ~11h50</Typography>
-								</Stack>
-							}
-							top={<img src={TicketRestaurant} height={120} alt={"Cartes restaurant"} />}
-							value={amounts.LunchVoucher}
-							setValue={updatePayment(OrderPaymentType.LunchVoucher)}
-						/>
-
-						<PaymentPanel
-							type={OrderPaymentType.Wero}
-							top={
-								<Stack spacing={3} alignItems={"center"}>
-									<img alt={"Logo de WERO"} src={"https://dkfyb2lgyu0b1.cloudfront.net/img_article/wero2.jpg"} width={200} />
-									<Typography variant={"h5"}>06 95 13 50 64</Typography>
-								</Stack>
-							}
-							value={amounts.Wero}
-							setValue={updatePayment(OrderPaymentType.Wero)}
-						/>
-
-						<PaymentPanel
-							type={OrderPaymentType.BankTransfer}
-							top={
-								<Stack spacing={2} alignItems={"center"}>
-									<img src={Bank} width={120} alt={"Virement bancaire"} />
-									<Stack direction={"row"} alignItems={"center"} spacing={3}>
-										<Typography variant={"overline"} fontSize={"larger"}>
-											IBAN:
-										</Typography>
-										<Typography>FR76 3000 4003 7800 0014 7491 905</Typography>
-									</Stack>
-								</Stack>
-							}
-							value={amounts.BankTransfer}
-							setValue={updatePayment(OrderPaymentType.BankTransfer)}
-						/>
-
-						<PaymentPanel
-							type={OrderPaymentType.Paypal}
-							top={
-								<Stack spacing={1} alignItems={"center"} justifyContent={"center"}>
-									<Box bgcolor={"background.default"} p={2}>
-										<QRCodeSVG height={150} width={150} value="https://paypal.me/elyspio?country.x=FR" />
-									</Box>
-									<Link target={"_blank"} href={"https://paypal.me/elyspio?country.x=FR"}>
-										https://paypal.me/elyspio?country.x=FR
-									</Link>
-								</Stack>
-							}
-							value={amounts.Paypal}
-							setValue={updatePayment(OrderPaymentType.Paypal)}
-						/>
-
-						<PaymentPanel
-							type={OrderPaymentType.Cash}
-							bottom={<Typography>Merci de déposer l'argent avant le départ ~ 11h50</Typography>}
-							top={<img src={Cash} height={150} alt={"Argent en espèces"} />}
-							value={amounts.Cash}
-							setValue={updatePayment(OrderPaymentType.Cash)}
-						/>
-
-						{logged && (
-							<PaymentPanel
-								type={OrderPaymentType.Admin}
-								bottom={<Typography>Zone admin</Typography>}
-								top={<img src={Picsou} height={150} alt={"Zone d'administration"} />}
-								value={amounts.Admin}
-								setValue={updatePayment(OrderPaymentType.Admin)}
-							/>
-						)}
-					</Box>
+			<Box>
+				<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.25 }}>
+					<Typography variant="eyebrow">Moyens de paiement</Typography>
+					<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink3" }}>
+						Réparti librement
+					</Typography>
 				</Stack>
-			</TabContext>
+				<Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gridAutoRows: "1fr", gap: 1.25 }}>
+					{types.map((type) => {
+						const amount = amounts[type];
+						const selected = amount > 0;
+						return (
+							<Box
+								key={type}
+								data-testid={`pay-card-${type}`}
+								sx={(t) => ({
+									display: "flex",
+									flexDirection: "column",
+									height: "100%",
+									minWidth: 0,
+									gap: 1.25,
+									p: 1.75,
+									borderRadius: "12px",
+									border: `1px solid ${selected ? t.palette.custom.ink : t.palette.custom.line}`,
+									boxShadow: selected ? `0 0 0 3px ${t.palette.custom.line}` : "none",
+									backgroundColor: t.palette.custom.paper,
+									transition: "border 120ms ease, box-shadow 120ms ease",
+								})}
+							>
+								<Stack direction="row" alignItems="center" spacing={1.25}>
+									<Box
+										sx={(t) => ({
+											width: 36,
+											height: 36,
+											borderRadius: "10px",
+											display: "grid",
+											placeItems: "center",
+											flexShrink: 0,
+											backgroundColor: type === OrderPaymentType.Admin ? t.palette.custom.claySoft : type === OrderPaymentType.Wallet ? t.palette.custom.accentSoft : t.palette.custom.paper2,
+											color: type === OrderPaymentType.Admin ? t.palette.custom.clay : type === OrderPaymentType.Wallet ? t.palette.custom.accent : t.palette.custom.ink2,
+										})}
+									>
+										<PayGlyph type={type} />
+									</Box>
+									<Box sx={{ flex: 1, minWidth: 0 }}>
+										<Typography sx={{ fontWeight: 600, fontSize: 14 }}>{payementTypeLabel[type]}</Typography>
+										<Typography variant="mono" sx={{ fontSize: 11.5, color: "custom.ink3" }} noWrap>
+											{subLabels[type]}
+										</Typography>
+									</Box>
+									{!selected && remaining > 0 && (
+										<Box
+											component="button"
+											data-testid={`pay-fill-${type}`}
+											onClick={fillRemaining(type)}
+											sx={(t) => ({
+												appearance: "none",
+												background: "transparent",
+												border: `1px dashed ${t.palette.custom.line}`,
+												color: t.palette.custom.ink3,
+												fontSize: 11,
+												fontFamily: t.typography.fontFamily,
+												px: 1,
+												py: 0.375,
+												borderRadius: 999,
+												cursor: "pointer",
+												whiteSpace: "nowrap",
+												flexShrink: 0,
+												"&:hover": { color: t.palette.custom.accent, borderColor: t.palette.custom.accent },
+											})}
+										>
+											Tout payer
+										</Box>
+									)}
+								</Stack>
+
+								{type === OrderPaymentType.Wallet && (
+									<Typography variant="mono" sx={{ fontSize: 11.5, color: "custom.ink3" }}>
+										Solde disponible {fmtPrice(accountWallet)}
+									</Typography>
+								)}
+								{type === OrderPaymentType.BankTransfer && (
+									<Typography variant="mono" sx={{ fontSize: 11.5, color: "custom.ink2", overflowWrap: "anywhere" }}>
+										{IBAN}
+									</Typography>
+								)}
+								{type === OrderPaymentType.Paypal && (
+									<Stack direction="row" alignItems="center" spacing={1.25}>
+										<Box sx={(t) => ({ p: 0.75, backgroundColor: "#fff", border: `1px solid ${t.palette.custom.line}`, borderRadius: "8px", display: "grid", placeItems: "center" })}>
+											<QRCodeSVG value={PAYPAL_URL} height={56} width={56} />
+										</Box>
+										<Link href={PAYPAL_URL} target="_blank" sx={{ fontSize: 11.5 }}>
+											Scanner pour payer
+										</Link>
+									</Stack>
+								)}
+
+								<Stack direction="row" alignItems="center" spacing={1} sx={{ mt: "auto" }}>
+									<Box
+										component="input"
+										type="number"
+										inputMode="decimal"
+										value={amount || ""}
+										placeholder="0,00"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(type, Number.parseFloat(e.target.value))}
+										onBlur={persist}
+										sx={(t) => ({
+											flex: 1,
+											minWidth: 0,
+											border: `1px solid ${t.palette.custom.line}`,
+											backgroundColor: t.palette.custom.paper2,
+											borderRadius: "6px",
+											px: 1.25,
+											py: 0.75,
+											fontFamily: t.typography.fontFamily,
+											fontVariantNumeric: "tabular-nums",
+											fontSize: 14,
+											color: t.palette.custom.ink,
+											outline: "none",
+											"&:focus": { borderColor: t.palette.custom.ink, backgroundColor: t.palette.custom.paper },
+										})}
+									/>
+									<Typography variant="mono" sx={{ fontSize: 13, color: "custom.ink3" }}>
+										€
+									</Typography>
+									<Tooltip title="Effacer">
+										<span>
+											<IconButton size="small" disabled={!selected} onClick={() => commitPayment(type, 0)}>
+												<Close sx={{ fontSize: 16 }} />
+											</IconButton>
+										</span>
+									</Tooltip>
+								</Stack>
+							</Box>
+						);
+					})}
+				</Box>
+			</Box>
 		</Stack>
+	);
+}
+
+function SummaryCard({ label, value, tone }: { label: string; value: string; tone?: "ok" | "due" }) {
+	return (
+		<Box sx={(t) => ({ p: "12px 14px", borderRadius: "8px", border: `1px solid ${t.palette.custom.line}`, backgroundColor: t.palette.custom.paper2 })}>
+			<Typography variant="eyebrow" sx={{ fontSize: 10 }}>
+				{label}
+			</Typography>
+			<Typography variant="mono" sx={{ fontSize: 20, fontWeight: 500, color: tone === "ok" ? "custom.accent" : tone === "due" ? "custom.warn" : "custom.ink" }}>
+				{value}
+			</Typography>
+		</Box>
 	);
 }

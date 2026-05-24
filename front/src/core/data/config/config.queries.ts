@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { service } from "../api/services";
-import { ConfigService } from "@services/config.service";
-import { configKeys } from "./config.keys";
-import type { Config, ConfigBase } from "@apis/backend/generated";
+import {useQuery} from "@tanstack/react-query";
+import {getService} from "../api/services";
+import {ConfigService} from "@services/config.service";
+import {configKeys} from "./config.keys";
+import type {Config, ConfigBase} from "@apis/backend/generated";
 
 const DEFAULT: ConfigBase = {
 	kitchenOpened: false,
@@ -12,7 +12,7 @@ const DEFAULT: ConfigBase = {
 export function useConfig(): ConfigBase {
 	const query = useQuery<Config>({
 		queryKey: configKeys.current(),
-		queryFn: () => service(ConfigService).get(),
+		queryFn: () => getService(ConfigService).get(),
 	});
 	return query.data ?? DEFAULT;
 }

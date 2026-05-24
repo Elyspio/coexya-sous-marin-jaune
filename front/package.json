@@ -6,20 +6,22 @@
 	"scripts": {
 		"dev": "vp dev",
 		"build": "tsc && vp build",
-		"docker": "node ../deploy/build/build.js",
+		"docker": "pnpm --dir ../deploy docker",
 		"lint": "vp lint",
 		"test": "vp test",
 		"refresh-clients": "tsx ./scripts/generate-api.ts",
-		"check:types": "tsc --noEmit --watch --pretty"
+		"check:types": "tsc --noEmit --watch --pretty",
+		"test:e2e": "playwright test"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.1",
+		"@fontsource/geist-mono": "^5.2.8",
+		"@fontsource/geist-sans": "^5.2.5",
 		"@microsoft/signalr": "^10.0.0",
 		"@mui/icons-material": "^7.3.4",
 		"@mui/lab": "^7.0.1-beta.18",
 		"@mui/material": "^7.3.4",
-		"@mui/styles": "^6.4.8",
 		"@mui/x-data-grid": "^8.28.6",
 		"@tanstack/react-query": "^5.100.11",
 		"@tanstack/react-query-devtools": "^5.100.11",
@@ -41,6 +43,7 @@
 	},
 	"devDependencies": {
 		"@elyspio/vite-eslint-config": "5.0.3",
+		"@playwright/test": "^1.60.0",
 		"@types/lodash": "^4.17.20",
 		"@types/node": "^25.9.1",
 		"@types/react": "^19.2.2",

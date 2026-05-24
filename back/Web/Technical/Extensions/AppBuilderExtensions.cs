@@ -47,7 +47,6 @@ public static class AppBuilderExtensions
 						ValidateIssuer = oidcConfig.ValidateIssuer,
 						ValidIssuer = oidcConfig.ValidIssuer,
 						ValidateLifetime = oidcConfig.ValidateLifetime,
-						ValidateIssuerSigningKey = true,
 						NameClaimType = "name",
 						ClockSkew = TimeSpan.FromSeconds(oidcConfig.ClockSkew)
 					};

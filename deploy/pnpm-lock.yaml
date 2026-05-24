@@ -1,0 +1,33 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@elyspio/kubernetes-deploy':
+        specifier: ^1.0.0
+        version: 1.0.0
+
+packages:
+
+  '@elyspio/kubernetes-deploy@1.0.0':
+    resolution: {integrity: sha512-vT6Rc+RVIHx44T8QbMaP4GjdXPfXqImSc/sZrF2c73bQHXidYLe9FMNJBLrhe8bhNJgUXLQ3UIabuqmXk70Pkw==}
+    engines: {node: '>=22.0.0'}
+    hasBin: true
+
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
+    engines: {node: '>= 14.6'}
+    hasBin: true
+
+snapshots:
+
+  '@elyspio/kubernetes-deploy@1.0.0':
+    dependencies:
+      yaml: 2.9.0
+
+  yaml@2.9.0: {}

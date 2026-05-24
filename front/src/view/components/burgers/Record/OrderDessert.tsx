@@ -1,6 +1,8 @@
+import * as React from "react";
+import { useCallback } from "react";
 import { Dessert, Order } from "@apis/backend/generated";
-import React, { useCallback } from "react";
-import { Autocomplete, Box, FormControl, TextField } from "@mui/material";
+import { OptRow } from "@components/ui/OptRow";
+import { ChipToggle } from "@components/ui/ChipToggle";
 import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 
 const unavailableDesserts: Dessert[] = [Dessert.Brookie];
@@ -8,25 +10,18 @@ const unavailableDesserts: Dessert[] = [Dessert.Brookie];
 export function OrderDessert({ data }: { data: Order }) {
 	const updateAndSave = useUpdateAndSaveOrder();
 
-	const setOrder = useCallback(
-		(_e: React.SyntheticEvent, val: Dessert | null) => {
-			updateAndSave({ ...data, dessert: val ?? undefined });
-		},
-		[data, updateAndSave],
-	);
+	const setDessert = useCallback((dessert: Dessert | undefined) => () => updateAndSave({ ...data, dessert }), [data, updateAndSave]);
 
 	return (
-		<Box width={"100%"}>
-			<FormControl sx={{ minWidth: 120 }} fullWidth>
-				<Autocomplete
-					id="select-drink"
-					value={data.dessert ?? null}
-					options={Object.values(Dessert) as Dessert[]}
-					onChange={setOrder}
-					getOptionDisabled={(option) => unavailableDesserts.includes(option)}
-					renderInput={(params) => <TextField {...params} variant={"standard"} label="Dessert" />}
-				/>
-			</FormControl>
-		</Box>
+		<OptRow label="Dessert">
+			<ChipToggle selected={!data.dessert} onClick={setDessert(undefined)}>
+				Aucun
+			</ChipToggle>
+			{(Object.values(Dessert) as Dessert[]).map((d) => (
+				<ChipToggle key={d} selected={data.dessert === d} disabled={unavailableDesserts.includes(d)} onClick={setDessert(d)}>
+					{d}
+				</ChipToggle>
+			))}
+		</OptRow>
 	);
 }

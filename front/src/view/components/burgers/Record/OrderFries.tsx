@@ -1,85 +1,60 @@
+import * as React from "react";
+import { useCallback, useMemo } from "react";
+import { Box, Stack, Switch, Typography } from "@mui/material";
 import { Order, Sauce } from "@apis/backend/generated";
-import React, { useCallback, useMemo } from "react";
-import { Checkbox, Fade, FormControlLabel, Stack, TextField, Typography } from "@mui/material";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import { OptRow } from "@components/ui/OptRow";
+import { QtyStepper } from "@components/ui/QtyStepper";
 import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 import { useUpdateSauceQuantity } from "@/core/data/orders/orders.mutations";
 
-const defaultSauces = Object.values(Sauce).reduce(
-	(acc, current) => {
-		acc[current] = 0;
-		return acc;
-	},
-	{} as Record<Sauce, number>,
-);
+const MAX_SAUCES = 2;
 
 export function OrderFries({ data }: { data: Order }) {
 	const updateAndSave = useUpdateAndSaveOrder();
 	const { mutate: updateSauceQuantity } = useUpdateSauceQuantity();
 
 	const toggleFries = useCallback(() => {
-		updateAndSave({
-			...data,
-			fries: data.fries ? undefined : { sauces: [] },
-		});
+		updateAndSave({ ...data, fries: data.fries ? undefined : { sauces: [] } });
 	}, [data, updateAndSave]);
 
 	const quantityPerSauce = useMemo(() => {
-		return (
-			data.fries?.sauces?.reduce(
-				(acc, current) => {
-					acc[current.sauce] = current.amount;
-					return acc;
-				},
-				{} as Record<Sauce, number>,
-			) ?? defaultSauces
-		);
+		const base = Object.values(Sauce).reduce((acc, s) => ({ ...acc, [s]: 0 }), {} as Record<Sauce, number>);
+		for (const sq of data.fries?.sauces ?? []) base[sq.sauce] = sq.amount;
+		return base;
 	}, [data.fries]);
 
-	const onSauceQuantityChange = useCallback(
-		(sauce: Sauce) => (e: React.ChangeEvent<HTMLInputElement>) => {
-			updateSauceQuantity({
-				idOrder: data.id,
-				quantity: Number.parseInt(e.target.value.toString()),
-				sauce,
-			});
+	const nbSauces = useMemo(() => Object.values(quantityPerSauce).reduce((acc, n) => acc + n, 0), [quantityPerSauce]);
+
+	const onSauceChange = useCallback(
+		(sauce: Sauce) => (quantity: number) => {
+			updateSauceQuantity({ idOrder: data.id, sauce, quantity });
 		},
 		[data.id, updateSauceQuantity],
 	);
 
-	const nbSauces = useMemo(() => data.fries?.sauces.reduce((acc, current) => acc + current.amount, 0) ?? 0, [data.fries?.sauces]);
-
 	return (
-		<Stack direction={"row"} spacing={2} alignItems={"center"}>
-			<FormControlLabel control={<Checkbox sx={{ pl: 0 }} checked={!!data.fries} onChange={toggleFries} />} label={"Frites"} sx={{ ml: 0 }} />
-			<Fade in={!!data.fries}>
-				<List dense sx={{ width: "100%" }}>
-					{Object.values(Sauce).map((sauce) => (
-						<ListItem sx={{ width: "100%" }} key={sauce}>
-							<Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} spacing={2} pr={2} width={"100%"}>
-								<Typography color={quantityPerSauce[sauce] > 0 ? "inherit" : "gray"}>{sauce}</Typography>
-								<TextField
-									variant={"standard"}
-									onChange={onSauceQuantityChange(sauce)}
-									size={"small"}
-									label={"Nombre"}
-									value={quantityPerSauce[sauce] ?? 0}
-									type={"number"}
-									inputProps={{
-										min: 0,
-										max: 2 - nbSauces + quantityPerSauce[sauce],
-									}}
-									sx={{
-										width: 60,
-										color: "red",
-									}}
-								/>
+		<>
+			<OptRow label="Frites">
+				<Switch checked={!!data.fries} onChange={toggleFries} slotProps={{ input: { "aria-label": "Frites" } }} />
+			</OptRow>
+
+			{data.fries && (
+				<OptRow label="Sauces" stacked>
+					<Box sx={{ width: "100%" }}>
+						<Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+							<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink3" }}>
+								{nbSauces}/{MAX_SAUCES} sélectionnées
+							</Typography>
+						</Stack>
+						{Object.values(Sauce).map((sauce) => (
+							<Stack key={sauce} direction="row" alignItems="center" justifyContent="space-between" sx={(t) => ({ py: 1, borderBottom: `1px solid ${t.palette.custom.lineSoft}`, "&:last-of-type": { borderBottom: 0 } })}>
+								<Typography sx={{ color: quantityPerSauce[sauce] > 0 ? "custom.ink" : "custom.ink3" }}>{sauce}</Typography>
+								<QtyStepper value={quantityPerSauce[sauce]} onChange={onSauceChange(sauce)} max={MAX_SAUCES - nbSauces + quantityPerSauce[sauce]} />
 							</Stack>
-						</ListItem>
-					))}
-				</List>
-			</Fade>
-		</Stack>
+						))}
+					</Box>
+				</OptRow>
+			)}
+		</>
 	);
 }

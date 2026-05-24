@@ -1,17 +1,18 @@
-import React, { useRef } from "react";
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, Stack, Typography } from "@mui/material";
+import * as React from "react";
+import { useRef } from "react";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, Typography } from "@mui/material";
+import Close from "@mui/icons-material/Close";
+import Check from "@mui/icons-material/Check";
 import { OrderOptions } from "./OrderOptions";
 import { Burgers } from "../Burgers";
+import { SectionTitle } from "@components/orders/detail/EditMenuOrder";
+import { ChipToggle } from "@components/ui/ChipToggle";
 import { noneBurger, useOrderEditing } from "@/core/data/orders/orders.editing";
-import { useIsSmallScreen } from "@hooks/utils/useBreakpoint";
 import { useClientStore } from "@/core/store/clientStore";
 import { useOrder } from "@/core/data/orders/orders.queries";
 import { useBurgers } from "@/core/data/burgers/burgers.queries";
 import { useDeleteOrder, useUpdateRemoteOrder } from "@/core/data/orders/orders.mutations";
 
-/**
- * Add or edit a burger record
- */
 export function EditBurgerRecord() {
 	const alteringOrderId = useClientStore((s) => s.altering?.order);
 	const recordIndex = useClientStore((s) => s.altering?.record);
@@ -19,7 +20,7 @@ export function EditBurgerRecord() {
 	const setAlteringRecord = useClientStore((s) => s.setAlteringRecord);
 	const order = useOrder(alteringOrderId);
 	const burgers = useBurgers();
-	const { updateBurgerRecord, deleteCurrentOrderRecord } = useOrderEditing();
+	const { updateBurgerRecord, deleteCurrentOrderRecord, setOrderRecordBurger } = useOrderEditing();
 	const { mutate: deleteOrder } = useDeleteOrder();
 	const updateRemote = useUpdateRemoteOrder();
 
@@ -30,19 +31,16 @@ export function EditBurgerRecord() {
 	const unchangedData = useRef(data);
 
 	const close = React.useCallback(
-		(modeChoice: "success" | "cancel") => () => {
-			if (modeChoice === "success") {
+		(choice: "success" | "cancel") => () => {
+			if (choice === "success") {
 				if (order) updateRemote.mutate(order);
 			} else if (unchangedData.current) {
 				updateBurgerRecord(unchangedData.current);
 			}
 
-			if (modeChoice === "cancel") {
-				if (mode.order === "create" && alteringOrderId) {
-					deleteOrder(alteringOrderId);
-				} else if (mode.record === "create") {
-					deleteCurrentOrderRecord();
-				}
+			if (choice === "cancel") {
+				if (mode.order === "create" && alteringOrderId) deleteOrder(alteringOrderId);
+				else if (mode.record === "create") deleteCurrentOrderRecord();
 			} else {
 				setAlteringRecord(undefined);
 			}
@@ -54,62 +52,98 @@ export function EditBurgerRecord() {
 		(ingredient: string) => () => {
 			if (!data) return;
 			const included = data.excluded.includes(ingredient);
-			updateBurgerRecord({
-				...data,
-				excluded: included ? data.excluded.filter((i) => i !== ingredient) : [...data.excluded, ingredient],
-			});
+			updateBurgerRecord({ ...data, excluded: included ? data.excluded.filter((i) => i !== ingredient) : [...data.excluded, ingredient] });
 		},
 		[updateBurgerRecord, data],
 	);
 
-	const isSmall = useIsSmallScreen();
-
 	if (!data) return null;
 
+	const chosen = data.name !== noneBurger && !!burger;
+
 	return (
-		<Dialog open={display} onClose={close("cancel")} maxWidth={false}>
-			<DialogTitle>
-				<Box justifyContent={"center"} display={"flex"}>
-					<Typography fontSize={"large"} variant={"overline"}>
-						{data.name === noneBurger ? "Choisissez un burger" : data.name}
-					</Typography>
-				</Box>
+		<Dialog open={display} onClose={close("cancel")} maxWidth={false} slotProps={{ paper: { sx: { width: 720, maxWidth: "calc(100vw - 40px)" } } }}>
+			<DialogTitle sx={{ pb: 1.5 }}>
+				<Stack direction="row" alignItems="center" justifyContent="space-between">
+					<Box>
+						<Typography variant="eyebrow">{chosen ? "Personnaliser" : "Choisir un burger"}</Typography>
+						<Typography variant="h4">{chosen ? data.name : "Au menu"}</Typography>
+					</Box>
+					<IconButton onClick={close("cancel")}>
+						<Close sx={{ fontSize: 18 }} />
+					</IconButton>
+				</Stack>
 			</DialogTitle>
 			<DialogContent dividers>
-				{burger ? (
-					<Stack direction={"row"} spacing={4} my={1}>
-						<Stack>
-							<Typography variant={"overline"}>Ingrédients</Typography>
-							<Stack spacing={1}>
-								{burger.ingredients.map((i) => (
-									<Box key={i}>
-										<FormControlLabel
-											control={<Checkbox onClick={updateExcluded(i)} checked={!data.excluded.includes(i)} />}
-											label={i}
-											sx={{ whiteSpace: isSmall ? "inherit" : "nowrap" }}
-										/>
-									</Box>
+				{chosen ? (
+					<Stack direction={{ xs: "column", sm: "row" }} spacing={3.5} alignItems="flex-start">
+						<Box sx={{ minWidth: 260 }}>
+							<Box sx={{ mb: 1.25 }}>
+								<SectionTitle>Ingrédients</SectionTitle>
+							</Box>
+							<Stack>
+								{burger!.ingredients.map((ing) => {
+									const included = !data.excluded.includes(ing);
+									return (
+										<Stack
+											key={ing}
+											direction="row"
+											alignItems="center"
+											spacing={1.25}
+											onClick={updateExcluded(ing)}
+											sx={(t) => ({ p: "7px 10px", borderRadius: "6px", cursor: "pointer", userSelect: "none", "&:hover": { backgroundColor: t.palette.custom.paper2 } })}
+										>
+											<Box
+												sx={(t) => ({
+													width: 18,
+													height: 18,
+													borderRadius: "5px",
+													display: "grid",
+													placeItems: "center",
+													border: `1.5px solid ${included ? t.palette.custom.ink : t.palette.custom.ink4}`,
+													backgroundColor: included ? t.palette.custom.ink : "transparent",
+													color: t.palette.custom.paper,
+												})}
+											>
+												{included && <Check sx={{ fontSize: 12 }} />}
+											</Box>
+											<Typography sx={{ color: included ? "custom.ink" : "custom.ink4", textDecoration: included ? "none" : "line-through" }}>{ing}</Typography>
+										</Stack>
+									);
+								})}
+							</Stack>
+						</Box>
+
+						<Divider flexItem orientation="vertical" sx={{ display: { xs: "none", sm: "block" } }} />
+
+						<Box sx={{ flex: 1, width: "100%" }}>
+							<Box sx={{ mb: 1.25 }}>
+								<SectionTitle>Options</SectionTitle>
+							</Box>
+							<OrderOptions data={data} />
+							<Box sx={{ mt: 2, mb: 1.25 }}>
+								<SectionTitle>Changer</SectionTitle>
+							</Box>
+							<Stack direction="row" flexWrap="wrap" gap={0.75}>
+								{burgers.map((b) => (
+									<ChipToggle key={b.name} selected={b.name === data.name} onClick={() => setOrderRecordBurger(b.name)}>
+										{b.name}
+									</ChipToggle>
 								))}
 							</Stack>
-						</Stack>
-						<Divider flexItem orientation="vertical"></Divider>
-						<Stack spacing={2} width={"100%"}>
-							<OrderOptions data={data} />
-						</Stack>
+						</Box>
 					</Stack>
 				) : (
 					<Burgers />
 				)}
 			</DialogContent>
-			<DialogActions>
-				<Stack direction={"row"} spacing={2} p={1}>
-					<Button color={"inherit"} variant={"outlined"} onClick={close("cancel")}>
-						Fermer
-					</Button>
-					<Button color={"success"} variant={"contained"} onClick={close("success")}>
-						Sauvegarder
-					</Button>
-				</Stack>
+			<DialogActions sx={{ p: 2 }}>
+				<Button variant="soft" onClick={close("cancel")}>
+					Fermer
+				</Button>
+				<Button variant="solid" startIcon={<Check />} disabled={!chosen} onClick={close("success")}>
+					Confirmer
+				</Button>
 			</DialogActions>
 		</Dialog>
 	);

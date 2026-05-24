@@ -37,7 +37,7 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 
 	return (
 		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
-			<DialogTitle>Merge Users</DialogTitle>
+			<DialogTitle>Fusionner des utilisateurs</DialogTitle>
 			<DialogContent dividers>
 				<Stack p={2} spacing={3} minWidth={400}>
 					<Autocomplete
@@ -57,8 +57,8 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 			</DialogContent>
 			<DialogActions>
 				<Box p={1}>
-					<Button variant={"outlined"} color={"success"} onClick={onMerge}>
-						Merge
+					<Button variant={"accent"} onClick={onMerge}>
+						Fusionner
 					</Button>
 				</Box>
 			</DialogActions>

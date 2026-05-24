@@ -1,39 +1,33 @@
+import * as React from "react";
+import { Stack, Switch, Typography } from "@mui/material";
 import { BurgerRecord } from "@apis/backend/generated";
-import React from "react";
-import { Checkbox, FormControlLabel, TextField } from "@mui/material";
-import { debounce } from "@mui/material/utils";
+import { OptRow } from "@components/ui/OptRow";
 import { useOrderEditing } from "@/core/data/orders/orders.editing";
 
 export function OrderOptions({ data }: { data: BurgerRecord }) {
 	const { updateBurgerRecord } = useOrderEditing();
 
-	const setComment = React.useMemo(
-		() =>
-			debounce((txt: string) => {
-				updateBurgerRecord({ ...data, comment: txt });
-			}, 100),
-		[data, updateBurgerRecord],
-	);
-
-	const onCommentChange = React.useCallback(
-		(e: React.ChangeEvent<HTMLInputElement>) => {
-			setComment(e.target.value);
-		},
-		[setComment],
-	);
-
-	const updateCheckbox = React.useCallback(
-		(key: keyof Pick<BurgerRecord, "xl" | "vegetarian">) => () => {
-			updateBurgerRecord({ ...data, [key]: !data[key] });
+	const toggle = React.useCallback(
+		(key: "xl" | "vegetarian") => (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+			updateBurgerRecord({ ...data, [key]: checked });
 		},
 		[data, updateBurgerRecord],
 	);
 
 	return (
-		<>
-			<FormControlLabel control={<Checkbox checked={data.vegetarian} onClick={updateCheckbox("vegetarian")} />} label={"Végétarien"} />
-			<FormControlLabel control={<Checkbox sx={{ pl: 0 }} checked={data.xl} onClick={updateCheckbox("xl")} />} label={"XL"} />
-			<TextField label={"Commentaire"} variant={"standard"} defaultValue={data.comment} onChange={onCommentChange} />
-		</>
+		<Stack spacing={1}>
+			<OptRow
+				label="Taille XL"
+				children={
+					<Stack direction="row" alignItems="center" spacing={1.25}>
+						<Switch checked={!!data.xl} onChange={toggle("xl")} />
+						<Typography sx={{ fontSize: 12, color: "custom.ink3" }}>double steak</Typography>
+					</Stack>
+				}
+			/>
+			<OptRow label="Végétarien">
+				<Switch checked={data.vegetarian} onChange={toggle("vegetarian")} />
+			</OptRow>
+		</Stack>
 	);
 }

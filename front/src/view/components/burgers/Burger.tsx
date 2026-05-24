@@ -1,43 +1,30 @@
+import * as React from "react";
+import { Box, Typography } from "@mui/material";
 import { Burger } from "@apis/backend/generated";
-import React from "react";
-import { Button, Divider, Paper, Stack, Typography } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { useOrderEditing } from "@/core/data/orders/orders.editing";
 
-type BurgerProps = {
-	data: Burger;
-};
-
-export function BurgerItem({ data }: BurgerProps) {
-	const { palette } = useTheme();
+export function BurgerItem({ data }: { data: Burger }) {
 	const { setOrderRecordBurger } = useOrderEditing();
 
-	const onClick = React.useCallback(() => {
-		setOrderRecordBurger(data.name);
-	}, [data.name, setOrderRecordBurger]);
+	const onClick = React.useCallback(() => setOrderRecordBurger(data.name), [data.name, setOrderRecordBurger]);
 
 	return (
-		<Button onClick={onClick}>
-			<Paper
-				sx={{
-					width: "100%",
-					height: "100%",
-				}}
-			>
-				<Stack p={2} spacing={1} alignItems={"center"} minWidth={200}>
-					<Typography variant={"overline"} fontSize={"100%"} fontWeight={"bold"}>
-						{data.name}
-					</Typography>
-					<Divider variant={"fullWidth"} color={palette.primary.main} sx={{ width: "100%" }}></Divider>
-					<Stack spacing={1} width={"100%"}>
-						{data.ingredients.map((i) => (
-							<Typography variant={"subtitle1"} key={i}>
-								{i}
-							</Typography>
-						))}
-					</Stack>
-				</Stack>
-			</Paper>
-		</Button>
+		<Box
+			onClick={onClick}
+			data-testid={`burger-card-${data.name}`}
+			sx={(t) => ({
+				border: `1px solid ${t.palette.custom.line}`,
+				backgroundColor: t.palette.custom.paper,
+				borderRadius: "12px",
+				p: 2,
+				cursor: "pointer",
+				transition: "border-color 120ms ease, transform 60ms ease",
+				"&:hover": { borderColor: t.palette.custom.ink },
+				"&:active": { transform: "translateY(1px)" },
+			})}
+		>
+			<Typography sx={{ fontWeight: 600, fontSize: 16, letterSpacing: "-0.015em", mb: 0.75 }}>{data.name}</Typography>
+			<Typography sx={{ fontSize: 12, color: "custom.ink3", lineHeight: 1.5 }}>{data.ingredients.join(" · ")}</Typography>
+		</Box>
 	);
 }

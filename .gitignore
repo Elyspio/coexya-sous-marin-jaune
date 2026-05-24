@@ -20,3 +20,9 @@ front/dist
 # Deploy Prod
 /deploy/prod/config/
 .aspire
+
+# Test artifacts
+front/test-results
+
+# Deploy build cache
+deploy/build/cache

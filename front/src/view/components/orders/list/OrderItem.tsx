@@ -11,7 +11,7 @@ import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
 import { BurgerRecord, Order, OrderPaymentType } from "@apis/rest/api/generated";
-import { calculateOrderPrice } from "@/core/data/orders/orders.utils";
+import { calculateOrderPrice, isUpcoming } from "@/core/data/orders/orders.utils";
 import { fmtPrice } from "@/core/utils/format";
 import { drinkLabels } from "../../modals/OrderMessageModal";
 import { Avatar } from "@components/ui/Avatar";
@@ -57,7 +57,7 @@ function PaymentFlag({ status }: { status: PayStatus }) {
 	);
 }
 
-export function OrderRow({ data, today }: { data: Order; today: boolean }) {
+export function OrderRow({ data }: { data: Order }) {
 	const orderName = useClientStore((s) => s.orderName);
 	const setAlteringOrder = useClientStore((s) => s.setAlteringOrder);
 	const openModalWithOptions = useClientStore((s) => s.openModalWithOptions);
@@ -82,7 +82,7 @@ export function OrderRow({ data, today }: { data: Order; today: boolean }) {
 		[data.fries],
 	);
 
-	const canEdit = (today && isSelf) || isAdmin;
+	const canEdit = (isUpcoming(data) && isSelf) || isAdmin;
 
 	return (
 		<Box

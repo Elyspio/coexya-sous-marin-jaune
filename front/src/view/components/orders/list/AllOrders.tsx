@@ -81,7 +81,7 @@ export function AllOrders() {
 							})}
 						>
 							{dayOrders.map((order) => (
-								<OrderRow key={order.id} data={order} today={today} />
+								<OrderRow key={order.id} data={order} />
 							))}
 						</Paper>
 					</Box>

@@ -5,6 +5,7 @@ export const dateTemplate = "DD/MM/YYYY";
 
 export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(order.date).startOf("day"));
 export const isTodayFormatted = (date: string) => date === dayjs().format(dateTemplate);
+export const isUpcoming = (order: Order) => !dayjs(order.date).startOf("day").isBefore(dayjs().startOf("day"));
 
 export const lastTime = dayjs().locale("fr").startOf("d").set("h", 11).set("m", 30);
 

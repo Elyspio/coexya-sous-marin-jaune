@@ -6,7 +6,7 @@ import { groupBy } from "lodash";
 import { Order } from "@apis/rest/api/generated";
 import { OrderRow } from "./OrderItem";
 import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
-import { isToday } from "@/core/data/orders/orders.utils";
+import { isToday, isUpcoming } from "@/core/data/orders/orders.utils";
 import { fmtDay } from "@/core/utils/format";
 import { OrderTime, useClientStore } from "@/core/store/clientStore";
 import { useOrders } from "@/core/data/orders/orders.queries";
@@ -27,7 +27,7 @@ function matchRange(order: Order, range: OrderTime): boolean {
 		case OrderTime.month:
 			return d.isAfter(dayjs().add(-1, "month"));
 		case OrderTime.today:
-			return isToday(order);
+			return isUpcoming(order);
 	}
 }
 

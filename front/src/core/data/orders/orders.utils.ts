@@ -1,4 +1,4 @@
-import type { Order } from "@apis/backend/generated";
+import type { Order } from "@apis/rest/api/generated";
 import dayjs from "dayjs";
 
 export const dateTemplate = "DD/MM/YYYY";
@@ -7,6 +7,9 @@ export const isToday = (order: Order) => dayjs().startOf("day").isSame(dayjs(ord
 export const isTodayFormatted = (date: string) => date === dayjs().format(dateTemplate);
 
 export const lastTime = dayjs().locale("fr").startOf("d").set("h", 11).set("m", 30);
+
+export const isSameDay = (a: string | Date | undefined, b: string | Date | undefined) =>
+	!!a && !!b && dayjs(a).startOf("day").isSame(dayjs(b).startOf("day"));
 
 export function calculateOrderPrice(order: Order): number {
 	if (order.burgers.length === 0) return 0;
@@ -37,8 +40,18 @@ export function calculateOrderPrice(order: Order): number {
 	return sum;
 }
 
-export function canCreate(orderName: string | undefined, kitchenOpened: boolean, orders: Order[]): boolean | "no-name" | "closed" {
+export function canCreate(
+	orderName: string | undefined,
+	kitchenOpened: boolean,
+	orders: Order[],
+	plannedDate?: string,
+): boolean | "no-name" | "closed" | "already-planned" {
 	if (!orderName) return "no-name";
 	if (!kitchenOpened) return "closed";
-	return !orders.filter((order) => order.user === orderName).some(isToday);
+	const target = plannedDate ?? new Date().toISOString();
+	const userOrders = orders.filter((order) => order.user === orderName);
+	if (userOrders.some((o) => isSameDay(o.date, target))) {
+		return plannedDate && !isSameDay(target, new Date().toISOString()) ? "already-planned" : false;
+	}
+	return true;
 }

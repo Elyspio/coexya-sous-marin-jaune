@@ -9,7 +9,7 @@
 		"docker": "pnpm --dir ../deploy docker",
 		"lint": "vp lint",
 		"test": "vp test",
-		"refresh-clients": "tsx ./scripts/generate-api.ts",
+		"refresh-api": "tsx scripts/refresh-api.ts",
 		"check:types": "tsc --noEmit --watch --pretty",
 		"test:e2e": "playwright test"
 	},
@@ -43,6 +43,7 @@
 	},
 	"devDependencies": {
 		"@elyspio/vite-eslint-config": "5.0.3",
+		"@openapitools/openapi-generator-cli": "^2.23.0",
 		"@playwright/test": "^1.60.0",
 		"@types/lodash": "^4.17.20",
 		"@types/node": "^25.9.1",

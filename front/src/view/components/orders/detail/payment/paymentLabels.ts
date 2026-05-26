@@ -1,4 +1,4 @@
-import { OrderPaymentType } from "@apis/backend/generated";
+import { OrderPaymentType } from "@apis/rest/api/generated";
 
 export const payementTypeLabel: Record<OrderPaymentType, string> = {
 	[OrderPaymentType.BankTransfer]: "Virement",

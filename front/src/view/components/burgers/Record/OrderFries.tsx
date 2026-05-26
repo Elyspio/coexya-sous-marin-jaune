@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Box, Stack, Switch, Typography } from "@mui/material";
-import { Order, Sauce } from "@apis/backend/generated";
+import { Order, Sauce } from "@apis/rest/api/generated";
 import { OptRow } from "@components/ui/OptRow";
 import { QtyStepper } from "@components/ui/QtyStepper";
 import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";

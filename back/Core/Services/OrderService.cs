@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Net;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
+using SousMarinJaune.Api.Abstractions.Exceptions;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
@@ -47,18 +49,35 @@ internal class OrderService : IOrderService
 		return orders;
 	}
 
-	public async Task<Order> Create(string user)
+	public async Task<Order> Create(string user, bool acceptDefer = false)
 	{
 		using var logger = _logger.Enter(Log.Format(user));
 
+		var now = DateTime.Now;
+		var deferred = OrderDateHelper.IsDeferred(now);
+		if (deferred && !acceptDefer)
+			throw new HttpException(HttpStatusCode.Conflict, "L'heure limite est passée. Confirmation requise pour reporter la commande au prochain jeudi.");
+
+		var date = OrderDateHelper.ComputeOrderDate(now);
+
 		var config = await _configService.Get();
 
-		var entity = await _orderRepository.Create(user, config.PaymentEnabled);
+		var entity = await _orderRepository.Create(user, config.PaymentEnabled, date);
 
 		var data = _orderAssembler.Convert(entity);
 		await _hubContext.Clients.All.OrderUpdated(data);
 
 		return data;
+	}
+
+	public OrderCreationInfo GetCreationInfo()
+	{
+		var now = DateTime.Now;
+		return new OrderCreationInfo
+		{
+			Deferred = OrderDateHelper.IsDeferred(now),
+			PlannedDate = OrderDateHelper.ComputeOrderDate(now)
+		};
 	}
 
 	public async Task Delete(Guid orderId)

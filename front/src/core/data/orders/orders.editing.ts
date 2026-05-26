@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import type { BurgerRecord, Order, OrderPaymentType } from "@apis/backend/generated";
+import type { BurgerRecord, Order, OrderPaymentType } from "@apis/rest/api/generated";
 import { ordersCache } from "./orders.cache";
 import { useClientStore } from "@/core/store/clientStore";
 import { useUpdateRemoteOrder } from "./orders.mutations";

@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { Box, Paper, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { groupBy } from "lodash";
-import { Order } from "@apis/backend/generated";
+import { Order } from "@apis/rest/api/generated";
 import { OrderRow } from "./OrderItem";
 import { SelectTimeRangeOrder } from "./SelectTimeRangeOrder";
 import { isToday } from "@/core/data/orders/orders.utils";

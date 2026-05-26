@@ -9,7 +9,7 @@ import Payments from "@mui/icons-material/Payments";
 import LocalAtm from "@mui/icons-material/LocalAtm";
 import Close from "@mui/icons-material/Close";
 import { QRCodeSVG } from "qrcode.react";
-import { OrderPaymentType } from "@apis/backend/generated";
+import { OrderPaymentType } from "@apis/rest/api/generated";
 import { PicsouMark } from "@components/ui/marks";
 import { fmtPrice } from "@/core/utils/format";
 import { payementTypeLabel } from "./paymentLabels";

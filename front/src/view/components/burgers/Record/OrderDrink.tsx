@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
-import { Drink, Order } from "@apis/backend/generated";
+import { Drink, Order } from "@apis/rest/api/generated";
 import { OptRow } from "@components/ui/OptRow";
 import { ChipToggle } from "@components/ui/ChipToggle";
 import { drinkLabels } from "../../modals/OrderMessageModal";

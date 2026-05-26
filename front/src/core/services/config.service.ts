@@ -1,22 +1,22 @@
 import { inject, injectable } from "inversify";
-import { BackendApi } from "@apis/backend";
+import { BackendApi } from "@apis/rest/api";
 import { BaseService } from "./technical/base.service";
-import { ConfigBase } from "@apis/backend/generated";
+import { ConfigBase } from "@apis/rest/api/generated";
 
 @injectable()
 export class ConfigService extends BaseService {
-	private readonly backendApiClient: BackendApi;
+	private readonly backendApi: BackendApi;
 
-	constructor(@inject(BackendApi) backendApiClient: BackendApi) {
+	constructor(@inject(BackendApi) backendApi: BackendApi) {
 		super();
-		this.backendApiClient = backendApiClient;
+		this.backendApi = backendApi;
 	}
 
 	public update(config: ConfigBase) {
-		return this.backendApiClient.config.v1_Config_Update(config);
+		return this.backendApi.client.v1ConfigUpdate(config).then(this.unWrapAxios);
 	}
 
 	public get() {
-		return this.backendApiClient.config.v1_Config_Get();
+		return this.backendApi.client.v1ConfigGet().then(this.unWrapAxios);
 	}
 }

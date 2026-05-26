@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Switch } from "@mui/material";
-import { Order } from "@apis/backend/generated";
+import { Order } from "@apis/rest/api/generated";
 import { OptRow } from "@components/ui/OptRow";
 import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 

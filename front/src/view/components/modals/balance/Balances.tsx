@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Avatar, Badge, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, InputAdornment, Paper, Stack, TextField, Tooltip, Typography, useTheme } from "@mui/material";
 import dayjs from "dayjs";
 import { ModalComponentProps } from "../common/ModalProps";
-import { OrderPaymentType } from "@apis/backend/generated";
+import { OrderPaymentType } from "@apis/rest/api/generated";
 import { useMounted } from "@hooks/utils/useMounted";
 import { payementTypeLabel } from "../../orders/detail/payment/paymentLabels";
 import { useOrders } from "@/core/data/orders/orders.queries";
@@ -19,7 +19,7 @@ import Paypal from "@/view/icons/paypal.svg";
 type PendingRow = {
 	type: OrderPaymentType;
 	amount: number;
-	received?: number;
+	received?: number | null;
 	date: string;
 	rawDate: string;
 	user: string;

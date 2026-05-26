@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import {getService} from "../api/services";
 import {ConfigService} from "@services/config.service";
 import {configKeys} from "./config.keys";
-import type {Config, ConfigBase} from "@apis/backend/generated";
+import type {Config, ConfigBase} from "@apis/rest/api/generated";
 
 const DEFAULT: ConfigBase = {
 	kitchenOpened: false,

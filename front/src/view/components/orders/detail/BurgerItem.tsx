@@ -3,7 +3,7 @@ import { Box, Chip, IconButton, Stack, TextField, Tooltip, Typography } from "@m
 import { debounce } from "@mui/material/utils";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { BurgerRecord } from "@apis/backend/generated";
+import { BurgerRecord } from "@apis/rest/api/generated";
 import { noneBurger, useOrderEditing, useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";
 import { useClientStore } from "@/core/store/clientStore";
 import { useOrder } from "@/core/data/orders/orders.queries";

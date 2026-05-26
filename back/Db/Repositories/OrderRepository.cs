@@ -17,12 +17,12 @@ internal class OrderRepository : BaseRepository<OrderEntity>, IOrderRepository
 	}
 
 
-	public async Task<OrderEntity> Create(string userName, bool paymentEnabled)
+	public async Task<OrderEntity> Create(string userName, bool paymentEnabled, DateTime date)
 	{
 		var order = new OrderEntity
 		{
 			Burgers = new(),
-			Date = DateTime.Now,
+			Date = date,
 			User = userName,
 			Student = false,
 			Payments = new(),

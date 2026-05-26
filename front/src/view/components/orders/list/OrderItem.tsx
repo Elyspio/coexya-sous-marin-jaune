@@ -10,7 +10,7 @@ import Cookie from "@mui/icons-material/Cookie";
 import CheckCircleOutline from "@mui/icons-material/CheckCircleOutline";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import ErrorOutline from "@mui/icons-material/ErrorOutline";
-import { BurgerRecord, Order, OrderPaymentType } from "@apis/backend/generated";
+import { BurgerRecord, Order, OrderPaymentType } from "@apis/rest/api/generated";
 import { calculateOrderPrice } from "@/core/data/orders/orders.utils";
 import { fmtPrice } from "@/core/utils/format";
 import { drinkLabels } from "../../modals/OrderMessageModal";

@@ -16,7 +16,7 @@ import {
 	Typography,
 } from "@mui/material";
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { BurgerRecord, Drink, Fries } from "@apis/backend/generated";
+import { BurgerRecord, Drink, Fries } from "@apis/rest/api/generated";
 import { toast } from "react-toastify";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
@@ -153,7 +153,7 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 								<ListItem key={order.id}>
 									<Typography>
 										<span style={{ fontWeight: "bold" }}>{order.user}</span> : {order.student ? "étudiant" : ""} {getBurgerLabel(order.burgers)}{" "}
-										{getFriteLabel(order.fries)}
+										{getFriteLabel(order.fries ?? undefined)}
 										{order.drink ? `, ${drinkLabels[order.drink]}` : ""} {order.dessert} ({order.price}€)
 									</Typography>
 								</ListItem>

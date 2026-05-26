@@ -7,7 +7,7 @@ import { Transition } from "../common/Transition";
 import { ModalComponentProps } from "../common/ModalProps";
 import { useMounted } from "@hooks/utils/useMounted";
 import { useOrders } from "@/core/data/orders/orders.queries";
-import { OrderPaymentType } from "@apis/backend/generated";
+import { OrderPaymentType } from "@apis/rest/api/generated";
 import { payementTypeLabel } from "../../orders/detail/payment/paymentLabels";
 import { fmtPrice } from "@/core/utils/format";
 import { useClientStore } from "@/core/store/clientStore";

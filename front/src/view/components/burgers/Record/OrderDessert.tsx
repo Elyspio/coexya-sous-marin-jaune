@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback } from "react";
-import { Dessert, Order } from "@apis/backend/generated";
+import { Dessert, Order } from "@apis/rest/api/generated";
 import { OptRow } from "@components/ui/OptRow";
 import { ChipToggle } from "@components/ui/ChipToggle";
 import { useUpdateAndSaveOrder } from "@/core/data/orders/orders.editing";

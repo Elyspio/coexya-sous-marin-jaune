@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
-import type {Order} from "@apis/backend/generated";
+import type {Order, OrderCreationInfo} from "@apis/rest/api/generated";
 import {getService} from "../api/services";
 import {OrderService} from "@services/order.service";
 import {ordersKeys} from "./orders.keys";
@@ -27,4 +27,14 @@ export function useOrdersById(): Record<string, Order> {
 export function useOrder(id: string | undefined): Order | undefined {
 	const byId = useOrdersById();
 	return id ? byId[id] : undefined;
+}
+
+export function useOrderCreationInfo(): OrderCreationInfo | undefined {
+	const query = useQuery({
+		queryKey: ordersKeys.creationInfo(),
+		queryFn: () => getService(OrderService).getCreationInfo(),
+		staleTime: 30_000,
+		refetchInterval: 60_000,
+	});
+	return query.data;
 }

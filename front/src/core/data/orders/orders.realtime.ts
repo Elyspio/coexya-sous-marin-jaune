@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
-import type { Config, Order } from "@apis/backend/generated";
+import type { Config, Order } from "@apis/rest/api/generated";
 import { ordersCache } from "./orders.cache";
 import { usersKeys } from "../users/users.keys";
 import { configKeys } from "../config/config.keys";

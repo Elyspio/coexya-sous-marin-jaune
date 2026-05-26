@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import {getService} from "../api/services";
 import {BurgerService} from "@services/burger.service";
 import {burgersKeys} from "./burgers.keys";
-import type {Burger} from "@apis/backend/generated";
+import type {Burger} from "@apis/rest/api/generated";
 
 const EMPTY: Burger[] = [];
 

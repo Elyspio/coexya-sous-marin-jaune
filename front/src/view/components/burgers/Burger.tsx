@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box, Typography } from "@mui/material";
-import { Burger } from "@apis/backend/generated";
+import { Burger } from "@apis/rest/api/generated";
 import { useOrderEditing } from "@/core/data/orders/orders.editing";
 
 export function BurgerItem({ data }: { data: Burger }) {

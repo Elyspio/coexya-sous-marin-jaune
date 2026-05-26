@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Stack, Switch, Typography } from "@mui/material";
-import { BurgerRecord } from "@apis/backend/generated";
+import { BurgerRecord } from "@apis/rest/api/generated";
 import { OptRow } from "@components/ui/OptRow";
 import { useOrderEditing } from "@/core/data/orders/orders.editing";
 

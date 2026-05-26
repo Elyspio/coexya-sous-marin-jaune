@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField } from "@mui/material";
-import type { Config } from "@apis/backend/generated";
+import type { Config } from "@apis/rest/api/generated";
 import { Transition } from "./common/Transition";
 import { ModalComponentProps } from "./common/ModalProps";
 import { useMounted } from "@hooks/utils/useMounted";

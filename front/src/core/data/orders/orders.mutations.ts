@@ -2,7 +2,7 @@ import {useCallback} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {cloneDeep} from "lodash";
 import {toast} from "react-toastify";
-import type {Order, OrderPaymentType, Sauce} from "@apis/backend/generated";
+import type {Order, OrderPaymentType, Sauce} from "@apis/rest/api/generated";
 import {getService} from "../api/services";
 import {OrderService} from "@services/order.service";
 import {extractApiError} from "../api/extractError";

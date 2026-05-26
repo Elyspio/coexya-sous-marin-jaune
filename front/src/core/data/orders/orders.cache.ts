@@ -1,5 +1,5 @@
 import type { QueryClient } from "@tanstack/react-query";
-import type { Order } from "@apis/backend/generated";
+import type { Order } from "@apis/rest/api/generated";
 import { ordersKeys } from "./orders.keys";
 
 type Updater = (order: Order) => Order;

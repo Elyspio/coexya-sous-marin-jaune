@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Order } from "@apis/backend/generated";
+import type { Order } from "@apis/rest/api/generated";
 import { getUrlTheme, type Themes } from "@/config/theme";
 
 export const ModalTypes = {

@@ -1,38 +1,38 @@
 import { inject, injectable } from "inversify";
-import { BackendApi } from "@apis/backend";
+import { BackendApi } from "@apis/rest/api";
 import { BaseService } from "./technical/base.service";
-import { Order, OrderPaymentType } from "@apis/backend/generated";
+import { Order, OrderPaymentType } from "@apis/rest/api/generated";
 
 @injectable()
 export class OrderService extends BaseService {
-	private readonly backendApiClient: BackendApi;
+	private readonly backendApi: BackendApi;
 
-	constructor(@inject(BackendApi) backendApiClient: BackendApi) {
+	constructor(@inject(BackendApi) backendApi: BackendApi) {
 		super();
-		this.backendApiClient = backendApiClient;
+		this.backendApi = backendApi;
 	}
 
 	public getAll() {
-		return this.backendApiClient.orders.v1_Order_GetAll();
+		return this.backendApi.client.v1OrderGetAll().then(this.unWrapAxios);
 	}
 
 	public createOrder(user: Order["user"], acceptDefer?: boolean) {
-		return this.backendApiClient.orders.v1_Order_Create(user, acceptDefer);
+		return this.backendApi.client.v1OrderCreate(user, acceptDefer).then(this.unWrapAxios);
 	}
 
 	public getCreationInfo() {
-		return this.backendApiClient.orders.v1_Order_GetCreationInfo();
+		return this.backendApi.client.v1OrderGetCreationInfo().then(this.unWrapAxios);
 	}
 
 	public deleteOrder(id: string) {
-		return this.backendApiClient.orders.v1_Order_Delete(id);
+		return this.backendApi.client.v1OrderDelete(id).then(this.unWrapAxios);
 	}
 
 	public updateOrder(order: Order) {
-		return this.backendApiClient.orders.v1_Order_UpdateOrder(order.id, order);
+		return this.backendApi.client.v1OrderUpdateOrder(order.id, order).then(this.unWrapAxios);
 	}
 
 	public updatePaymentReceived(idOrder: string, type: OrderPaymentType, value: number) {
-		return this.backendApiClient.orders.v1_Order_UpdateOrderPaymentReceived(idOrder, type, value);
+		return this.backendApi.client.v1OrderUpdateOrderPaymentReceived(idOrder, type, value).then(this.unWrapAxios);
 	}
 }

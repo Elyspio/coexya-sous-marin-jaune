@@ -1,6 +1,6 @@
 import * as signalR from "@microsoft/signalr";
 import { HubConnection, LogLevel } from "@microsoft/signalr";
-import { Config, Order } from "@apis/backend/generated";
+import { Config, Order } from "@apis/rest/api/generated";
 import { injectable } from "inversify";
 
 interface UpdateHub extends HubConnection {

@@ -1,4 +1,4 @@
-import { BackendApi } from "@apis/backend";
+import { BackendApi } from "@apis/rest/api";
 import { AuthenticationApiClient } from "@apis/authentication";
 import { Container } from "inversify";
 import { UserManager } from "oidc-client-ts";

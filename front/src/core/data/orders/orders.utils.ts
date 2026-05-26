@@ -1,4 +1,4 @@
-import type { Order } from "@apis/backend/generated";
+import type { Order } from "@apis/rest/api/generated";
 import dayjs from "dayjs";
 
 export const dateTemplate = "DD/MM/YYYY";

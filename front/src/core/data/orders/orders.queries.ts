@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {useQuery} from "@tanstack/react-query";
-import type {Order, OrderCreationInfo} from "@apis/backend/generated";
+import type {Order, OrderCreationInfo} from "@apis/rest/api/generated";
 import {getService} from "../api/services";
 import {OrderService} from "@services/order.service";
 import {ordersKeys} from "./orders.keys";

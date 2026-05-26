@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, Stack, Typography } from "@mui/material";
-import AccessTime from "@mui/icons-material/AccessTime";
+import CalendarMonth from "@mui/icons-material/CalendarMonth";
 import EventAvailable from "@mui/icons-material/EventAvailable";
 import dayjs from "dayjs";
 import "dayjs/locale/fr";
@@ -51,18 +51,18 @@ export function DeferOrderDialog({ open, plannedDate, onCancel, onConfirm, pendi
 							justifyContent: "center",
 						})}
 					>
-						<AccessTime sx={{ fontSize: 26 }} />
+						<CalendarMonth sx={{ fontSize: 26 }} />
 					</Box>
 
 					<Stack spacing={1.25}>
 						<Typography variant="eyebrow" sx={(t) => ({ color: t.palette.custom.warn })}>
-							Heure limite dépassée
+							Commande pour un jeudi
 						</Typography>
 						<Typography id="defer-dialog-title" variant="h4" sx={{ lineHeight: 1.25 }}>
-							Votre commande sera enregistrée pour&nbsp;jeudi prochain
+							Votre commande sera enregistrée pour jeudi
 						</Typography>
 						<Typography variant="body1" sx={(t) => ({ color: t.palette.custom.ink3 })}>
-							Les commandes ne sont plus prises pour aujourd'hui. Confirmez pour créer une commande qui partira avec la fournée suivante.
+							La cuisine n'ouvre que le jeudi. Confirmez pour créer la commande pour la date ci-dessous.
 						</Typography>
 					</Stack>
 

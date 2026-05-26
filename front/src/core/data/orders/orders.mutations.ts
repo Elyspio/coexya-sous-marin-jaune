@@ -10,10 +10,12 @@ import {usersKeys} from "../users/users.keys";
 import {ordersCache} from "./orders.cache";
 import {useClientStore} from "@/core/store/clientStore";
 
+type CreateOrderParams = { user: string; acceptDefer?: boolean };
+
 export function useCreateOrder() {
 	const qc = useQueryClient();
 	return useMutation({
-		mutationFn: (user: string) => getService(OrderService).createOrder(user),
+		mutationFn: ({ user, acceptDefer }: CreateOrderParams) => getService(OrderService).createOrder(user, acceptDefer),
 		onError: (e) => {
 			toast.error(extractApiError(e, "Création impossible."));
 		},
@@ -147,7 +149,7 @@ export function useDuplicateOrder() {
 			if (!old) return;
 
 			const orderName = useClientStore.getState().orderName;
-			const created = await createOrder.mutateAsync(orderName ?? old.user);
+			const created = await createOrder.mutateAsync({ user: orderName ?? old.user, acceptDefer: true });
 
 			const duplicate: Order = {
 				...cloneDeep(old),

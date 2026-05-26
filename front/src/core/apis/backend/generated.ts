@@ -313,11 +313,13 @@ export class OrderClient {
     /**
      * @return Created
      */
-    v1_Order_Create(user: string, cancelToken?: CancelToken): Promise<Order> {
-        let url_ = this.baseUrl + "/api/orders/users/{user}";
+    v1_Order_Create(user: string, acceptDefer?: boolean | undefined, cancelToken?: CancelToken): Promise<Order> {
+        let url_ = this.baseUrl + "/api/orders/users/{user}?";
         if (user === undefined || user === null)
             throw new globalThis.Error("The parameter 'user' must be defined.");
         url_ = url_.replace("{user}", encodeURIComponent("" + user));
+        if (acceptDefer !== undefined && acceptDefer !== null)
+            url_ += "acceptDefer=" + encodeURIComponent("" + acceptDefer) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: AxiosRequestConfig = {
@@ -525,6 +527,57 @@ export class OrderClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    v1_Order_GetCreationInfo(cancelToken?: CancelToken): Promise<OrderCreationInfo> {
+        let url_ = this.baseUrl + "/api/orders/creation-info";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            cancelToken
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processV1_Order_GetCreationInfo(_response);
+        });
+    }
+
+    protected processV1_Order_GetCreationInfo(response: AxiosResponse): Promise<OrderCreationInfo> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = JSON.parse(resultData200);
+            return Promise.resolve<OrderCreationInfo>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<OrderCreationInfo>(null as any);
     }
 }
 
@@ -863,6 +916,11 @@ export interface Order extends OrderBase {
 
 export interface OrderEntity extends OrderBase {
     id?: ObjectId;
+}
+
+export interface OrderCreationInfo {
+    deferred: boolean;
+    plannedDate: string;
 }
 
 export interface OrderPayment {

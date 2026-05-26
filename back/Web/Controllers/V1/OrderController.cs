@@ -39,10 +39,18 @@ public class OrderController : BaseController
 	[HttpPost("users/{user}")]
 	[ProducesResponseType<Order>(StatusCodes.Status201Created)]
 	[AllowAnonymous]
-	public async Task<IActionResult> Create(string user)
+	public async Task<IActionResult> Create(string user, [FromQuery] bool acceptDefer = false)
 	{
-		var order = await _orderService.Create(user);
+		var order = await _orderService.Create(user, acceptDefer);
 		return Created($"orders/{order.Id}", order);
+	}
+
+	[HttpGet("creation-info")]
+	[ProducesResponseType<OrderCreationInfo>(StatusCodes.Status200OK)]
+	[AllowAnonymous]
+	public IActionResult GetCreationInfo()
+	{
+		return Ok(_orderService.GetCreationInfo());
 	}
 
 	[HttpDelete("{order:guid}")]

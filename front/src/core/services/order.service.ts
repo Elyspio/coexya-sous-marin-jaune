@@ -16,8 +16,12 @@ export class OrderService extends BaseService {
 		return this.backendApiClient.orders.v1_Order_GetAll();
 	}
 
-	public createOrder(user: Order["user"]) {
-		return this.backendApiClient.orders.v1_Order_Create(user);
+	public createOrder(user: Order["user"], acceptDefer?: boolean) {
+		return this.backendApiClient.orders.v1_Order_Create(user, acceptDefer);
+	}
+
+	public getCreationInfo() {
+		return this.backendApiClient.orders.v1_Order_GetCreationInfo();
 	}
 
 	public deleteOrder(id: string) {

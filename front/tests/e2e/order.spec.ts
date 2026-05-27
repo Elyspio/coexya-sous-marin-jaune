@@ -44,13 +44,17 @@ test("création → personnalisation → prix → paiement → suppression", asy
 
 	// Étape paiement : libellés et coordonnées réelles.
 	await page.getByRole("button", { name: "Payer" }).click();
-	await expect(page.getByText("Moyens de paiement")).toBeVisible();
+	await expect(page.getByText("Choisir les moyens")).toBeVisible();
 	await expect(page.getByText("Liquide")).toBeVisible();
+	// Sélection de Virement → l'IBAN apparaît dans la ligne de répartition.
+	await page.getByTestId("pay-card-BankTransfer").click();
 	await expect(page.getByText(/FR76/)).toBeVisible();
+	// On déselectionne pour ne payer qu'en liquide.
+	await page.getByTestId("pay-card-BankTransfer").click();
 
-	// « Tout payer » sur Liquide couvre le reste → le paiement est appliqué et persiste.
-	await page.getByTestId("pay-fill-Cash").click();
-	await expect(page.getByTestId("pay-fill-Cash")).toHaveCount(0);
+	// Sélection de Liquide + AUTO couvre le reste → le paiement est appliqué et persiste.
+	await page.getByTestId("pay-card-Cash").click();
+	await page.getByTestId("pay-auto-Cash").click();
 	const validate = page.getByRole("button", { name: "Valider" });
 	await expect(validate).toBeEnabled();
 	await validate.click();

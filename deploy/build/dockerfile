@@ -34,6 +34,8 @@ RUN pnpm build
 
 # Running
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS production
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /back
 COPY --from=builder-back /app/out .
 

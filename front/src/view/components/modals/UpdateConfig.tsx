@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Autocomplete, Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Stack, TextField } from "@mui/material";
 import type { Config } from "@apis/rest/api/generated";
 import { Transition } from "./common/Transition";
@@ -16,9 +16,12 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	const users = useMemo(() => [...new Set(orders.map((order) => order.user))].sort((a, b) => a.localeCompare(b)), [orders]);
 
 	const [draft, setDraft] = useState<Config>(remoteConfig as Config);
-	useEffect(() => {
+	// Reset the draft whenever the server config changes (adjusted during render rather than in an effect).
+	const [syncedConfig, setSyncedConfig] = useState(remoteConfig);
+	if (remoteConfig !== syncedConfig) {
+		setSyncedConfig(remoteConfig);
 		setDraft(remoteConfig as Config);
-	}, [remoteConfig]);
+	}
 
 	const updateRemote = useCallback(() => {
 		updateConfigMutate(draft);

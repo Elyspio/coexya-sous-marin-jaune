@@ -74,14 +74,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		mgr.events.addUserUnloaded(onUnloaded);
 		mgr.events.addSilentRenewError(onRenewError);
 
-		void silentLogin();
+		// Restore an existing session on mount (silent renew can fail when there is none — that's fine).
+		mgr.signinSilent().then(
+			(next) => {
+				if (next && !next.expired) finish(next);
+			},
+			() => undefined
+		);
 
 		return () => {
 			mgr.events.removeUserLoaded(onLoaded);
 			mgr.events.removeUserUnloaded(onUnloaded);
 			mgr.events.removeSilentRenewError(onRenewError);
 		};
-	}, [finish, silentLogin]);
+	}, [finish]);
 
 	const value = useMemo<AuthState>(
 		() => ({

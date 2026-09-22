@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { Box, Button, Drawer, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 import Close from "@mui/icons-material/Close";
 import Check from "@mui/icons-material/Check";
@@ -111,9 +111,8 @@ export function EditOrder() {
 
 	const cantValidate = validateTooltip !== "";
 
-	useEffect(() => {
-		if (!order?.paymentEnabled) setStep("content");
-	}, [order]);
+	// Payment disabled: fall back to the content step (adjusted during render rather than in an effect).
+	if (!order?.paymentEnabled && step !== "content") setStep("content");
 
 	if (!order) return null;
 

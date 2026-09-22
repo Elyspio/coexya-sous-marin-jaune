@@ -46,14 +46,14 @@ export function CreateOrder() {
 		create({ user: orderName });
 	}, [create, orderName, creationInfo?.deferred]);
 
+	const plannedDate = creationInfo?.plannedDate;
 	const tooltip = useMemo(() => {
 		if (created === "no-name") return "Renseignez votre prénom";
 		if (created === false) return "Vous avez déjà créé une commande aujourd'hui";
-		if (created === "already-planned" && creationInfo?.plannedDate)
-			return `Vous avez déjà une commande pour ${dayjs(creationInfo.plannedDate).locale("fr").format("dddd D MMMM")}`;
+		if (created === "already-planned" && plannedDate) return `Vous avez déjà une commande pour ${dayjs(plannedDate).locale("fr").format("dddd D MMMM")}`;
 		if (created === "closed") return "Le restaurant est fermé aujourd'hui";
 		return "";
-	}, [created, creationInfo?.plannedDate]);
+	}, [created, plannedDate]);
 
 	return (
 		<>

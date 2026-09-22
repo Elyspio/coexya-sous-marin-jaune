@@ -22,7 +22,7 @@ export function CreateOrder() {
 
 	const created = useMemo(
 		() => canCreate(orderName, !!config.kitchenOpened, orders, creationInfo?.plannedDate),
-		[orderName, config.kitchenOpened, orders, creationInfo?.plannedDate],
+		[orderName, config.kitchenOpened, orders, creationInfo?.plannedDate]
 	);
 
 	const closeDefer = useCallback(() => setDeferOpen(false), []);
@@ -33,7 +33,7 @@ export function CreateOrder() {
 			{ user: orderName, acceptDefer: true },
 			{
 				onSuccess: () => setDeferOpen(false),
-			},
+			}
 		);
 	}, [create, orderName]);
 

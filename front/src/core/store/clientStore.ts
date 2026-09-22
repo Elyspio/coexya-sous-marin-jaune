@@ -19,12 +19,12 @@ export interface ModalOptions {
 }
 
 export enum OrderTime {
-	"today" = "Aujourd'hui",
-	"month" = "1 mois",
-	"months3" = "3 mois",
-	"months6" = "6 mois",
-	"year" = "1 an",
-	"all" = "Toutes",
+	today = "Aujourd'hui",
+	month = "1 mois",
+	months3 = "3 mois",
+	months6 = "6 mois",
+	year = "1 an",
+	all = "Toutes",
 }
 
 type AlteringState = {
@@ -116,7 +116,7 @@ export const useClientStore = create<ClientState>()(
 								altering: { ...s.altering, record },
 								mode: { ...s.mode, record: record === undefined ? undefined : "update" },
 							}
-						: s,
+						: s
 				),
 			setOrderMode: (mode) => set((s) => ({ mode: { ...s.mode, ...mode } })),
 			resetOrderMode: () => set({ mode: {} }),
@@ -130,6 +130,6 @@ export const useClientStore = create<ClientState>()(
 					orderName: state.orderName,
 					timeRange: state.timeRange,
 				}) as PersistedState,
-		},
-	),
+		}
+	)
 );

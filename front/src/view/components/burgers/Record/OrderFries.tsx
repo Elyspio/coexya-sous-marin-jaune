@@ -29,7 +29,7 @@ export function OrderFries({ data }: { data: Order }) {
 		(sauce: Sauce) => (quantity: number) => {
 			updateSauceQuantity({ idOrder: data.id, sauce, quantity });
 		},
-		[data.id, updateSauceQuantity],
+		[data.id, updateSauceQuantity]
 	);
 
 	return (
@@ -41,13 +41,29 @@ export function OrderFries({ data }: { data: Order }) {
 			{data.fries && (
 				<OptRow label="Sauces" stacked>
 					<Box sx={{ width: "100%" }}>
-						<Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+						<Stack
+							direction="row"
+							sx={{
+								justifyContent: "space-between",
+								mb: 0.5,
+							}}
+						>
 							<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink3" }}>
 								{nbSauces}/{MAX_SAUCES} sélectionnées
 							</Typography>
 						</Stack>
 						{Object.values(Sauce).map((sauce) => (
-							<Stack key={sauce} direction="row" alignItems="center" justifyContent="space-between" sx={(t) => ({ py: 1, borderBottom: `1px solid ${t.palette.custom.lineSoft}`, "&:last-of-type": { borderBottom: 0 } })}>
+							<Stack
+								key={sauce}
+								direction="row"
+								sx={[
+									{
+										alignItems: "center",
+										justifyContent: "space-between",
+									},
+									(t) => ({ py: 1, borderBottom: `1px solid ${t.palette.custom.lineSoft}`, "&:last-of-type": { borderBottom: 0 } }),
+								]}
+							>
 								<Typography sx={{ color: quantityPerSauce[sauce] > 0 ? "custom.ink" : "custom.ink3" }}>{sauce}</Typography>
 								<QtyStepper value={quantityPerSauce[sauce]} onChange={onSauceChange(sauce)} max={MAX_SAUCES - nbSauces + quantityPerSauce[sauce]} />
 							</Stack>

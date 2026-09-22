@@ -25,7 +25,7 @@ export function ExportPayments({ open, setClose }: ModalComponentProps) {
 
 	const users = useMemo(() => {
 		const withPending = new Set(
-			orders.filter((order) => order.payments.some((p) => p.type !== OrderPaymentType.Wallet && (p.received ?? 0) < p.amount)).map((order) => order.user),
+			orders.filter((order) => order.payments.some((p) => p.type !== OrderPaymentType.Wallet && (p.received ?? 0) < p.amount)).map((order) => order.user)
 		);
 		return [...withPending].sort((a, b) => a.localeCompare(b));
 	}, [orders]);
@@ -45,7 +45,7 @@ export function ExportPayments({ open, setClose }: ModalComponentProps) {
 						date: dayjs(order.date).format("DD/MM"),
 						type: p.type,
 						remaining: p.amount - (p.received ?? 0),
-					})),
+					}))
 			)
 			.sort((a, b) => (a.rawDate < b.rawDate ? 1 : -1));
 	}, [orders, selectedUser]);
@@ -74,10 +74,25 @@ export function ExportPayments({ open, setClose }: ModalComponentProps) {
 	if (!mounted && !open) return null;
 
 	return (
-		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition} fullWidth maxWidth={"sm"}>
+		<Dialog
+			open={open}
+			ref={ref}
+			onClose={setClose}
+			fullWidth
+			maxWidth={"sm"}
+			slots={{
+				transition: Transition,
+			}}
+		>
 			<DialogTitle>Exporter les paiements en attente</DialogTitle>
 			<DialogContent dividers>
-				<Stack p={1} spacing={2.5} minWidth={360}>
+				<Stack
+					spacing={2.5}
+					sx={{
+						p: 1,
+						minWidth: 360,
+					}}
+				>
 					<Autocomplete
 						value={selectedUser}
 						onChange={onUserChange}
@@ -86,9 +101,21 @@ export function ExportPayments({ open, setClose }: ModalComponentProps) {
 					/>
 
 					{rows.length === 0 ? (
-						<Stack py={4} spacing={1.5} alignItems={"center"} justifyContent={"center"}>
+						<Stack
+							spacing={1.5}
+							sx={{
+								py: 4,
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
 							<TaskAlt color={"success"} sx={{ fontSize: 44 }} />
-							<Typography variant={"body2"} color={"text.secondary"}>
+							<Typography
+								variant={"body2"}
+								sx={{
+									color: "text.secondary",
+								}}
+							>
 								{selectedUser ? `Aucun paiement en attente pour ${selectedUser}` : "Sélectionnez un utilisateur"}
 							</Typography>
 						</Stack>
@@ -113,12 +140,20 @@ export function ExportPayments({ open, setClose }: ModalComponentProps) {
 				</Stack>
 			</DialogContent>
 			<DialogActions>
-				<Box p={1}>
+				<Box
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"outlined"} onClick={setClose}>
 						Fermer
 					</Button>
 				</Box>
-				<Box p={1}>
+				<Box
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"accent"} startIcon={<ContentCopy />} onClick={copy} disabled={!text}>
 						Copier
 					</Button>

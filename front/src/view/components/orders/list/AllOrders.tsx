@@ -47,7 +47,13 @@ export function AllOrders() {
 	return (
 		<Stack spacing={4.5}>
 			{!viewToday && (
-				<Stack direction="row" alignItems="center" justifyContent="flex-end">
+				<Stack
+					direction="row"
+					sx={{
+						alignItems: "center",
+						justifyContent: "flex-end",
+					}}
+				>
 					<SelectTimeRangeOrder />
 				</Stack>
 			)}
@@ -64,7 +70,15 @@ export function AllOrders() {
 				const today = isToday(dayOrders[0]);
 				return (
 					<Box key={key}>
-						<Stack direction="row" alignItems="baseline" spacing={1.75} sx={{ mb: 1.75, px: 0.5 }}>
+						<Stack
+							direction="row"
+							spacing={1.75}
+							sx={{
+								alignItems: "baseline",
+								mb: 1.75,
+								px: 0.5,
+							}}
+						>
 							<Typography sx={{ fontSize: 17, fontWeight: 600, letterSpacing: "-0.015em", textTransform: "capitalize" }}>{fmtDay(dayOrders[0].date)}</Typography>
 							{today && <Box sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "custom.accent" }} />}
 							<Typography variant="eyebrow">

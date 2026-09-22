@@ -33,7 +33,14 @@ export function EditMenuOrder() {
 	return (
 		<>
 			<Box sx={{ mb: 3.5 }}>
-				<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.25 }}>
+				<Stack
+					direction="row"
+					sx={{
+						alignItems: "center",
+						justifyContent: "space-between",
+						mb: 1.25,
+					}}
+				>
 					<SectionTitle>Burgers</SectionTitle>
 					<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink3" }}>
 						{order.burgers.length} {order.burgers.length > 1 ? "items" : "item"}

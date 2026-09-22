@@ -29,7 +29,7 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 		(field: keyof Config) => (e: React.ChangeEvent<HTMLInputElement>) => {
 			setDraft((d) => ({ ...d, [field]: e.target.checked }));
 		},
-		[],
+		[]
 	);
 
 	const onCarrierChanged = useCallback((_: React.SyntheticEvent, carrier: string | null) => {
@@ -41,10 +41,23 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 	if (!mounted && !open) return null;
 
 	return (
-		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
+		<Dialog
+			open={open}
+			ref={ref}
+			onClose={setClose}
+			slots={{
+				transition: Transition,
+			}}
+		>
 			<DialogTitle>Modifier la configuration</DialogTitle>
 			<DialogContent dividers>
-				<Stack p={2} spacing={3} minWidth={400}>
+				<Stack
+					spacing={3}
+					sx={{
+						p: 2,
+						minWidth: 400,
+					}}
+				>
 					<Autocomplete
 						onChange={onCarrierChanged}
 						options={users}
@@ -57,7 +70,11 @@ export function UpdateConfig({ setClose, open }: ModalComponentProps) {
 				</Stack>
 			</DialogContent>
 			<DialogActions>
-				<Box p={1}>
+				<Box
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"outlined"} color={"success"} onClick={updateRemote}>
 						Valider
 					</Button>

@@ -126,7 +126,16 @@ export function EditOrder() {
 			onClose={closeAndMaybeDelete}
 			slotProps={{ paper: { sx: { width: { xs: "100vw", sm: 560 }, maxWidth: "100vw", display: "flex", flexDirection: "column" } } }}
 		>
-			<Stack direction="row" alignItems="center" justifyContent="space-between" sx={(t) => ({ p: "20px 24px 16px", borderBottom: `1px solid ${t.palette.custom.line}` })}>
+			<Stack
+				direction="row"
+				sx={[
+					{
+						alignItems: "center",
+						justifyContent: "space-between",
+					},
+					(t) => ({ p: "20px 24px 16px", borderBottom: `1px solid ${t.palette.custom.line}` }),
+				]}
+			>
 				<Box sx={{ minWidth: 0 }}>
 					<Typography variant="eyebrow">Commande · {dayjs(order.date).locale("fr").format("dddd D MMMM")}</Typography>
 					<Typography variant="h4" noWrap>
@@ -158,8 +167,23 @@ export function EditOrder() {
 				)}
 			</Box>
 
-			<Stack direction="row" alignItems="center" justifyContent="space-between" sx={(t) => ({ p: "14px 24px", borderTop: `1px solid ${t.palette.custom.line}` })}>
-				<Stack direction="row" alignItems="baseline" spacing={1}>
+			<Stack
+				direction="row"
+				sx={[
+					{
+						alignItems: "center",
+						justifyContent: "space-between",
+					},
+					(t) => ({ p: "14px 24px", borderTop: `1px solid ${t.palette.custom.line}` }),
+				]}
+			>
+				<Stack
+					direction="row"
+					spacing={1}
+					sx={{
+						alignItems: "baseline",
+					}}
+				>
 					<Typography variant="eyebrow">Total</Typography>
 					<Typography variant="mono" data-testid="panel-total" sx={{ fontSize: 20, fontWeight: 500 }}>
 						{fmtPrice(price)}
@@ -176,7 +200,13 @@ export function EditOrder() {
 					</Button>
 					<Tooltip title={validateTooltip}>
 						<span>
-							<Button variant="accent" disabled={cantValidate} onClick={advance} endIcon={step === "content" && order.paymentEnabled ? <ArrowForward /> : undefined} startIcon={step === "payment" || !order.paymentEnabled ? <Check /> : undefined}>
+							<Button
+								variant="accent"
+								disabled={cantValidate}
+								onClick={advance}
+								endIcon={step === "content" && order.paymentEnabled ? <ArrowForward /> : undefined}
+								startIcon={step === "payment" || !order.paymentEnabled ? <Check /> : undefined}
+							>
 								{step === "payment" ? "Valider" : order.paymentEnabled ? "Payer" : `Valider ${fmtPrice(price)}`}
 							</Button>
 						</span>

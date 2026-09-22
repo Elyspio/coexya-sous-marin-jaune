@@ -29,7 +29,7 @@ export function Orders() {
 				const usr = str ? str[0].toUpperCase() + str.slice(1) : undefined;
 				setOrderName(usr);
 			}, 50),
-		[setOrderName],
+		[setOrderName]
 	);
 
 	const onChange = React.useCallback((_: React.SyntheticEvent, str: string) => setUserDebounced(str), [setUserDebounced]);
@@ -42,14 +42,27 @@ export function Orders() {
 	return (
 		<Box sx={{ height: "100%", overflowY: "auto", px: { xs: 1.75, md: 3.5 }, pt: 4, pb: 10 }}>
 			<Box sx={{ maxWidth: 980, mx: "auto" }}>
-				<Stack direction="row" alignItems="flex-end" justifyContent="space-between" gap={3} mb={3.5}>
+				<Stack
+					direction="row"
+					sx={{
+						alignItems: "flex-end",
+						justifyContent: "space-between",
+						gap: 3,
+						mb: 3.5,
+					}}
+				>
 					<Box>
 						<Typography variant="eyebrow">{dayjs().locale("fr").format("dddd D MMMM")}</Typography>
 						<Typography variant="h1" sx={{ mt: 0.5 }}>
 							{viewToday ? "Commandes du midi" : "Toutes les commandes"}
 						</Typography>
 					</Box>
-					<Stack alignItems="flex-end" sx={{ color: "custom.ink3" }}>
+					<Stack
+						sx={{
+							alignItems: "flex-end",
+							color: "custom.ink3",
+						}}
+					>
 						<Typography variant="mono" sx={{ fontSize: 12 }}>
 							<Box component="span" sx={{ color: "custom.ink", fontWeight: 500 }}>
 								{todayOrders.length}
@@ -67,17 +80,21 @@ export function Orders() {
 
 				<Stack
 					direction="row"
-					alignItems="center"
-					gap={1.75}
-					sx={(t) => ({
-						p: "14px 16px 14px 18px",
-						mb: 4,
-						backgroundColor: t.palette.custom.paper,
-						border: `1px solid ${t.palette.custom.line}`,
-						borderRadius: "12px",
-						boxShadow: t.palette.custom.shadowSm,
-						flexWrap: "wrap",
-					})}
+					sx={[
+						{
+							alignItems: "center",
+							gap: 1.75,
+						},
+						(t) => ({
+							p: "14px 16px 14px 18px",
+							mb: 4,
+							backgroundColor: t.palette.custom.paper,
+							border: `1px solid ${t.palette.custom.line}`,
+							borderRadius: "12px",
+							boxShadow: t.palette.custom.shadowSm,
+							flexWrap: "wrap",
+						}),
+					]}
 				>
 					<Typography sx={{ fontSize: 13, color: "custom.ink3" }}>Je suis</Typography>
 					<Autocomplete
@@ -99,9 +116,20 @@ export function Orders() {
 					/>
 
 					{userBalance !== undefined && (
-						<Stack direction="row" alignItems="baseline" spacing={0.75} sx={{ pl: 2, borderLeft: (t) => `1px solid ${t.palette.custom.line}` }}>
+						<Stack
+							direction="row"
+							spacing={0.75}
+							sx={{
+								alignItems: "baseline",
+								pl: 2,
+								borderLeft: (t) => `1px solid ${t.palette.custom.line}`,
+							}}
+						>
 							<Typography sx={{ fontSize: 12, color: "custom.ink3" }}>Solde</Typography>
-							<Typography variant="mono" sx={{ fontSize: 15, fontWeight: 500, color: userBalance > 0 ? "custom.success" : userBalance < 0 ? "custom.danger" : "custom.ink" }}>
+							<Typography
+								variant="mono"
+								sx={{ fontSize: 15, fontWeight: 500, color: userBalance > 0 ? "custom.success" : userBalance < 0 ? "custom.danger" : "custom.ink" }}
+							>
 								{userBalance > 0 ? "+" : ""}
 								{fmtPrice(userBalance)}
 							</Typography>

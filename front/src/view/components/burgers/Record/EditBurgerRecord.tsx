@@ -45,7 +45,7 @@ export function EditBurgerRecord() {
 				setAlteringRecord(undefined);
 			}
 		},
-		[mode.order, mode.record, alteringOrderId, deleteOrder, deleteCurrentOrderRecord, setAlteringRecord, order, updateRemote, updateBurgerRecord],
+		[mode.order, mode.record, alteringOrderId, deleteOrder, deleteCurrentOrderRecord, setAlteringRecord, order, updateRemote, updateBurgerRecord]
 	);
 
 	const updateExcluded = React.useCallback(
@@ -54,7 +54,7 @@ export function EditBurgerRecord() {
 			const included = data.excluded.includes(ingredient);
 			updateBurgerRecord({ ...data, excluded: included ? data.excluded.filter((i) => i !== ingredient) : [...data.excluded, ingredient] });
 		},
-		[updateBurgerRecord, data],
+		[updateBurgerRecord, data]
 	);
 
 	if (!data) return null;
@@ -64,7 +64,13 @@ export function EditBurgerRecord() {
 	return (
 		<Dialog open={display} onClose={close("cancel")} maxWidth={false} slotProps={{ paper: { sx: { width: 720, maxWidth: "calc(100vw - 40px)" } } }}>
 			<DialogTitle sx={{ pb: 1.5 }}>
-				<Stack direction="row" alignItems="center" justifyContent="space-between">
+				<Stack
+					direction="row"
+					sx={{
+						alignItems: "center",
+						justifyContent: "space-between",
+					}}
+				>
 					<Box>
 						<Typography variant="eyebrow">{chosen ? "Personnaliser" : "Choisir un burger"}</Typography>
 						<Typography variant="h4">{chosen ? data.name : "Au menu"}</Typography>
@@ -76,7 +82,13 @@ export function EditBurgerRecord() {
 			</DialogTitle>
 			<DialogContent dividers>
 				{chosen ? (
-					<Stack direction={{ xs: "column", sm: "row" }} spacing={3.5} alignItems="flex-start">
+					<Stack
+						direction={{ xs: "column", sm: "row" }}
+						spacing={3.5}
+						sx={{
+							alignItems: "flex-start",
+						}}
+					>
 						<Box sx={{ minWidth: 260 }}>
 							<Box sx={{ mb: 1.25 }}>
 								<SectionTitle>Ingrédients</SectionTitle>
@@ -88,10 +100,20 @@ export function EditBurgerRecord() {
 										<Stack
 											key={ing}
 											direction="row"
-											alignItems="center"
 											spacing={1.25}
 											onClick={updateExcluded(ing)}
-											sx={(t) => ({ p: "7px 10px", borderRadius: "6px", cursor: "pointer", userSelect: "none", "&:hover": { backgroundColor: t.palette.custom.paper2 } })}
+											sx={[
+												{
+													alignItems: "center",
+												},
+												(t) => ({
+													p: "7px 10px",
+													borderRadius: "6px",
+													cursor: "pointer",
+													userSelect: "none",
+													"&:hover": { backgroundColor: t.palette.custom.paper2 },
+												}),
+											]}
 										>
 											<Box
 												sx={(t) => ({
@@ -107,7 +129,9 @@ export function EditBurgerRecord() {
 											>
 												{included && <Check sx={{ fontSize: 12 }} />}
 											</Box>
-											<Typography sx={{ color: included ? "custom.ink" : "custom.ink4", textDecoration: included ? "none" : "line-through" }}>{ing}</Typography>
+											<Typography sx={{ color: included ? "custom.ink" : "custom.ink4", textDecoration: included ? "none" : "line-through" }}>
+												{ing}
+											</Typography>
 										</Stack>
 									);
 								})}
@@ -124,7 +148,13 @@ export function EditBurgerRecord() {
 							<Box sx={{ mt: 2, mb: 1.25 }}>
 								<SectionTitle>Changer</SectionTitle>
 							</Box>
-							<Stack direction="row" flexWrap="wrap" gap={0.75}>
+							<Stack
+								direction="row"
+								sx={{
+									flexWrap: "wrap",
+									gap: 0.75,
+								}}
+							>
 								{burgers.map((b) => (
 									<ChipToggle key={b.name} selected={b.name === data.name} onClick={() => setOrderRecordBurger(b.name)}>
 										{b.name}

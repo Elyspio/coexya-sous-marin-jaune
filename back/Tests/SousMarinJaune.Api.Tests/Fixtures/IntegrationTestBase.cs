@@ -28,15 +28,16 @@ public abstract class IntegrationTestBase : IAsyncLifetime
 		MongoDbFixture = mongoDbFixture;
 	}
 
-	public async Task InitializeAsync()
+	public async ValueTask InitializeAsync()
 	{
 		await MongoDbFixture.ClearDatabaseAsync();
 		ServiceProvider = BuildServiceProvider();
 	}
 
-	public Task DisposeAsync()
+	public ValueTask DisposeAsync()
 	{
-		return Task.CompletedTask;
+		GC.SuppressFinalize(this);
+		return ValueTask.CompletedTask;
 	}
 
 	private IServiceProvider BuildServiceProvider()

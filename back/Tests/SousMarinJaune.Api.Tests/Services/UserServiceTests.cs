@@ -35,9 +35,9 @@ public class UserServiceTests : IntegrationTestBase
 		var orderService = GetService<IOrderService>();
 		var userService = GetService<IUserService>();
 
-		await orderService.Create("User1");
-		await orderService.Create("User2");
-		await orderService.Create("User1");
+		await orderService.Create("User1", acceptDefer: true);
+		await orderService.Create("User2", acceptDefer: true);
+		await orderService.Create("User1", acceptDefer: true);
 
 		// Act
 		var users = await userService.GetUsers();
@@ -56,7 +56,7 @@ public class UserServiceTests : IntegrationTestBase
 		var userService = GetService<IUserService>();
 
 		// Create an order with payment
-		var order = await orderService.Create("TestUser");
+		var order = await orderService.Create("TestUser", acceptDefer: true);
 		order.Payments.Add(new OrderPayment
 		{
 			Type = OrderPaymentType.Cash,
@@ -82,9 +82,9 @@ public class UserServiceTests : IntegrationTestBase
 		var orderService = GetService<IOrderService>();
 		var userService = GetService<IUserService>();
 
-		await orderService.Create("OldUser1");
-		await orderService.Create("OldUser2");
-		await orderService.Create("OldUser1");
+		await orderService.Create("OldUser1", acceptDefer: true);
+		await orderService.Create("OldUser2", acceptDefer: true);
+		await orderService.Create("OldUser1", acceptDefer: true);
 		HubClients.ClearReceivedCalls();
 
 		// Act
@@ -122,7 +122,7 @@ public class UserServiceTests : IntegrationTestBase
 		var userService = GetService<IUserService>();
 
 		// Create order and add items to create a price
-		var order = await orderService.Create("DebtUser");
+		var order = await orderService.Create("DebtUser", acceptDefer: true);
 		order.Payments.Add(new OrderPayment
 		{
 			Type = OrderPaymentType.Cash,
@@ -152,9 +152,9 @@ public class UserServiceTests : IntegrationTestBase
 		var orderService = GetService<IOrderService>();
 		var userService = GetService<IUserService>();
 
-		await orderService.Create("User1");
-		await orderService.Create("User2");
-		await orderService.Create("User3");
+		await orderService.Create("User1", acceptDefer: true);
+		await orderService.Create("User2", acceptDefer: true);
+		await orderService.Create("User3", acceptDefer: true);
 
 		// Act & Assert (should not throw)
 		await Should.NotThrowAsync(async () => await userService.SoldAllUsers());
@@ -169,7 +169,7 @@ public class UserServiceTests : IntegrationTestBase
 		var userService = GetService<IUserService>();
 
 		// Create order with payment enabled (default)
-		var orderWithPayment = await orderService.Create("TestUser");
+		var orderWithPayment = await orderService.Create("TestUser", acceptDefer: true);
 		orderWithPayment.Payments.Add(new OrderPayment
 		{
 			Type = OrderPaymentType.Cash,
@@ -185,7 +185,7 @@ public class UserServiceTests : IntegrationTestBase
 			KitchenOpened = true,
 			PaymentEnabled = false
 		});
-		var orderWithoutPayment = await orderService.Create("TestUser");
+		var orderWithoutPayment = await orderService.Create("TestUser", acceptDefer: true);
 		orderWithoutPayment.Payments.Add(new OrderPayment
 		{
 			Type = OrderPaymentType.Cash,
@@ -211,8 +211,8 @@ public class UserServiceTests : IntegrationTestBase
 		var orderService = GetService<IOrderService>();
 		var userService = GetService<IUserService>();
 
-		var order1 = await orderService.Create("Alice");
-		var order2 = await orderService.Create("Bob");
+		var order1 = await orderService.Create("Alice", acceptDefer: true);
+		var order2 = await orderService.Create("Bob", acceptDefer: true);
 
 		// Act
 		await userService.MergeUsers("Charlie", ["Alice", "Bob"]);

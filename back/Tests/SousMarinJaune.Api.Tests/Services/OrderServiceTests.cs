@@ -23,7 +23,7 @@ public class OrderServiceTests : IntegrationTestBase
 		const string userName = "TestUser";
 
 		// Act
-		var order = await orderService.Create(userName);
+		var order = await orderService.Create(userName, acceptDefer: true);
 
 		// Assert
 		order.ShouldNotBeNull();
@@ -54,7 +54,7 @@ public class OrderServiceTests : IntegrationTestBase
 		HubClients.ClearReceivedCalls();
 
 		// Act
-		var order = await orderService.Create("TestUser");
+		var order = await orderService.Create("TestUser", acceptDefer: true);
 
 		// Assert
 		order.PaymentEnabled.ShouldBeFalse();
@@ -79,9 +79,9 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		await orderService.Create("User1");
-		await orderService.Create("User2");
-		await orderService.Create("User3");
+		await orderService.Create("User1", acceptDefer: true);
+		await orderService.Create("User2", acceptDefer: true);
+		await orderService.Create("User3", acceptDefer: true);
 
 		// Act
 		var orders = await orderService.GetAll();
@@ -98,9 +98,9 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		await orderService.Create("TargetUser");
-		await orderService.Create("TargetUser");
-		await orderService.Create("OtherUser");
+		await orderService.Create("TargetUser", acceptDefer: true);
+		await orderService.Create("TargetUser", acceptDefer: true);
+		await orderService.Create("OtherUser", acceptDefer: true);
 
 		// Act
 		var orders = await orderService.GetForUser("TargetUser");
@@ -115,7 +115,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		await orderService.Create("ExistingUser");
+		await orderService.Create("ExistingUser", acceptDefer: true);
 
 		// Act
 		var orders = await orderService.GetForUser("NonExistentUser");
@@ -129,7 +129,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		var order = await orderService.Create("TestUser");
+		var order = await orderService.Create("TestUser", acceptDefer: true);
 		HubClients.ClearReceivedCalls();
 
 		// Act
@@ -148,7 +148,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		var order = await orderService.Create("OriginalUser");
+		var order = await orderService.Create("OriginalUser", acceptDefer: true);
 		HubClients.ClearReceivedCalls();
 
 		order.User = "UpdatedUser";
@@ -170,7 +170,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		var order = await orderService.Create("TestUser");
+		var order = await orderService.Create("TestUser", acceptDefer: true);
 		
 		// Add a payment to the order
 		order.Payments.Add(new OrderPayment
@@ -202,9 +202,9 @@ public class OrderServiceTests : IntegrationTestBase
 		var orderService = GetService<IOrderService>();
 
 		// Act
-		var order1 = await orderService.Create("User1");
-		var order2 = await orderService.Create("User1");
-		var order3 = await orderService.Create("User2");
+		var order1 = await orderService.Create("User1", acceptDefer: true);
+		var order2 = await orderService.Create("User1", acceptDefer: true);
+		var order3 = await orderService.Create("User2", acceptDefer: true);
 
 		// Assert
 		order1.Id.ShouldNotBe(order2.Id);

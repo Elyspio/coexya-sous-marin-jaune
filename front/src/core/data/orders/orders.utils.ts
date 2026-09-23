@@ -9,8 +9,7 @@ export const isUpcoming = (order: Order) => !dayjs(order.date).startOf("day").is
 
 export const lastTime = dayjs().locale("fr").startOf("d").set("h", 11).set("m", 30);
 
-export const isSameDay = (a: string | Date | undefined, b: string | Date | undefined) =>
-	!!a && !!b && dayjs(a).startOf("day").isSame(dayjs(b).startOf("day"));
+export const isSameDay = (a: string | Date | undefined, b: string | Date | undefined) => !!a && !!b && dayjs(a).startOf("day").isSame(dayjs(b).startOf("day"));
 
 export function calculateOrderPrice(order: Order): number {
 	if (order.burgers.length === 0) return 0;
@@ -41,12 +40,7 @@ export function calculateOrderPrice(order: Order): number {
 	return sum;
 }
 
-export function canCreate(
-	orderName: string | undefined,
-	kitchenOpened: boolean,
-	orders: Order[],
-	plannedDate?: string,
-): boolean | "no-name" | "closed" | "already-planned" {
+export function canCreate(orderName: string | undefined, kitchenOpened: boolean, orders: Order[], plannedDate?: string): boolean | "no-name" | "closed" | "already-planned" {
 	if (!orderName) return "no-name";
 	if (!kitchenOpened) return "closed";
 	const target = plannedDate ?? new Date().toISOString();

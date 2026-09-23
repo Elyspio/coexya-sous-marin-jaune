@@ -18,7 +18,8 @@ RUN dotnet publish ./Web/SousMarinJaune.Api.Web.csproj --no-restore -c Release -
 
 
 # Building front
-FROM node:24 AS builder-front
+FROM node:26 AS builder-front
+ARG PNPM_VERSION=12.5.1
 
 
 WORKDIR /front
@@ -26,7 +27,7 @@ WORKDIR /front
 COPY front/package.json /front/
 COPY front/pnpm-lock.yaml /front/
 COPY front/pnpm-workspace.yaml /front/
-RUN corepack enable && pnpm install --frozen-lockfile --ignore-scripts
+RUN npm install -g pnpm@$PNPM_VERSION && pnpm install --frozen-lockfile --ignore-scripts
 
 COPY front /front/
 RUN pnpm build
@@ -40,7 +41,7 @@ WORKDIR /back
 COPY --from=builder-back /app/out .
 
 COPY --from=builder-front /front/dist /back/wwwroot
-ENV FRONT_PATH /back/wwwroot
+ENV FRONT_PATH=/back/wwwroot
 
 ENTRYPOINT ["dotnet", "SousMarinJaune.Api.Web.dll"]
 

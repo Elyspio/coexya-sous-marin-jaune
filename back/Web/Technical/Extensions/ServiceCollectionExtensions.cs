@@ -26,7 +26,9 @@ public static class ServiceCollectionExtensions
 			setup.DefaultApiVersion = new ApiVersion(1, 0);
 			setup.AssumeDefaultVersionWhenUnspecified = true;
 			setup.ReportApiVersions = true;
-		}).AddApiExplorer(setup =>
+			// Routes carry no version segment: only the query string can hold the API version.
+			setup.ApiVersionReader = new QueryStringApiVersionReader();
+		}).AddMvc().AddApiExplorer(setup =>
 		{
 			// add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
 			// note: the specified format code will format the version as "'v'major[.minor][-status]"

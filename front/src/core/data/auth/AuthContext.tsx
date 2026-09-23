@@ -1,7 +1,7 @@
-import {createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState} from "react";
-import {type User, UserManager} from "oidc-client-ts";
-import {getService} from "../api/services";
-import {TokenService} from "@services/common/token.service";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { type User, UserManager } from "oidc-client-ts";
+import { getService } from "../api/services";
+import { TokenService } from "@services/common/token.service";
 
 type AuthState = {
 	user: User | null;
@@ -74,14 +74,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 		mgr.events.addUserUnloaded(onUnloaded);
 		mgr.events.addSilentRenewError(onRenewError);
 
-		void silentLogin();
+		// Restore an existing session on mount (silent renew can fail when there is none — that's fine).
+		mgr.signinSilent().then(
+			(next) => {
+				if (next && !next.expired) finish(next);
+			},
+			() => undefined
+		);
 
 		return () => {
 			mgr.events.removeUserLoaded(onLoaded);
 			mgr.events.removeUserUnloaded(onUnloaded);
 			mgr.events.removeSilentRenewError(onRenewError);
 		};
-	}, [finish, silentLogin]);
+	}, [finish]);
 
 	const value = useMemo<AuthState>(
 		() => ({
@@ -92,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 			continueLogin,
 			silentLogin,
 		}),
-		[user, logged, login, logout, continueLogin, silentLogin],
+		[user, logged, login, logout, continueLogin, silentLogin]
 	);
 
 	return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

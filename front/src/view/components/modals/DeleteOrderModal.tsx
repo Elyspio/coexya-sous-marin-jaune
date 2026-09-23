@@ -26,9 +26,20 @@ export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
 		<Dialog open={open} ref={ref} onClose={setClose}>
 			<DialogTitle>Annulation d'une commande</DialogTitle>
 			<DialogContent dividers>
-				<Stack spacing={1} alignItems={"center"}>
+				<Stack
+					spacing={1}
+					sx={{
+						alignItems: "center",
+					}}
+				>
 					<Typography>Êtes-vous sur de vouloir annuler la commande de</Typography>
-					<Stack spacing={1} direction={"row"} flexWrap={"wrap"}>
+					<Stack
+						spacing={1}
+						direction={"row"}
+						sx={{
+							flexWrap: "wrap",
+						}}
+					>
 						<Typography color={"secondary"}>{order.user}</Typography>
 						<Typography>faite le</Typography>
 						<Typography color={"secondary"}>{dayjs(order.date).format("DD/MM/YYYY")}</Typography>
@@ -37,7 +48,13 @@ export function DeleteOrderModal({ setClose, open }: ModalComponentProps) {
 				</Stack>
 			</DialogContent>
 			<DialogActions>
-				<Stack spacing={2} p={1} direction={"row"}>
+				<Stack
+					spacing={2}
+					direction={"row"}
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"soft"} onClick={setClose}>
 						Non
 					</Button>

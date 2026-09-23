@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { Box } from "@mui/material";
-import { RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router/dom";
 import { router } from "@/view/router/routes";
 import { useClientStore } from "@/core/store/clientStore";
 import { useInitApp } from "@/core/data/init/useInitApp";

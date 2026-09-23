@@ -10,7 +10,7 @@ public class OrderDateHelperTests
 	{
 		var now = new DateTime(2026, 5, 28, 11, 0, 0); // Thursday 11:00
 		OrderDateHelper.IsDeferred(now).ShouldBeFalse();
-		OrderDateHelper.ComputeOrderDate(now).ShouldBe(now);
+		OrderDateHelper.ComputeOrderDate(now).ShouldBe(new DateTime(2026, 5, 28, 11, 30, 0)); // today at the cutoff
 	}
 
 	[Fact]

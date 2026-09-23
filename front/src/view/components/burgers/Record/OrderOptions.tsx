@@ -11,20 +11,23 @@ export function OrderOptions({ data }: { data: BurgerRecord }) {
 		(key: "xl" | "vegetarian") => (_: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
 			updateBurgerRecord({ ...data, [key]: checked });
 		},
-		[data, updateBurgerRecord],
+		[data, updateBurgerRecord]
 	);
 
 	return (
 		<Stack spacing={1}>
-			<OptRow
-				label="Taille XL"
-				children={
-					<Stack direction="row" alignItems="center" spacing={1.25}>
-						<Switch checked={!!data.xl} onChange={toggle("xl")} />
-						<Typography sx={{ fontSize: 12, color: "custom.ink3" }}>double steak</Typography>
-					</Stack>
-				}
-			/>
+			<OptRow label="Taille XL">
+				<Stack
+					direction="row"
+					spacing={1.25}
+					sx={{
+						alignItems: "center",
+					}}
+				>
+					<Switch checked={!!data.xl} onChange={toggle("xl")} />
+					<Typography sx={{ fontSize: 12, color: "custom.ink3" }}>double steak</Typography>
+				</Stack>
+			</OptRow>
 			<OptRow label="Végétarien">
 				<Switch checked={data.vegetarian} onChange={toggle("vegetarian")} />
 			</OptRow>

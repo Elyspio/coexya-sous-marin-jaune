@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { Dessert, Drink, type Order } from "../../src/core/apis/backend/generated";
+import { describe, expect, it } from "vite-plus/test";
+import { Dessert, Drink, type Order } from "../../src/core/apis/rest/api/generated";
 import { calculateOrderPrice } from "../../src/core/data/orders/orders.utils";
 
 function createOrder(overrides: Partial<Order> = {}): Order {

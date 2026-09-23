@@ -10,21 +10,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="SousMarinJaune.Api.Tests"/>
+        <InternalsVisibleTo Include="SousMarinJaune.Api.Tests" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.8" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.8" />
-        <PackageReference Include="MongoDB.Driver" Version="3.8.1" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.12" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.12" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.12" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.12" />
+        <PackageReference Include="MongoDB.Driver" Version="3.12.0" />
         <PackageReference Include="Scrutor" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Abstractions\SousMarinJaune.Api.Abstractions.csproj"/>
+        <ProjectReference Include="..\Abstractions\SousMarinJaune.Api.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

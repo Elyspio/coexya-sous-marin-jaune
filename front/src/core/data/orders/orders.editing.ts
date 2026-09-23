@@ -35,7 +35,7 @@ export function useOrderEditing() {
 				return { ...order, burgers };
 			});
 		},
-		[qc],
+		[qc]
 	);
 
 	const setOrderRecordBurger = useCallback(
@@ -48,7 +48,7 @@ export function useOrderEditing() {
 				return { ...order, burgers };
 			});
 		},
-		[qc],
+		[qc]
 	);
 
 	const deleteOrderRecord = useCallback(
@@ -67,7 +67,7 @@ export function useOrderEditing() {
 				});
 			}
 		},
-		[qc],
+		[qc]
 	);
 
 	const deleteCurrentOrderRecord = useCallback(() => {
@@ -89,7 +89,7 @@ export function useOrderEditing() {
 				return { ...order, payments };
 			});
 		},
-		[qc],
+		[qc]
 	);
 
 	return {
@@ -114,6 +114,6 @@ export function useUpdateAndSaveOrder() {
 			ordersCache.upsert(qc, order);
 			updateRemote.mutate(order);
 		},
-		[qc, updateRemote],
+		[qc, updateRemote]
 	);
 }

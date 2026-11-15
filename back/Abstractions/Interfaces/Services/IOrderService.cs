@@ -1,3 +1,4 @@
+using Elyspio.Utils.Results;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
 using SousMarinJaune.Api.Abstractions.Transports.Order.Payment;
 
@@ -8,7 +9,7 @@ public interface IOrderService
 	Task<List<Order>> GetAll();
 	Task<List<Order>> GetForUser(string user);
 
-	Task<Order> Create(string user, bool acceptDefer = false);
+	Task<Result<Order>> Create(string user, bool acceptDefer = false);
 	OrderCreationInfo GetCreationInfo();
 	Task Delete(Guid orderId);
 	Task Update(Order order);

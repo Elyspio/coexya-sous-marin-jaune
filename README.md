@@ -5,8 +5,8 @@ Meal ordering web app for the *Sous Marin Jaune* — a .NET Aspire distributed a
 ## Stack
 
 ### Backend (`back/`)
-- .NET 10 / ASP.NET Core
-- .NET Aspire 13.5 AppHost orchestrating the API, MongoDB and Keycloak
+- .NET 11 / ASP.NET Core
+- .NET Aspire 13.6 AppHost orchestrating the API, MongoDB and Keycloak
 - SignalR for real-time updates
 - MongoDB for persistence
 - Keycloak for authentication (OIDC)
@@ -27,7 +27,7 @@ Meal ordering web app for the *Sous Marin Jaune* — a .NET Aspire distributed a
 
 ## Requirements
 
-- .NET 10 SDK (pinned to 10.0.400+ by `global.json`)
+- .NET 11 SDK (pinned to 11.0.100+ by `global.json`)
 - Node.js >= 26 (`.nvmrc`)
 - pnpm 12.5.1
 - Docker (for MongoDB / Keycloak containers spun up by Aspire)

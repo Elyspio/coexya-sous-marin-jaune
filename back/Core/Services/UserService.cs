@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Elyspio.Utils.Telemetry;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
@@ -29,7 +30,7 @@ internal class UserService : IUserService
 
 	public async Task MergeUsers(string newName, List<string> users)
 	{
-		using var logger = _logger.Enter($"{Log.Format(newName)} {Log.Format(users)}");
+		using var trace = _logger.Trace($"{Log.F(newName)} {Log.F(users)}");
 
 		var entities = await _orderRepository.MergeUsers(newName, users);
 
@@ -41,7 +42,7 @@ internal class UserService : IUserService
 
 	public async Task<List<UserSold>> GetUsers()
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 
 		var orders = await _orderRepository.GetAll();
 		var grouped = orders.GroupBy(order => order.User).ToDictionary(pair => pair.Key, pair => pair.ToList());
@@ -64,7 +65,7 @@ internal class UserService : IUserService
 
 	public async Task SoldUser(string user)
 	{
-		using var logger = _logger.Enter(Log.Format(user));
+		using var trace = _logger.Trace($"{Log.F(user)}");
 
 		var orders = await _orderRepository.GetForUser(user);
 		var prices = orders.Where(order => order.PaymentEnabled).Sum(order => order.Price);
@@ -89,7 +90,7 @@ internal class UserService : IUserService
 
 	public async Task SoldAllUsers()
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 
 		var users = (await _orderRepository.GetAll()).Select(order => order.User).Distinct();
 		await Task.WhenAll(users.Select(SoldUser));

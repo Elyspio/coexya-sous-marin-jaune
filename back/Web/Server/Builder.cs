@@ -1,15 +1,14 @@
 ﻿using Mapster;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using MongoDB.Bson;
-using Serilog;
-using Serilog.Sinks.SystemConsole.Themes;
+using Elyspio.Utils.Telemetry;
+using Elyspio.Utils.Telemetry.MongoDB.Extensions;
 using SousMarinJaune.Api.Abstractions.Extensions;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
 using SousMarinJaune.Api.ExternalApi.Injections;
 using SousMarinJaune.Api.Core.Injections;
 using SousMarinJaune.Api.Db.Injections;
-using SousMarinJaune.Api.Web.Filters;
 using SousMarinJaune.Api.Web.Utils;
 using System.Text.Json.Serialization;
 using SousMarinJaune.Api.ServiceDefaults;
@@ -28,11 +27,8 @@ public class ServerBuilder
 		builder.Configuration.AddCommon();
 		
 
-		// Setup Logging
-		builder.Host.UseSerilog((_, lc) => lc
-			.ReadFrom.Configuration(builder.Configuration)
-			.WriteTo.OpenTelemetry()
-		);
+		// Serilog console, plus traces, metrics and logs over OTLP when OTEL_EXPORTER_OTLP_ENDPOINT is set (Aspire, K8s chart).
+		builder.AddElyspioTelemetry(options => options.Tracing = tracing => tracing.AddAppMongoInstrumentation());
 
 		
 		
@@ -49,7 +45,6 @@ public class ServerBuilder
 				{
 					o.Conventions.Add(new ControllerDocumentationConvention());
 					o.OutputFormatters.RemoveType<StringOutputFormatter>();
-					o.Filters.Add<HttpExceptionFilter>();
 				}
 			)
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

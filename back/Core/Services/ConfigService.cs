@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Elyspio.Utils.Telemetry;
+using Mapster;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SousMarinJaune.Api.Abstractions.Helpers;
@@ -32,7 +33,7 @@ public class ConfigService : IConfigService
 
 	public async Task<Config> Update(ConfigBase config)
 	{
-		using var logger = _logger.Enter(Log.Format(config));
+		using var trace = _logger.Trace($"{Log.F(config)}");
 
 		var entity = await _configRepository.Update(config);
 
@@ -45,7 +46,7 @@ public class ConfigService : IConfigService
 
 	public async Task<Config> Get()
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 
 		var entity = await _configRepository.Get();
 

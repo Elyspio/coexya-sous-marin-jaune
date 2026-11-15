@@ -1,9 +1,7 @@
-﻿using Elyspio.Utils.Telemetry.Technical.Helpers;
-using HealthChecks.UI.Client;
+﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using SousMarinJaune.Api.Sockets.Hubs;
 using SousMarinJaune.Api.Web.Technical.Extensions;
-using Log = SousMarinJaune.Api.Abstractions.Helpers.Log;
 
 namespace SousMarinJaune.Api.Web.Server;
 

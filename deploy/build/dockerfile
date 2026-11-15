@@ -1,5 +1,5 @@
 # Building back
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS builder-back
+FROM mcr.microsoft.com/dotnet/sdk:11.0 AS builder-back
 WORKDIR /app
 
 COPY back/Core/SousMarinJaune.Api.Core.csproj ./Core/
@@ -34,7 +34,7 @@ RUN pnpm build
 
 
 # Running
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS production
+FROM mcr.microsoft.com/dotnet/aspnet:11.0 AS production
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 WORKDIR /back

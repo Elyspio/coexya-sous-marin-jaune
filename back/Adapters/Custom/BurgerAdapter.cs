@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using Elyspio.Utils.Telemetry;
+using HtmlAgilityPack;
 using Microsoft.Extensions.Caching.Memory;
 using SousMarinJaune.Api.Abstractions.Transports;
 using System.Web;
@@ -26,7 +27,7 @@ public class BurgerAdapter
 
 	public async Task<List<Burger>> GetBurgers(CancellationToken ct)
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 
 		if (_cache.TryGetValue("burgers", out List<Burger>? burgers)) return burgers!;
 
@@ -69,7 +70,7 @@ public class BurgerAdapter
 
 	private async Task<HtmlDocument> GetDocument(CancellationToken ct)
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 
 		return await StrategyRetryStrategy.ExecuteAsync(async token =>
 		{

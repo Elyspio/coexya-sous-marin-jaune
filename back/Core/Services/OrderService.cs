@@ -1,8 +1,8 @@
-﻿using Elyspio.Utils.Telemetry;
-using System.Net;
+﻿using Elyspio.Utils.Results;
+using Elyspio.Utils.Telemetry;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using SousMarinJaune.Api.Abstractions.Exceptions;
+using SousMarinJaune.Api.Abstractions.Errors;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Hubs;
 using SousMarinJaune.Api.Abstractions.Interfaces.Repositories;
@@ -50,14 +50,14 @@ internal class OrderService : IOrderService
 		return orders;
 	}
 
-	public async Task<Order> Create(string user, bool acceptDefer = false)
+	public async Task<Result<Order>> Create(string user, bool acceptDefer = false)
 	{
 		using var trace = _logger.Trace($"{Log.F(user)}");
 
 		var now = DateTime.Now;
 		var deferred = OrderDateHelper.IsDeferred(now);
 		if (deferred && !acceptDefer)
-			throw new HttpException(HttpStatusCode.Conflict, "L'heure limite est passée. Confirmation requise pour reporter la commande au prochain jeudi.");
+			return trace.Fail(new OrderDeferralRequired());
 
 		var date = OrderDateHelper.ComputeOrderDate(now);
 

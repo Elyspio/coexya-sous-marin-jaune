@@ -9,7 +9,6 @@ using SousMarinJaune.Api.Abstractions.Interfaces.Injections;
 using SousMarinJaune.Api.ExternalApi.Injections;
 using SousMarinJaune.Api.Core.Injections;
 using SousMarinJaune.Api.Db.Injections;
-using SousMarinJaune.Api.Web.Filters;
 using SousMarinJaune.Api.Web.Utils;
 using System.Text.Json.Serialization;
 using SousMarinJaune.Api.ServiceDefaults;
@@ -46,7 +45,6 @@ public class ServerBuilder
 				{
 					o.Conventions.Add(new ControllerDocumentationConvention());
 					o.OutputFormatters.RemoveType<StringOutputFormatter>();
-					o.Filters.Add<HttpExceptionFilter>();
 				}
 			)
 			.AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

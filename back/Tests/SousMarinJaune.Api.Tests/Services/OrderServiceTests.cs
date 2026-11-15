@@ -23,7 +23,7 @@ public class OrderServiceTests : IntegrationTestBase
 		const string userName = "TestUser";
 
 		// Act
-		var order = await orderService.Create(userName, acceptDefer: true);
+		var order = (await orderService.Create(userName, acceptDefer: true)).ShouldSucceed();
 
 		// Assert
 		order.ShouldNotBeNull();
@@ -54,7 +54,7 @@ public class OrderServiceTests : IntegrationTestBase
 		HubClients.ClearReceivedCalls();
 
 		// Act
-		var order = await orderService.Create("TestUser", acceptDefer: true);
+		var order = (await orderService.Create("TestUser", acceptDefer: true)).ShouldSucceed();
 
 		// Assert
 		order.PaymentEnabled.ShouldBeFalse();
@@ -79,9 +79,9 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		await orderService.Create("User1", acceptDefer: true);
-		await orderService.Create("User2", acceptDefer: true);
-		await orderService.Create("User3", acceptDefer: true);
+		(await orderService.Create("User1", acceptDefer: true)).ShouldSucceed();
+		(await orderService.Create("User2", acceptDefer: true)).ShouldSucceed();
+		(await orderService.Create("User3", acceptDefer: true)).ShouldSucceed();
 
 		// Act
 		var orders = await orderService.GetAll();
@@ -98,9 +98,9 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		await orderService.Create("TargetUser", acceptDefer: true);
-		await orderService.Create("TargetUser", acceptDefer: true);
-		await orderService.Create("OtherUser", acceptDefer: true);
+		(await orderService.Create("TargetUser", acceptDefer: true)).ShouldSucceed();
+		(await orderService.Create("TargetUser", acceptDefer: true)).ShouldSucceed();
+		(await orderService.Create("OtherUser", acceptDefer: true)).ShouldSucceed();
 
 		// Act
 		var orders = await orderService.GetForUser("TargetUser");
@@ -115,7 +115,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		await orderService.Create("ExistingUser", acceptDefer: true);
+		(await orderService.Create("ExistingUser", acceptDefer: true)).ShouldSucceed();
 
 		// Act
 		var orders = await orderService.GetForUser("NonExistentUser");
@@ -129,7 +129,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		var order = await orderService.Create("TestUser", acceptDefer: true);
+		var order = (await orderService.Create("TestUser", acceptDefer: true)).ShouldSucceed();
 		HubClients.ClearReceivedCalls();
 
 		// Act
@@ -148,7 +148,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		var order = await orderService.Create("OriginalUser", acceptDefer: true);
+		var order = (await orderService.Create("OriginalUser", acceptDefer: true)).ShouldSucceed();
 		HubClients.ClearReceivedCalls();
 
 		order.User = "UpdatedUser";
@@ -170,7 +170,7 @@ public class OrderServiceTests : IntegrationTestBase
 	{
 		// Arrange
 		var orderService = GetService<IOrderService>();
-		var order = await orderService.Create("TestUser", acceptDefer: true);
+		var order = (await orderService.Create("TestUser", acceptDefer: true)).ShouldSucceed();
 		
 		// Add a payment to the order
 		order.Payments.Add(new OrderPayment
@@ -202,9 +202,9 @@ public class OrderServiceTests : IntegrationTestBase
 		var orderService = GetService<IOrderService>();
 
 		// Act
-		var order1 = await orderService.Create("User1", acceptDefer: true);
-		var order2 = await orderService.Create("User1", acceptDefer: true);
-		var order3 = await orderService.Create("User2", acceptDefer: true);
+		var order1 = (await orderService.Create("User1", acceptDefer: true)).ShouldSucceed();
+		var order2 = (await orderService.Create("User1", acceptDefer: true)).ShouldSucceed();
+		var order3 = (await orderService.Create("User2", acceptDefer: true)).ShouldSucceed();
 
 		// Assert
 		order1.Id.ShouldNotBe(order2.Id);

@@ -23,7 +23,7 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 			setUsersToMerge([...names]);
 			if (!nextName) setNextName(names[0]);
 		},
-		[nextName],
+		[nextName]
 	);
 
 	const onMerge = useCallback(() => {
@@ -36,10 +36,23 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 	if (!mounted && !open) return null;
 
 	return (
-		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
+		<Dialog
+			open={open}
+			ref={ref}
+			onClose={setClose}
+			slots={{
+				transition: Transition,
+			}}
+		>
 			<DialogTitle>Fusionner des utilisateurs</DialogTitle>
 			<DialogContent dividers>
-				<Stack p={2} spacing={3} minWidth={400}>
+				<Stack
+					spacing={3}
+					sx={{
+						p: 2,
+						minWidth: 400,
+					}}
+				>
 					<Autocomplete
 						onChange={onNextNameChange}
 						options={users}
@@ -56,7 +69,11 @@ export function MergeUsers({ setClose, open }: ModalComponentProps) {
 				</Stack>
 			</DialogContent>
 			<DialogActions>
-				<Box p={1}>
+				<Box
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"accent"} onClick={onMerge}>
 						Fusionner
 					</Button>

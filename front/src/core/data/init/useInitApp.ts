@@ -1,8 +1,8 @@
-import {useEffect, useRef} from "react";
-import {useQueryClient} from "@tanstack/react-query";
-import {getService} from "../api/services";
-import {UpdateSocketService} from "@services/socket/update.socket.service";
-import {ordersRealtime} from "../orders/orders.realtime";
+import { useEffect, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { getService } from "../api/services";
+import { UpdateSocketService } from "@services/socket/update.socket.service";
+import { ordersRealtime } from "../orders/orders.realtime";
 
 export function useInitApp() {
 	const qc = useQueryClient();

@@ -109,9 +109,22 @@ export function OrderMessageModal({ open, setClose }: ModalComponentProps) {
 
 	const totalPrice = todayOrders.reduce((acc, order) => acc + (order.price ?? 0), 0);
 	return (
-		<Dialog open={open} ref={ref} onClose={setClose} TransitionComponent={Transition}>
+		<Dialog
+			open={open}
+			ref={ref}
+			onClose={setClose}
+			slots={{
+				transition: Transition,
+			}}
+		>
 			<DialogTitle>
-				<Stack direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
+				<Stack
+					direction={"row"}
+					sx={{
+						justifyContent: "space-between",
+						alignItems: "center",
+					}}
+				>
 					<Typography>Message à envoyer</Typography>
 
 					<FormControl>

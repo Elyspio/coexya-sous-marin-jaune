@@ -25,7 +25,15 @@ export function OptRow({ label, children, stacked, align = "center" }: Props) {
 			})}
 		>
 			<Box sx={{ fontWeight: 500, minWidth: stacked ? "auto" : 80 }}>{label}</Box>
-			<Stack direction="row" alignItems="center" flexWrap="wrap" sx={{ flex: 1, gap: 0.75 }}>
+			<Stack
+				direction="row"
+				sx={{
+					alignItems: "center",
+					flexWrap: "wrap",
+					flex: 1,
+					gap: 0.75,
+				}}
+			>
 				{children}
 			</Stack>
 		</Box>

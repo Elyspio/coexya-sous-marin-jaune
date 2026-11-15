@@ -1,14 +1,14 @@
-import {useCallback} from "react";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {cloneDeep} from "lodash";
-import {toast} from "react-toastify";
-import type {Order, OrderPaymentType, Sauce} from "@apis/rest/api/generated";
-import {getService} from "../api/services";
-import {OrderService} from "@services/order.service";
-import {extractApiError} from "../api/extractError";
-import {usersKeys} from "../users/users.keys";
-import {ordersCache} from "./orders.cache";
-import {useClientStore} from "@/core/store/clientStore";
+import { useCallback } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { cloneDeep } from "lodash";
+import { toast } from "react-toastify";
+import type { Order, OrderPaymentType, Sauce } from "@apis/rest/api/generated";
+import { getService } from "../api/services";
+import { OrderService } from "@services/order.service";
+import { extractApiError } from "../api/extractError";
+import { usersKeys } from "../users/users.keys";
+import { ordersCache } from "./orders.cache";
+import { useClientStore } from "@/core/store/clientStore";
 
 type CreateOrderParams = { user: string; acceptDefer?: boolean };
 
@@ -167,6 +167,6 @@ export function useDuplicateOrder() {
 
 			ordersCache.upsert(qc, duplicate);
 		},
-		[createOrder, qc],
+		[createOrder, qc]
 	);
 }

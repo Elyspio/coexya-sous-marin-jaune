@@ -20,14 +20,16 @@ export function DeferOrderDialog({ open, plannedDate, onCancel, onConfirm, pendi
 			open={open}
 			onClose={pending ? undefined : onCancel}
 			aria-labelledby="defer-dialog-title"
-			PaperProps={{
-				sx: (t) => ({
-					borderRadius: 3,
-					maxWidth: 460,
-					border: `1px solid ${t.palette.custom.line}`,
-					boxShadow: t.palette.custom.shadowLg,
-					overflow: "hidden",
-				}),
+			slotProps={{
+				paper: {
+					sx: (t) => ({
+						borderRadius: 3,
+						maxWidth: 460,
+						border: `1px solid ${t.palette.custom.line}`,
+						boxShadow: t.palette.custom.shadowLg,
+						overflow: "hidden",
+					}),
+				},
 			}}
 		>
 			<Box
@@ -38,7 +40,12 @@ export function DeferOrderDialog({ open, plannedDate, onCancel, onConfirm, pendi
 			/>
 
 			<DialogContent sx={{ pt: 4, pb: 3, px: 4 }}>
-				<Stack spacing={3} alignItems="flex-start">
+				<Stack
+					spacing={3}
+					sx={{
+						alignItems: "flex-start",
+					}}
+				>
 					<Box
 						sx={(t) => ({
 							width: 48,

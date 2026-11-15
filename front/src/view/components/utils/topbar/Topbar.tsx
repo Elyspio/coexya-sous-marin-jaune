@@ -84,7 +84,14 @@ export function Topbar() {
 				zIndex: 30,
 			})}
 		>
-			<Stack direction="row" alignItems="center" spacing={1.25} sx={{ flexShrink: 0 }}>
+			<Stack
+				direction="row"
+				spacing={1.25}
+				sx={{
+					alignItems: "center",
+					flexShrink: 0,
+				}}
+			>
 				<Box
 					sx={(t) => ({
 						width: 28,
@@ -133,16 +140,20 @@ export function Topbar() {
 
 			<Stack
 				direction="row"
-				alignItems="center"
 				spacing={1.25}
-				sx={(t) => ({
-					px: 1.75,
-					py: 0.75,
-					border: `1px solid ${t.palette.custom.line}`,
-					borderRadius: 999,
-					backgroundColor: t.palette.custom.paper,
-					display: { xs: "none", md: "flex" },
-				})}
+				sx={[
+					{
+						alignItems: "center",
+					},
+					(t) => ({
+						px: 1.75,
+						py: 0.75,
+						border: `1px solid ${t.palette.custom.line}`,
+						borderRadius: 999,
+						backgroundColor: t.palette.custom.paper,
+						display: { xs: "none", md: "flex" },
+					}),
+				]}
 			>
 				<Box
 					sx={(t) => ({
@@ -201,17 +212,21 @@ export function Topbar() {
 			{orderName && (
 				<Stack
 					direction="row"
-					alignItems="center"
 					spacing={1.25}
-					sx={(t) => ({
-						pl: 0.5,
-						pr: 1.5,
-						py: 0.5,
-						border: `1px solid ${t.palette.custom.line}`,
-						borderRadius: 999,
-						backgroundColor: t.palette.custom.paper,
-						display: { xs: "none", sm: "flex" },
-					})}
+					sx={[
+						{
+							alignItems: "center",
+						},
+						(t) => ({
+							pl: 0.5,
+							pr: 1.5,
+							py: 0.5,
+							border: `1px solid ${t.palette.custom.line}`,
+							borderRadius: 999,
+							backgroundColor: t.palette.custom.paper,
+							display: { xs: "none", sm: "flex" },
+						}),
+					]}
 				>
 					<Avatar name={orderName} size="md" />
 					<Typography sx={{ fontSize: 13, fontWeight: 500 }}>{orderName}</Typography>

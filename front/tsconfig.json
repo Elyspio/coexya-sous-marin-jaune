@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"module": "esnext",
 		"moduleResolution": "bundler",
-		"downlevelIteration": null,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"paths": {
 			"@/*": ["./src/*"],
 			"@apis/*": ["./src/core/apis/*"],
@@ -13,7 +14,7 @@
 			"@hooks/*": ["./src/view/hooks/*"],
 			"@pages/*": ["./src/view/pages/*"]
 		},
-		"types": ["vite/client"]
+		"types": ["vite-plus/client"]
 	},
-	"include": ["src", "vite.config.ts", "scripts"]
+	"include": ["src", "tests", "vite.config.ts", "scripts"]
 }

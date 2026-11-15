@@ -1,5 +1,24 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Avatar, Badge, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, InputAdornment, Paper, Stack, TextField, Tooltip, Typography, useTheme } from "@mui/material";
+import {
+	Avatar,
+	Badge,
+	Box,
+	Button,
+	Chip,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogTitle,
+	Fade,
+	IconButton,
+	InputAdornment,
+	Paper,
+	Stack,
+	TextField,
+	Tooltip,
+	Typography,
+	useTheme,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { ModalComponentProps } from "../common/ModalProps";
 import { OrderPaymentType } from "@apis/rest/api/generated";
@@ -60,7 +79,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 					rawDate: order.date,
 					user: order.user,
 					idOrder: order.id,
-				})),
+				}))
 		);
 	}, [allOrders]);
 
@@ -85,14 +104,14 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				value: value,
 			});
 		},
-		[updatePaymentReceived],
+		[updatePaymentReceived]
 	);
 
 	const fullReceived = useCallback(
 		(row: PendingRow) => {
 			updateRemote(row, row.amount);
 		},
-		[updateRemote],
+		[updateRemote]
 	);
 
 	const deletePayement = useCallback(
@@ -100,7 +119,13 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 			const confirm = await createConfirmModal({
 				title: "Supprimer le moyen de payement ?",
 				content: (
-					<Stack spacing={1} alignItems={"center"} m={1}>
+					<Stack
+						spacing={1}
+						sx={{
+							alignItems: "center",
+							m: 1,
+						}}
+					>
 						<Typography>Êtes-vous sur de vouloir supprimer le payement de </Typography>
 
 						<Typography color={"secondary"}>
@@ -118,7 +143,7 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				});
 			}
 		},
-		[deleteOrderPayement],
+		[deleteOrderPayement]
 	);
 
 	const [mounted, ref] = useMounted();
@@ -133,12 +158,20 @@ export function Balances({ setClose, open }: ModalComponentProps) {
 				<ByMethodView grouped={grouped} onCommitReceived={updateRemote} onFull={fullReceived} onDelete={deletePayement} />
 			</DialogContent>
 			<DialogActions>
-				<Box p={1}>
+				<Box
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"outlined"} startIcon={<IosShare />} onClick={() => setExportOpen(true)}>
 						Exporter
 					</Button>
 				</Box>
-				<Box p={1}>
+				<Box
+					sx={{
+						p: 1,
+					}}
+				>
 					<Button variant={"outlined"} color={"success"} onClick={setClose}>
 						Fermer
 					</Button>
@@ -163,10 +196,22 @@ function ByMethodView({ grouped, ...actions }: { grouped: Map<OrderPaymentType, 
 
 	if (orderedGroups.length === 0) {
 		return (
-			<Stack p={6} spacing={2} alignItems={"center"} justifyContent={"center"}>
+			<Stack
+				spacing={2}
+				sx={{
+					p: 6,
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
 				<TaskAlt color={"success"} sx={{ fontSize: 56 }} />
 				<Typography variant={"h6"}>Aucun paiement en attente</Typography>
-				<Typography variant={"body2"} color={"text.secondary"}>
+				<Typography
+					variant={"body2"}
+					sx={{
+						color: "text.secondary",
+					}}
+				>
 					Tout est soldé. Bonne nouvelle.
 				</Typography>
 			</Stack>
@@ -216,7 +261,7 @@ function MethodCard({ type, list, index, onCommitReceived, onFull, onDelete }: {
 			(entries) => {
 				if (entries[0].isIntersecting) setCount((c) => Math.min(c + BATCH, list.length));
 			},
-			{ root, rootMargin: "150px" },
+			{ root, rootMargin: "150px" }
 		);
 		obs.observe(node);
 		return () => obs.disconnect();
@@ -245,11 +290,11 @@ function MethodCard({ type, list, index, onCommitReceived, onFull, onDelete }: {
 			>
 				<Stack
 					direction={"row"}
-					alignItems={"center"}
 					spacing={2}
-					px={2}
-					py={1.5}
 					sx={{
+						alignItems: "center",
+						px: 2,
+						py: 1.5,
 						bgcolor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
 						borderBottom: `1px solid ${theme.palette.divider}`,
 					}}
@@ -270,11 +315,29 @@ function MethodCard({ type, list, index, onCommitReceived, onFull, onDelete }: {
 						</Avatar>
 					</Badge>
 
-					<Stack flex={1} minWidth={0} spacing={0.25}>
-						<Typography variant={"subtitle1"} fontWeight={600} lineHeight={1.2} noWrap>
+					<Stack
+						spacing={0.25}
+						sx={{
+							flex: 1,
+							minWidth: 0,
+						}}
+					>
+						<Typography
+							variant={"subtitle1"}
+							noWrap
+							sx={{
+								fontWeight: 600,
+								lineHeight: 1.2,
+							}}
+						>
 							{payementTypeLabel[type]}
 						</Typography>
-						<Typography variant={"caption"} color={"text.secondary"}>
+						<Typography
+							variant={"caption"}
+							sx={{
+								color: "text.secondary",
+							}}
+						>
 							{list.length} paiement{list.length > 1 ? "s" : ""} en attente
 						</Typography>
 					</Stack>
@@ -303,28 +366,58 @@ function PendingItem({ row, onCommitReceived, onFull, onDelete }: { row: Pending
 	return (
 		<Stack
 			spacing={0.75}
-			px={1.75}
-			py={1.25}
 			sx={{
+				px: 1.75,
+				py: 1.25,
 				borderBottom: (t) => `1px solid ${t.palette.divider}`,
 				"&:last-of-type": { borderBottom: "none" },
 			}}
 		>
-			<Stack direction={"row"} alignItems={"baseline"} spacing={1}>
-				<Typography variant={"subtitle2"} fontWeight={600} noWrap flex={1} minWidth={0}>
+			<Stack
+				direction={"row"}
+				spacing={1}
+				sx={{
+					alignItems: "baseline",
+				}}
+			>
+				<Typography
+					variant={"subtitle2"}
+					noWrap
+					sx={{
+						fontWeight: 600,
+						flex: 1,
+						minWidth: 0,
+					}}
+				>
 					{row.user}
 				</Typography>
-				<Typography variant={"caption"} color={"text.secondary"} sx={{ flexShrink: 0 }}>
+				<Typography
+					variant={"caption"}
+					sx={{
+						color: "text.secondary",
+						flexShrink: 0,
+					}}
+				>
 					{row.date}
 				</Typography>
 			</Stack>
 
-			<Stack direction={"row"} alignItems={"center"} spacing={1}>
+			<Stack
+				direction={"row"}
+				spacing={1}
+				sx={{
+					alignItems: "center",
+				}}
+			>
 				<Chip size={"small"} variant={"outlined"} label={`Dû ${row.amount.toFixed(2)} €`} sx={{ flexShrink: 0 }} />
 
 				<ReceivedInput key={`received-${row.received ?? 0}`} row={row} onCommit={onCommitReceived} />
 
-				<Box flex={1} />
+				<Box
+					sx={{
+						flex: 1,
+					}}
+				/>
 
 				<Tooltip title={"La totalité du payement a été perçue"}>
 					<IconButton size={"small"} color={"success"} onClick={() => onFull(row)}>

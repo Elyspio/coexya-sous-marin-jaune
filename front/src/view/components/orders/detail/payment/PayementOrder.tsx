@@ -112,7 +112,7 @@ export function PayementOrder() {
 			if (type === OrderPaymentType.Wallet) v = Math.min(v, maxWalletValue);
 			updateOrderPayment(type, v);
 		},
-		[updateOrderPayment, maxWalletValue],
+		[updateOrderPayment, maxWalletValue]
 	);
 
 	const commitPayment = useCallback(
@@ -122,10 +122,15 @@ export function PayementOrder() {
 			if (type === OrderPaymentType.Wallet) v = Math.min(v, maxWalletValue);
 			v = +v.toFixed(2);
 			const existing = order.payments.find((p) => p.type === type);
-			const payments = v <= 0 ? order.payments.filter((p) => p.type !== type) : existing ? order.payments.map((p) => (p.type === type ? { ...p, amount: v } : p)) : [...order.payments, { type, amount: v }];
+			const payments =
+				v <= 0
+					? order.payments.filter((p) => p.type !== type)
+					: existing
+						? order.payments.map((p) => (p.type === type ? { ...p, amount: v } : p))
+						: [...order.payments, { type, amount: v }];
 			updateAndSave({ ...order, payments });
 		},
-		[order, maxWalletValue, updateAndSave],
+		[order, maxWalletValue, updateAndSave]
 	);
 
 	const persist = useCallback(() => {
@@ -137,7 +142,7 @@ export function PayementOrder() {
 			const target = type === OrderPaymentType.Wallet ? Math.min(remaining + amounts[type], maxWalletValue) : remaining + amounts[type];
 			commitPayment(type, target);
 		},
-		[remaining, maxWalletValue, amounts, commitPayment],
+		[remaining, maxWalletValue, amounts, commitPayment]
 	);
 
 	const toggleSelected = useCallback(
@@ -162,10 +167,13 @@ export function PayementOrder() {
 					});
 			}
 		},
-		[extras, amounts, commitPayment, remaining, maxWalletValue],
+		[extras, amounts, commitPayment, remaining, maxWalletValue]
 	);
 
-	const segments = useMemo(() => types.filter((t) => amounts[t] > 0).map((t) => ({ type: t, amount: amounts[t], pct: price > 0 ? (amounts[t] / price) * 100 : 0 })), [types, amounts, price]);
+	const segments = useMemo(
+		() => types.filter((t) => amounts[t] > 0).map((t) => ({ type: t, amount: amounts[t], pct: price > 0 ? (amounts[t] / price) * 100 : 0 })),
+		[types, amounts, price]
+	);
 
 	if (!order) return null;
 
@@ -173,7 +181,13 @@ export function PayementOrder() {
 
 	return (
 		<Stack spacing={2.5}>
-			<Stack direction="row" alignItems="baseline" justifyContent="space-between">
+			<Stack
+				direction="row"
+				sx={{
+					alignItems: "baseline",
+					justifyContent: "space-between",
+				}}
+			>
 				<Box>
 					<Typography variant="eyebrow" sx={{ fontSize: 10 }}>
 						{remaining > 0.001 ? "Reste à payer" : "Couvert"}
@@ -188,7 +202,10 @@ export function PayementOrder() {
 					</Typography>
 					<Typography variant="mono" sx={{ fontSize: 22, fontWeight: 500, lineHeight: 1.1 }}>
 						{fmtPrice(paid)}
-						<Box component="span" sx={{ color: "custom.ink3" }}> / {fmtPrice(price)}</Box>
+						<Box component="span" sx={{ color: "custom.ink3" }}>
+							{" "}
+							/ {fmtPrice(price)}
+						</Box>
 					</Typography>
 				</Box>
 			</Stack>
@@ -202,7 +219,14 @@ export function PayementOrder() {
 				{segments.length > 0 && (
 					<Stack direction="row" spacing={1.5} sx={{ mt: 1, flexWrap: "wrap", rowGap: 0.5 }}>
 						{segments.map((seg) => (
-							<Stack key={seg.type} direction="row" alignItems="center" spacing={0.625}>
+							<Stack
+								key={seg.type}
+								direction="row"
+								spacing={0.625}
+								sx={{
+									alignItems: "center",
+								}}
+							>
 								<Box sx={{ width: 9, height: 9, borderRadius: "2px", backgroundColor: payColors[seg.type] }} />
 								<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink2" }}>
 									{payementTypeLabel[seg.type]} {fmtPrice(seg.amount)}
@@ -214,7 +238,14 @@ export function PayementOrder() {
 			</Box>
 
 			<Box>
-				<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.25 }}>
+				<Stack
+					direction="row"
+					sx={{
+						alignItems: "center",
+						justifyContent: "space-between",
+						mb: 1.25,
+					}}
+				>
 					<Typography variant="eyebrow">1. Choisir les moyens</Typography>
 					<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink3" }}>
 						{selected.size} sélectionné{selected.size > 1 ? "s" : ""}
@@ -258,9 +289,7 @@ export function PayementOrder() {
 								>
 									<PayGlyph type={type} />
 								</Box>
-								<Typography sx={{ fontWeight: 600, fontSize: 13.5, color: isSelected ? color : "custom.ink" }}>
-									{payementTypeLabel[type]}
-								</Typography>
+								<Typography sx={{ fontWeight: 600, fontSize: 13.5, color: isSelected ? color : "custom.ink" }}>{payementTypeLabel[type]}</Typography>
 								{isSelected && (
 									<Box
 										sx={{
@@ -286,7 +315,14 @@ export function PayementOrder() {
 			</Box>
 
 			<Box>
-				<Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1.25 }}>
+				<Stack
+					direction="row"
+					sx={{
+						alignItems: "center",
+						justifyContent: "space-between",
+						mb: 1.25,
+					}}
+				>
 					<Typography variant="eyebrow">2. Répartir le montant</Typography>
 					<Typography variant="mono" sx={{ fontSize: 12, color: "custom.ink3" }}>
 						Bouton « auto » remplit le reste
@@ -386,7 +422,19 @@ function DistributionRow({
 			</Box>
 			{type === OrderPaymentType.Paypal && (
 				<Tooltip title="Scanner pour payer">
-					<Link href={PAYPAL_URL} target="_blank" sx={(t) => ({ p: 0.5, backgroundColor: "#fff", border: `1px solid ${t.palette.custom.line}`, borderRadius: "6px", display: "grid", placeItems: "center", flexShrink: 0 })}>
+					<Link
+						href={PAYPAL_URL}
+						target="_blank"
+						sx={(t) => ({
+							p: 0.5,
+							backgroundColor: "#fff",
+							border: `1px solid ${t.palette.custom.line}`,
+							borderRadius: "6px",
+							display: "grid",
+							placeItems: "center",
+							flexShrink: 0,
+						})}
+					>
 						<QRCodeSVG value={PAYPAL_URL} height={36} width={36} />
 					</Link>
 				</Tooltip>

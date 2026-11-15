@@ -1,10 +1,10 @@
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {toast} from "react-toastify";
-import {getService} from "../api/services";
-import {ConfigService} from "@services/config.service";
-import {configKeys} from "./config.keys";
-import {extractApiError} from "../api/extractError";
-import type {ConfigBase} from "@apis/rest/api/generated";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { getService } from "../api/services";
+import { ConfigService } from "@services/config.service";
+import { configKeys } from "./config.keys";
+import { extractApiError } from "../api/extractError";
+import type { ConfigBase } from "@apis/rest/api/generated";
 
 export function useUpdateConfig() {
 	const qc = useQueryClient();

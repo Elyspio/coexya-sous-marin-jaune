@@ -39,7 +39,7 @@ export function BurgerItem({ data, index }: { data: BurgerRecord; index: number 
 				next[index] = { ...next[index], comment: txt };
 				updateAndSave({ ...order, burgers: next });
 			}, 300),
-		[order, index, updateAndSave],
+		[order, index, updateAndSave]
 	);
 
 	const onCommentChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => setComment(e.target.value), [setComment]);
@@ -54,9 +54,21 @@ export function BurgerItem({ data, index }: { data: BurgerRecord; index: number 
 				backgroundColor: t.palette.custom.paper,
 			})}
 		>
-			<Stack direction="row" alignItems="center" spacing={1.75}>
+			<Stack
+				direction="row"
+				spacing={1.75}
+				sx={{
+					alignItems: "center",
+				}}
+			>
 				<Box sx={{ flex: 1, minWidth: 0 }}>
-					<Stack direction="row" alignItems="center" spacing={1}>
+					<Stack
+						direction="row"
+						spacing={1}
+						sx={{
+							alignItems: "center",
+						}}
+					>
 						<Typography sx={{ fontWeight: 600, fontSize: 14, color: chosen ? "custom.ink" : "custom.ink3" }}>{chosen ? data.name : "Choisir un burger"}</Typography>
 						{data.vegetarian && <Chip label="VEGE" size="small" variant="outlined" />}
 						{data.xl && <Chip label="XL" size="small" variant="outlined" />}
@@ -65,7 +77,13 @@ export function BurgerItem({ data, index }: { data: BurgerRecord; index: number 
 						<Typography sx={{ fontSize: 12, color: "custom.ink3", mt: 0.25 }}>
 							{def!.ingredients.map((ing, k) => (
 								<React.Fragment key={ing}>
-									{data.excluded.includes(ing) ? <Box component="del" sx={{ color: "custom.ink4" }}>{ing}</Box> : <span>{ing}</span>}
+									{data.excluded.includes(ing) ? (
+										<Box component="del" sx={{ color: "custom.ink4" }}>
+											{ing}
+										</Box>
+									) : (
+										<span>{ing}</span>
+									)}
 									{k < def!.ingredients.length - 1 ? ", " : ""}
 								</React.Fragment>
 							))}

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Elyspio.Utils.Telemetry.MongoDB.Business;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
@@ -14,7 +15,9 @@ public class MongoContext
         var connectionString = configuration.GetConnectionString("MongoDb");
 
 		var url = new MongoUrl(connectionString);
-		var client = new MongoClient(url);
+		var settings = MongoClientSettings.FromUrl(url);
+		settings.ClusterConfigurator = cluster => cluster.Subscribe(new MongoDbActivityEventSubscriber());
+		var client = new MongoClient(settings);
 
 		Console.WriteLine($"Connecting to Database '{url.DatabaseName}'");
 

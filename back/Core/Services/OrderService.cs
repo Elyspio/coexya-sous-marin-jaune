@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Elyspio.Utils.Telemetry;
+using System.Net;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SousMarinJaune.Api.Abstractions.Exceptions;
@@ -33,7 +34,7 @@ internal class OrderService : IOrderService
 
 	public async Task<List<Order>> GetAll()
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 
 		var orders = _orderAssembler.Convert(await _orderRepository.GetAll());
 		
@@ -42,7 +43,7 @@ internal class OrderService : IOrderService
 
 	public async Task<List<Order>> GetForUser(string user)
 	{
-		using var logger = _logger.Enter(Log.Format(user));
+		using var trace = _logger.Trace($"{Log.F(user)}");
 
 		var orders = _orderAssembler.Convert(await _orderRepository.GetForUser(user));
 		
@@ -51,7 +52,7 @@ internal class OrderService : IOrderService
 
 	public async Task<Order> Create(string user, bool acceptDefer = false)
 	{
-		using var logger = _logger.Enter(Log.Format(user));
+		using var trace = _logger.Trace($"{Log.F(user)}");
 
 		var now = DateTime.Now;
 		var deferred = OrderDateHelper.IsDeferred(now);
@@ -82,7 +83,7 @@ internal class OrderService : IOrderService
 
 	public async Task Delete(Guid orderId)
 	{
-		using var logger = _logger.Enter(Log.Format(orderId));
+		using var trace = _logger.Trace($"{Log.F(orderId)}");
 
 		await _orderRepository.Delete(orderId);
 		
@@ -91,7 +92,7 @@ internal class OrderService : IOrderService
 
 	public async Task Update(Order order)
 	{
-		using var logger = _logger.Enter(Log.Format(order.Id));
+		using var trace = _logger.Trace($"{Log.F(order.Id)}");
 
 		await _orderRepository.Update(_orderAssembler.Convert(order));
 		await _hubContext.Clients.All.OrderUpdated(order);
@@ -100,7 +101,7 @@ internal class OrderService : IOrderService
 
 	public async Task UpdateOrderPaymentReceived(Guid idOrder, OrderPaymentType type, double value)
 	{
-		using var logger = _logger.Enter($"{Log.Format(idOrder)} {Log.Format(type)} {Log.Format(value)}");
+		using var trace = _logger.Trace($"{Log.F(idOrder)} {Log.F(type)} {Log.F(value)}");
 
 		var entity = await _orderRepository.UpdateOrderPaymentReceived(idOrder, type, value);
 

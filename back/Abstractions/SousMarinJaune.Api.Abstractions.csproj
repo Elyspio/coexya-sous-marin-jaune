@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Elyspio.Utils.Telemetry" Version="2.1.0" />
-        <PackageReference Include="Elyspio.Utils.Telemetry.MongoDB" Version="2.1.0" />
+        <PackageReference Include="Elyspio.Utils.Telemetry" Version="3.0.0-preview.2" />
+        <PackageReference Include="Elyspio.Utils.Telemetry.MongoDB" Version="3.0.0-preview.2" />
         <PackageReference Include="MongoDB.Bson" Version="3.14.0" />
         <PackageReference Include="Serilog" Version="4.4.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />

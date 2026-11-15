@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Elyspio.Utils.Results.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports.Order;
@@ -38,11 +39,12 @@ public class OrderController : BaseController
 
 	[HttpPost("users/{user}")]
 	[ProducesResponseType<Order>(StatusCodes.Status201Created)]
+	[ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
 	[AllowAnonymous]
 	public async Task<IActionResult> Create(string user, [FromQuery] bool acceptDefer = false)
 	{
-		var order = await _orderService.Create(user, acceptDefer);
-		return Created($"orders/{order.Id}", order);
+		var created = await _orderService.Create(user, acceptDefer);
+		return created.TryGet(out var order, out var error) ? Created($"orders/{order.Id}", order) : error.ToActionResult();
 	}
 
 	[HttpGet("creation-info")]

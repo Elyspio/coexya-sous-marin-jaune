@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Elyspio.Utils.Telemetry;
+using Microsoft.Extensions.Logging;
 using SousMarinJaune.Api.Abstractions.Helpers;
 using SousMarinJaune.Api.Abstractions.Interfaces.Services;
 using SousMarinJaune.Api.Abstractions.Transports;
@@ -20,7 +21,7 @@ internal class BurgerService : IBurgerService
 
 	public async Task<List<Burger>> GetAll(CancellationToken ct)
 	{
-		using var logger = _logger.Enter();
+		using var trace = _logger.Trace();
 		
 		return await _burgerAdapter.GetBurgers(ct);
 	}
